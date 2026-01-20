@@ -1,0 +1,3 @@
+{
+  "extends": "@formcn/config/tsconfig.base.json"
+}

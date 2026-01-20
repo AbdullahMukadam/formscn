@@ -1,0 +1,18 @@
+{
+  "name": "@formcn/env",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./web": "./src/web.ts"
+  },
+  "dependencies": {
+    "@t3-oss/env-nextjs": "^0.13.1",
+    "dotenv": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@formcn/config": "workspace:*",
+    "typescript": "catalog:"
+  }
+}
