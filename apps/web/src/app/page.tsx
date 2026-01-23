@@ -8,7 +8,7 @@ import { ArrowRight, Eye, Sparkles, Code, Box, Zap, Lock } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
 // All templates array
-const featuredTemplates = formTemplates.slice(0, 6); // Show top 6
+const featuredTemplates = formTemplates
 
 const TITLE_TEXT = `
  ███████╗ ██████╗ ██████╗ ███╗   ███╗███████╗ ██████╗███╗   ██╗

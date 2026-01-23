@@ -314,6 +314,129 @@
         "zod",
         "sonner"
       ]
+    },
+    {
+      "name": "waitlist-form",
+      "type": "registry:block",
+      "description": "Waitlist signup form",
+      "files": [
+        {
+          "path": "src/registry/default/templates/waitlist-form.tsx",
+          "type": "registry:block",
+          "target": "components/forms/waitlist-form.tsx"
+        }
+      ],
+      "registryDependencies": [
+        "http://localhost:3001/r/button.json",
+        "http://localhost:3001/r/card.json",
+        "http://localhost:3001/r/input.json",
+        "http://localhost:3001/r/label.json",
+        "http://localhost:3001/r/select.json"
+      ],
+      "dependencies": [
+        "react-hook-form",
+        "@hookform/resolvers",
+        "zod",
+        "sonner"
+      ]
+    },
+    {
+      "name": "support-ticket-form",
+      "type": "registry:block",
+      "description": "Support ticket submission form",
+      "files": [
+        {
+          "path": "src/registry/default/templates/support-ticket-form.tsx",
+          "type": "registry:block",
+          "target": "components/forms/support-ticket-form.tsx"
+        }
+      ],
+      "registryDependencies": [
+        "http://localhost:3001/r/button.json",
+        "http://localhost:3001/r/card.json",
+        "http://localhost:3001/r/input.json",
+        "http://localhost:3001/r/textarea.json",
+        "http://localhost:3001/r/label.json",
+        "http://localhost:3001/r/select.json",
+        "http://localhost:3001/r/radio-group.json"
+      ],
+      "dependencies": [
+        "react-hook-form",
+        "@hookform/resolvers",
+        "zod",
+        "sonner"
+      ]
+    },
+    {
+      "name": "booking-request-form",
+      "type": "registry:block",
+      "description": "Booking request form with date and service selection",
+      "files": [
+        {
+          "path": "src/registry/default/templates/booking-request-form.tsx",
+          "type": "registry:block",
+          "target": "components/forms/booking-request-form.tsx"
+        }
+      ],
+      "registryDependencies": [
+        "http://localhost:3001/r/button.json",
+        "http://localhost:3001/r/card.json",
+        "http://localhost:3001/r/input.json",
+        "http://localhost:3001/r/textarea.json",
+        "http://localhost:3001/r/label.json",
+        "http://localhost:3001/r/select.json"
+      ],
+      "dependencies": [
+        "react-hook-form",
+        "@hookform/resolvers",
+        "zod",
+        "sonner"
+      ]
+    },
+    {
+      "name": "ecommerce-checkout-form",
+      "type": "registry:block",
+      "description": "Checkout form with shipping and payment details",
+      "files": [
+        {
+          "path": "src/registry/default/templates/ecommerce-checkout-form.tsx",
+          "type": "registry:block",
+          "target": "components/forms/ecommerce-checkout-form.tsx"
+        }
+      ],
+      "registryDependencies": [
+        "http://localhost:3001/r/button.json",
+        "http://localhost:3001/r/card.json",
+        "http://localhost:3001/r/input.json",
+        "http://localhost:3001/r/label.json",
+        "http://localhost:3001/r/radio-group.json"
+      ],
+      "dependencies": [
+        "react-hook-form",
+        "@hookform/resolvers",
+        "zod",
+        "sonner"
+      ]
+    },
+    {
+      "name": "form-generator",
+      "type": "registry:lib",
+      "description": "Form code generation utilities",
+      "dependencies": [
+        "zod"
+      ],
+      "files": [
+        {
+          "path": "src/registry/default/lib/form-generator.ts",
+          "type": "registry:lib",
+          "target": "lib/form-generator.ts"
+        },
+        {
+          "path": "src/registry/default/types.ts",
+          "type": "registry:lib",
+          "target": "lib/types.ts"
+        }
+      ]
     }
   ]
 }

@@ -8,6 +8,7 @@ import { CodeViewer } from "@/components/editor/code-viewer";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Eye, Code, Share2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface FormEditorProps {
   initialTemplate?: FormTemplate;
@@ -34,7 +35,7 @@ export function FormEditor({ initialTemplate }: FormEditorProps) {
     setActiveTab,
     publishedId,
     isPublishing,
-    
+
     // Actions
     updateField,
     addField,
@@ -51,14 +52,8 @@ export function FormEditor({ initialTemplate }: FormEditorProps) {
   const handlePublish = async () => {
     setIsPublishing(true);
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3001';
-    
-    // Dynamically import generator to avoid circular deps if needed, 
-    // or just use the one we have since we need it for the code view anyway.
-    // For simplicity, we assume the code-viewer logic is duplicated or shared.
-    // Ideally, we'd pass the code FROM the code viewer up, or regenerate it here.
-    // Let's regenerate it here for cleanliness using the imported generator.
     const { generateFormComponent } = await import("@/registry/default/lib/form-generator");
-    
+
     try {
       const code = generateFormComponent({
         formName,
@@ -92,7 +87,7 @@ export function FormEditor({ initialTemplate }: FormEditorProps) {
       // Toast is handled in the UI usually, but we can do it here if we imported toast
     } catch (error) {
       console.error(error);
-      // toast.error("Failed to publish form");
+      toast.error("Failed to publish form");
     } finally {
       setIsPublishing(false);
     }

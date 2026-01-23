@@ -1,71 +1,32 @@
 import * as z from "zod";
 import { OAUTH_PROVIDERS, type OAuthProvider } from "@/lib/oauth-providers-config";
-
-export interface FormTemplate {
-  id: string;
-  name: string;
-  description: string;
-  category: "authentication" | "contact" | "ecommerce" | "survey" | "profile";
-  schema: z.ZodObject<any>;
-  defaultValues: Record<string, any>;
-  fields: FormField[];
-  oauthProviders?: OAuthProvider[];
-}
-
-export interface FormField {
-  type: "input" | "textarea" | "select" | "checkbox" | "radio";
-  name: string;
-  label: string;
-  placeholder?: string;
-  description?: string;
-  required?: boolean;
-  options?: Array<{ label: string; value: string }>;
-  inputType?: "text" | "email" | "password" | "tel" | "url" | "number";
-}
+import { type FormTemplate, type FormField } from "@/registry/default/types";
 
 export type { OAuthProvider } from "@/lib/oauth-providers-config";
 export type DatabaseAdapter = "drizzle" | "prisma";
 export type Framework = "next" | "react" | "tanstack" | "remix";
 
 /**
- * Generate a complete form component with Better Auth integration
+ * Generate imports for the form component
  */
-export function generateFormComponent(config: {
-  formName: string;
-  formDescription: string;
+function generateImports(config: {
+  framework: Framework;
   fields: FormField[];
   oauthProviders: OAuthProvider[];
-  framework?: Framework;
+  isAuth: boolean;
+  isLogin: boolean;
+  isSignup: boolean;
+  hasOAuth: boolean;
+  oauthIcons: string;
 }): string {
-  const { formName, formDescription, fields, oauthProviders, framework = "next" } = config;
+  const { framework, fields, isAuth, isLogin, isSignup, hasOAuth, oauthIcons } = config;
   
-  const hasOAuth = oauthProviders.length > 0;
-  
-  // Framework specific directive
   const directive = (framework === "next" || framework === "tanstack") ? '"use client";\n\n' : "";
-
-  // Generate imports
-  const oauthIcons = oauthProviders
-    .map(id => OAUTH_PROVIDERS.find(p => p.id === id))
-    .filter((p): p is NonNullable<typeof p> => p !== undefined)
-    .filter(p => !p.iconSvg) // Only import icons that aren't custom SVG
-    .map(p => p.icon.name)
-    .filter((name, index, self) => self.indexOf(name) === index) // Remove duplicates
-    .join(', ');
 
   const hasSelect = fields.some(f => f.type === "select");
   const hasCheckbox = fields.some(f => f.type === "checkbox");
   const hasTextarea = fields.some(f => f.type === "textarea");
   const hasRadio = fields.some(f => f.type === "radio");
-
-  // Auth Detection
-  const hasEmail = fields.some(f => f.name === "email" || f.inputType === "email");
-  const hasPassword = fields.some(f => f.name === "password" || f.inputType === "password");
-  const hasConfirmPassword = fields.some(f => f.name === "confirmPassword");
-  
-  const isLogin = hasEmail && hasPassword && !hasConfirmPassword;
-  const isSignup = hasEmail && hasPassword && hasConfirmPassword;
-  const isAuth = isLogin || isSignup || hasOAuth;
 
   let imports = `${directive}import { useForm${(hasSelect || hasCheckbox || hasRadio) ? ", Controller" : ""} } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -111,7 +72,13 @@ import { toast } from "sonner";`;
     }
   }
 
-  // Generate Zod schema
+  return imports;
+}
+
+/**
+ * Generate Zod schema definition
+ */
+function generateZodSchema(fields: FormField[]): string {
   const schemaFields = fields.map((field) => {
     if (field.type === "input") {
       let validation = `z.string()`;
@@ -141,72 +108,19 @@ import { toast } from "sonner";`;
     return `  ${field.name}: z.any(),`;
   }).join('\n');
 
-  const schema = `
-
+  return `
 const formSchema = z.object({
 ${schemaFields}
 });
 
 type FormValues = z.infer<typeof formSchema>;`;
+}
 
-  // Generate component
-  const componentName = formName.replace(/\s+/g, '') + 'Form';
-  const defaultValues = fields.map(f => `      ${f.name}: ${f.type === "checkbox" ? "false" : '""'},`).join('\n');
-  
-  let submitLogic = `    console.log("Form submitted:", data);
-    toast.success("Form submitted successfully!");`;
-
-  if (isLogin) {
-    submitLogic = `    await signIn.email({
-      email: data.email,
-      password: data.password,
-      callbackURL: "/dashboard",
-      fetchOptions: {
-        onResponse: () => {
-          // toast.loading("Logging in...");
-        },
-        onRequest: () => {
-          toast.loading("Logging in...");
-        },
-        onSuccess: () => {
-          toast.dismiss();
-          toast.success("Logged in successfully!");
-        },
-        onError: (ctx) => {
-          toast.dismiss();
-          toast.error(ctx.error.message);
-        },
-      },
-    });`;
-  } else if (isSignup) {
-    // Find name field (fullName, name, etc)
-    const nameField = fields.find(f => f.name.toLowerCase().includes('name'))?.name || 'name';
-    
-    submitLogic = `    await signUp.email({
-      email: data.email,
-      password: data.password,
-      name: data.${nameField},
-      callbackURL: "/dashboard",
-      fetchOptions: {
-        onResponse: () => {
-          // toast.loading("Creating account...");
-        },
-        onRequest: () => {
-          toast.loading("Creating account...");
-        },
-        onSuccess: () => {
-          toast.dismiss();
-          toast.success("Account created successfully!");
-        },
-        onError: (ctx) => {
-          toast.dismiss();
-          toast.error(ctx.error.message);
-        },
-      },
-    });`;
-  }
-
-  const formFields = fields.map((field) => {
+/**
+ * Generate JSX for form fields
+ */
+function generateFormFields(fields: FormField[]): string {
+  return fields.map((field) => {
     const errorDisplay = `{form.formState.errors.${field.name} && (
             <p className="text-sm text-destructive">{form.formState.errors.${field.name}.message}</p>
           )}`;
@@ -298,8 +212,79 @@ type FormValues = z.infer<typeof formSchema>;`;
     }
     return `          {/* ${field.type} field for ${field.name} */}`;
   }).join('\n\n');
+}
 
-  const oauthButtons = oauthProviders.map(providerId => {
+/**
+ * Generate submit logic code
+ */
+function generateSubmitLogic(config: {
+  isLogin: boolean;
+  isSignup: boolean;
+  fields: FormField[];
+}): string {
+  const { isLogin, isSignup, fields } = config;
+
+  if (isLogin) {
+    return `    await signIn.email({
+      email: data.email,
+      password: data.password,
+      callbackURL: "/dashboard",
+      fetchOptions: {
+        onResponse: () => {
+          // toast.loading("Logging in...");
+        },
+        onRequest: () => {
+          toast.loading("Logging in...");
+        },
+        onSuccess: () => {
+          toast.dismiss();
+          toast.success("Logged in successfully!");
+        },
+        onError: (ctx) => {
+          toast.dismiss();
+          toast.error(ctx.error.message);
+        },
+      },
+    });`;
+  } 
+  
+  if (isSignup) {
+    // Find name field (fullName, name, etc)
+    const nameField = fields.find(f => f.name.toLowerCase().includes('name'))?.name || 'name';
+    
+    return `    await signUp.email({
+      email: data.email,
+      password: data.password,
+      name: data.${nameField},
+      callbackURL: "/dashboard",
+      fetchOptions: {
+        onResponse: () => {
+          // toast.loading("Creating account...");
+        },
+        onRequest: () => {
+          toast.loading("Creating account...");
+        },
+        onSuccess: () => {
+          toast.dismiss();
+          toast.success("Account created successfully!");
+        },
+        onError: (ctx) => {
+          toast.dismiss();
+          toast.error(ctx.error.message);
+        },
+      },
+    });`;
+  }
+
+  return `    console.log("Form submitted:", data);
+    toast.success("Form submitted successfully!");`;
+}
+
+/**
+ * Generate OAuth buttons JSX
+ */
+function generateOAuthButtons(oauthProviders: OAuthProvider[]): string {
+  return oauthProviders.map(providerId => {
     const provider = OAUTH_PROVIDERS.find(p => p.id === providerId);
     if (!provider) return '';
 
@@ -313,6 +298,60 @@ type FormValues = z.infer<typeof formSchema>;`;
             ${provider.name}
           </Button>`;
   }).filter(Boolean).join('\n');
+}
+
+/**
+ * Generate a complete form component with Better Auth integration
+ */
+export function generateFormComponent(config: {
+  formName: string;
+  formDescription: string;
+  fields: FormField[];
+  oauthProviders: OAuthProvider[];
+  framework?: Framework;
+}): string {
+  const { formName, formDescription, fields, oauthProviders, framework = "next" } = config;
+  
+  const hasOAuth = oauthProviders.length > 0;
+  
+  // Extract OAuth icons to import
+  const oauthIcons = oauthProviders
+    .map(id => OAUTH_PROVIDERS.find(p => p.id === id))
+    .filter((p): p is NonNullable<typeof p> => p !== undefined)
+    .filter(p => !p.iconSvg) // Only import icons that aren't custom SVG
+    .map(p => p.icon.name)
+    .filter((name, index, self) => self.indexOf(name) === index) // Remove duplicates
+    .join(', ');
+
+  // Auth Detection
+  const hasEmail = fields.some(f => f.name === "email" || f.inputType === "email");
+  const hasPassword = fields.some(f => f.name === "password" || f.inputType === "password");
+  const hasConfirmPassword = fields.some(f => f.name === "confirmPassword");
+  
+  const isLogin = hasEmail && hasPassword && !hasConfirmPassword;
+  const isSignup = hasEmail && hasPassword && hasConfirmPassword;
+  const isAuth = isLogin || isSignup || hasOAuth;
+
+  // Generate parts
+  const imports = generateImports({
+    framework,
+    fields,
+    oauthProviders,
+    isAuth,
+    isLogin,
+    isSignup,
+    hasOAuth,
+    oauthIcons
+  });
+
+  const schema = generateZodSchema(fields);
+  const formFields = generateFormFields(fields);
+  const oauthButtons = generateOAuthButtons(oauthProviders);
+  const submitLogic = generateSubmitLogic({ isLogin, isSignup, fields });
+
+  // Generate component
+  const componentName = formName.replace(/\s+/g, '') + 'Form';
+  const defaultValues = fields.map(f => `      ${f.name}: ${f.type === "checkbox" ? "false" : '""'},`).join('\n');
 
   const component = `
 export function ${componentName}() {
@@ -339,7 +378,6 @@ ${formFields}
 
           <Button type="submit" className="w-full">Submit</Button>
         </form>${hasOAuth ? `
-
         <div className="relative my-4">
           <div className="absolute inset-0 flex items-center">
             <span className="w-full border-t" />

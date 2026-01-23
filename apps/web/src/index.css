@@ -2,6 +2,15 @@
 @import "tw-animate-css";
 @plugin "@tailwindcss/typography";
 
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none; 
+  scrollbar-width: none;   
+}
+
 @custom-variant dark (&:is(.dark *));
 
 :root {

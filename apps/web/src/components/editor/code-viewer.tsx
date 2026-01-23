@@ -101,7 +101,7 @@ export function CodeViewer({
   };
 
   return (
-    <div className="w-full max-w-4xl h-full flex flex-col">
+    <div className="w-full max-w-4xl h-fit flex flex-col overflow-y-auto no-scrollbar">
       <div className="bg-background rounded-lg border flex-1 overflow-hidden flex flex-col">
         {/* Top Section: Quick Install */}
         <div className="p-6 border-b bg-muted/10">
@@ -256,7 +256,7 @@ export function CodeViewer({
               </Button>
             </div>
 
-            <TabsContent value="component" className="flex-1 overflow-auto m-0 data-[state=active]:flex data-[state=active]:flex-col">
+            <TabsContent value="component" className="flex-1 overflow-auto m-0 data-[state=active]:flex data-[state=active]:flex-col h-[600px]">
               <CodeBlock code={generatedCode} language="tsx" className="font-mono text-sm h-full" />
             </TabsContent>
 

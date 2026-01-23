@@ -247,7 +247,14 @@ export function FormPreview({
                   return (
                     <div key={providerId} className="relative group">
                       <Button variant="outline" className="w-full pointer-events-none">
-                        <Icon className="mr-2 h-4 w-4" />
+                        {provider.iconSvg ? (
+                          <span 
+                            className="contents" 
+                            dangerouslySetInnerHTML={{ __html: provider.iconSvg }} 
+                          />
+                        ) : (
+                          <Icon className="mr-2 h-4 w-4" />
+                        )}
                         {provider.name}
                       </Button>
                       <Button

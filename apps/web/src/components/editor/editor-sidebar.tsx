@@ -318,7 +318,15 @@ export function EditorSidebar({
                 return (
                   <div key={provider.id} className="flex items-center justify-between">
                     <Label htmlFor={`${provider.id}-auth`} className="flex items-center gap-2 cursor-pointer">
-                      <Icon className="h-4 w-4" /> {provider.name}
+                      {provider.iconSvg ? (
+                        <span 
+                          className="flex h-4 w-4 items-center justify-center [&>svg]:!m-0 [&>svg]:h-full [&>svg]:w-full" 
+                          dangerouslySetInnerHTML={{ __html: provider.iconSvg }} 
+                        />
+                      ) : (
+                        <Icon className="h-4 w-4" />
+                      )}
+                      {provider.name}
                     </Label>
                     <Switch
                       id={`${provider.id}-auth`}
