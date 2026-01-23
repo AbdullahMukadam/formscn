@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "db-prisma",
+  "description": "Prisma setup with schema",
+  "dependencies": [
+    "@prisma/client",
+    "prisma"
+  ],
+  "files": [
+    {
+      "path": "src/registry/default/lib/db-prisma.ts",
+      "content": "import { PrismaClient } from '@prisma/client';\n\nconst globalForPrisma = globalThis as unknown as {\n  prisma: PrismaClient | undefined;\n};\n\nexport const prisma = globalForPrisma.prisma ?? new PrismaClient();\n\nif (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;\n",
+      "type": "registry:lib",
+      "target": "lib/prisma.ts"
+    },
+    {
+      "path": "src/registry/default/lib/schema.prisma",
+      "content": "generator client {\n  provider = \"prisma-client-js\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id            String    @id @default(cuid())\n  email         String    @unique\n  emailVerified Boolean   @default(false)\n  name          String?\n  image         String?\n  createdAt     DateTime  @default(now())\n  updatedAt     DateTime  @updatedAt\n  \n  accounts      Account[]\n  sessions      Session[]\n}\n\nmodel Account {\n  id                String  @id @default(cuid())\n  userId            String\n  type              String\n  provider          String\n  providerAccountId String\n  refresh_token     String?\n  access_token      String?\n  expires_at        Int?\n  token_type        String?\n  scope             String?\n  id_token          String?\n  session_state     String?\n  \n  user User @relation(fields: [userId], references: [id], onDelete: Cascade)\n  \n  @@unique([provider, providerAccountId])\n}\n\nmodel Session {\n  id           String   @id @default(cuid())\n  sessionToken String   @unique\n  userId       String\n  expires      DateTime\n  \n  user User @relation(fields: [userId], references: [id], onDelete: Cascade)\n}\n\nmodel VerificationToken {\n  identifier String\n  token      String   @unique\n  expires    DateTime\n  \n  @@unique([identifier, token])\n}\n",
+      "type": "registry:lib",
+      "target": "prisma/schema.prisma"
+    }
+  ],
+  "type": "registry:lib"
+}

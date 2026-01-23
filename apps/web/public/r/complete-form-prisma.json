@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "complete-form-prisma",
+  "description": "Complete form with Better Auth (Prisma)",
+  "dependencies": [
+    "react-hook-form",
+    "@hookform/resolvers",
+    "zod",
+    "better-auth",
+    "lucide-react",
+    "sonner"
+  ],
+  "registryDependencies": [
+    "form-input",
+    "form-utils",
+    "auth-config-prisma",
+    "auth-client"
+  ],
+  "type": "registry:block"
+}

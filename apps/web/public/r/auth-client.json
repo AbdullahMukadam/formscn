@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "auth-client",
+  "description": "Better Auth React client utilities",
+  "dependencies": [
+    "better-auth"
+  ],
+  "files": [
+    {
+      "path": "src/registry/default/lib/auth-client.ts",
+      "content": "import { createAuthClient } from \"better-auth/react\";\n\nexport const { signIn, signOut, signUp, useSession } = createAuthClient({\n  baseURL: process.env.NEXT_PUBLIC_APP_URL || \"http://localhost:3000\",\n});\n",
+      "type": "registry:lib",
+      "target": "lib/auth-client.ts"
+    }
+  ],
+  "type": "registry:lib"
+}

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "auth-config-drizzle",
+  "description": "Better Auth configuration for Drizzle",
+  "dependencies": [
+    "better-auth"
+  ],
+  "registryDependencies": [
+    "db-drizzle"
+  ],
+  "files": [
+    {
+      "path": "src/registry/default/lib/auth-drizzle.ts",
+      "content": "import { betterAuth } from \"better-auth\";\nimport { drizzleAdapter } from \"better-auth/adapters/drizzle\";\nimport { db } from \"@/db\";\n\nexport const auth = betterAuth({\n  database: drizzleAdapter(db, {\n    provider: \"pg\", // Options: \"pg\", \"mysql\", \"sqlite\"\n  }),\n  emailAndPassword: {\n    enabled: true,\n  },\n  socialProviders: {\n    // github: {\n    //   clientId: process.env.GITHUB_CLIENT_ID!,\n    //   clientSecret: process.env.GITHUB_CLIENT_SECRET!,\n    // },\n  },\n});\n",
+      "type": "registry:lib",
+      "target": "lib/auth.ts"
+    }
+  ],
+  "type": "registry:lib"
+}

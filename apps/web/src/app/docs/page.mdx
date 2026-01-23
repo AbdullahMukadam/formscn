@@ -1,0 +1,65 @@
+export const metadata = {
+  title: "Introduction - FormCN Documentation",
+  description: "Learn how to use FormCN to build forms faster with pre-built components.",
+};
+
+# Introduction
+
+Welcome to FormCN documentation. FormCN is a powerful **Open Source** form building library that helps you create beautiful, accessible forms with minimal effort.
+
+## Features
+
+- **Pre-built Components**: Ready-to-use form components built with shadcn/ui
+- **CLI Integration**: Install components directly with `shadcn add`
+- **Better Auth Integrated**: Full authentication support (OAuth, Email/Password) out of the box
+- **Framework Agnostic**: Generate code for Next.js, Vite, TanStack Start, and Remix
+- **Type-Safe**: Full TypeScript support with React Hook Form and Zod
+- **Visual Editor**: Customize forms visually and get a unique CLI install command
+- **Every Form is Editable**: You own the code. No vendor lock-in.
+- **Accessible**: Built with accessibility in mind using Base UI primitives
+- **Open Source**: MIT Licensed and community-driven
+
+## Getting Started
+
+The most powerful way to use FormCN is via the **Visual Builder**:
+
+1.  Go to the [Form Builder](/editor).
+2.  Customize your form (add fields, auth, validation).
+3.  Publish and get your unique `shadcn add` command.
+
+Alternatively, you can install the base components manually:
+
+```bash
+npx shadcn@latest add @formscn/base-form
+```
+
+Or check out the [Installation](/docs/installation) guide for manual setup.
+
+## Quick Example
+
+```tsx
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+
+const schema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+});
+
+export default function LoginForm() {
+  const form = useForm({
+    resolver: zodResolver(schema),
+  });
+
+  return (
+    <form onSubmit={form.handleSubmit((data) => console.log(data))}>
+      {/* Form fields */}
+    </form>
+  );
+}
+```
+
+## Community
+
+Join our community to get help, share your work, and contribute to FormCN.

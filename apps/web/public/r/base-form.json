@@ -1,0 +1,28 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "base-form",
+  "description": "Base form dependencies",
+  "dependencies": [
+    "clsx",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [
+    "http://localhost:3001/r/button.json",
+    "http://localhost:3001/r/card.json",
+    "http://localhost:3001/r/input.json",
+    "http://localhost:3001/r/textarea.json",
+    "http://localhost:3001/r/label.json",
+    "http://localhost:3001/r/select.json",
+    "http://localhost:3001/r/checkbox.json",
+    "http://localhost:3001/r/radio-group.json"
+  ],
+  "files": [
+    {
+      "path": "src/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:lib",
+      "target": "lib/utils.ts"
+    }
+  ],
+  "type": "registry:block"
+}

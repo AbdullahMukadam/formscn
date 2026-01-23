@@ -1,0 +1,93 @@
+export const metadata = {
+  title: "Form Builder - FormCN Documentation",
+  description: "Visual form builder for creating forms with drag-and-drop interface.",
+};
+
+# Form Builder
+
+The Form Builder is a visual tool that lets you create forms using a drag-and-drop interface.
+
+## Features
+
+- **Visual Editor**: Build forms visually without writing code
+- **Auth & DB Ready**: One-click integration with Better Auth, Prisma, and Drizzle
+- **Multi-Framework**: Generate code for Next.js, Vite/React, TanStack Start, and Remix
+- **Publish to CLI**: Generate a unique `npx shadcn add` command for your custom form
+- **Live Preview**: See your form in real-time as you build
+- **Code Export**: Export clean, production-ready code or install via CLI
+
+## Getting Started
+
+Access the form builder at `/editor` in your application.
+
+## Using the Editor
+
+1. **Choose a Template**: Start with a pre-built template or create from scratch
+2. **Add Fields**: Drag and drop fields from the component palette
+3. **Configure Auth**: Enable OAuth providers (Google, GitHub) and choose your DB adapter
+4. **Select Framework**: Choose your target framework (Next.js, Vite, etc.) for correct environment variables
+5. **Publish**: Click "Integrate" -> "Publish" to get your unique installation command
+6. **Install**: Run the generated command in your project
+
+## Example Workflow
+
+### Step 1: Select a Template
+
+Choose from templates like:
+- Login Form
+- Waitlist Form
+- Support Ticket
+- Contact Form
+- Registration Form
+- Survey Form
+
+### Step 2: Customize Fields
+
+Click on any field to configure:
+- Field type (text, email, number, etc.)
+- Label and placeholder
+- Validation rules
+- Default values
+- Field styling
+
+### Step 3: Add Authentication & Framework
+
+Enable "Better Auth" integration in the sidebar:
+- Toggle **OAuth Providers** (Google, GitHub, etc.)
+- Select your **Database Adapter** (Prisma or Drizzle)
+- Select your **Framework** (Next.js, Vite/React, TanStack Start, Remix)
+
+The builder automatically generates the auth configuration, client hooks, and environment variable examples tailored to your stack.
+
+### Step 4: Publish & Install
+
+1. Go to the **Integrate** tab.
+2. Click **Publish & Get CLI Command**.
+3. Run the unique command provided:
+
+```bash
+npx shadcn@latest add http://formcn.com/api/r/YOUR_UNIQUE_FORM_ID
+```
+
+Or copy the raw code if you prefer manual integration.
+
+## Advanced Features
+
+### Custom Components
+
+Add your own custom components to the builder palette.
+
+### Theme Customization
+
+Customize the appearance with Tailwind CSS classes.
+
+### Conditional Fields
+
+Show/hide fields based on other field values.
+
+## Tips
+
+- Use keyboard shortcuts for faster editing
+- Save your work regularly
+- Test forms thoroughly before exporting
+- Use TypeScript for better type safety

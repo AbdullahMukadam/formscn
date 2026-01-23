@@ -1,0 +1,174 @@
+export const metadata = {
+  title: "Form Fields - FormCN Documentation",
+  description: "Comprehensive guide to all form field components available in FormCN.",
+};
+
+# Form Fields
+
+FormCN provides a comprehensive set of form field components built on top of shadcn/ui.
+
+## Available Fields
+
+### Text Input
+
+Basic text input field for single-line text.
+
+```tsx
+<Input
+  type="text"
+  placeholder="Enter your name"
+  {...register("name")}
+/>
+```
+
+**Props:**
+- `type`: Input type (text, email, password, etc.)
+- `placeholder`: Placeholder text
+- `disabled`: Disable the input
+
+### Textarea
+
+Multi-line text input for longer content.
+
+```tsx
+<Textarea
+  placeholder="Enter your message"
+  rows={4}
+  {...register("message")}
+/>
+```
+
+**Props:**
+- `rows`: Number of visible rows
+- `placeholder`: Placeholder text
+- `disabled`: Disable the textarea
+
+### Select
+
+Dropdown select field.
+
+```tsx
+<Select onValueChange={(value) => setValue("country", value)}>
+  <SelectTrigger>
+    <SelectValue placeholder="Select a country" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="us">United States</SelectItem>
+    <SelectItem value="uk">United Kingdom</SelectItem>
+    <SelectItem value="ca">Canada</SelectItem>
+  </SelectContent>
+</Select>
+```
+
+### Checkbox
+
+Boolean checkbox field.
+
+```tsx
+<div className="flex items-center space-x-2">
+  <Checkbox
+    id="terms"
+    {...register("terms")}
+  />
+  <label htmlFor="terms">
+    I agree to the terms and conditions
+  </label>
+</div>
+```
+
+### Radio Group
+
+Single selection from multiple options.
+
+```tsx
+<RadioGroup onValueChange={(value) => setValue("plan", value)}>
+  <div className="flex items-center space-x-2">
+    <RadioGroupItem value="free" id="free" />
+    <label htmlFor="free">Free</label>
+  </div>
+  <div className="flex items-center space-x-2">
+    <RadioGroupItem value="pro" id="pro" />
+    <label htmlFor="pro">Pro</label>
+  </div>
+</RadioGroup>
+```
+
+### Switch
+
+Toggle switch for boolean values.
+
+```tsx
+<div className="flex items-center space-x-2">
+  <Switch
+    id="notifications"
+    {...register("notifications")}
+  />
+  <label htmlFor="notifications">
+    Enable notifications
+  </label>
+</div>
+```
+
+### Date Picker
+
+Date selection field.
+
+```tsx
+<Popover>
+  <PopoverTrigger asChild>
+    <Button variant="outline">
+      {date ? format(date, "PPP") : "Pick a date"}
+    </Button>
+  </PopoverTrigger>
+  <PopoverContent>
+    <Calendar
+      mode="single"
+      selected={date}
+      onSelect={setDate}
+    />
+  </PopoverContent>
+</Popover>
+```
+
+## Field Validation
+
+All fields support validation through Zod schemas:
+
+```tsx
+const schema = z.object({
+  email: z.string().email("Invalid email"),
+  age: z.number().min(18, "Must be 18 or older"),
+  website: z.string().url().optional(),
+});
+```
+
+## Error Handling
+
+Display validation errors below fields:
+
+```tsx
+{errors.email && (
+  <p className="text-sm text-destructive">
+    {errors.email.message}
+  </p>
+)}
+```
+
+## Accessibility
+
+All field components are built with accessibility in mind:
+- Proper ARIA labels
+- Keyboard navigation
+- Screen reader support
+- Focus management
+
+## Styling
+
+Customize fields with Tailwind CSS classes:
+
+```tsx
+<Input
+  className="max-w-md border-2 focus:border-primary"
+  {...register("name")}
+/>
+```

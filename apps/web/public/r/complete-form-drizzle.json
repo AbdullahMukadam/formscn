@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "complete-form-drizzle",
+  "description": "Complete form with Better Auth (Drizzle)",
+  "dependencies": [
+    "react-hook-form",
+    "@hookform/resolvers",
+    "zod",
+    "better-auth",
+    "lucide-react",
+    "sonner"
+  ],
+  "registryDependencies": [
+    "form-input",
+    "form-utils",
+    "auth-config-drizzle",
+    "auth-client"
+  ],
+  "type": "registry:block"
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "form-utils",
+  "description": "Core form utilities for React Hook Form and Zod",
+  "dependencies": [
+    "react-hook-form",
+    "zod"
+  ],
+  "files": [
+    {
+      "path": "src/registry/default/lib/form-utils.ts",
+      "content": "import type { FieldError, FieldErrors } from \"react-hook-form\";\nimport type { ZodSchema } from \"zod\";\n\n/**\n * Extract error message from React Hook Form field error\n */\nexport function getErrorMessage(error?: FieldError): string {\n  if (!error) return \"\";\n  return error.message || \"This field is invalid\";\n}\n\n/**\n * Get nested field error from form errors object\n */\nexport function getFieldError(\n  errors: FieldErrors,\n  fieldPath: string\n): FieldError | undefined {\n  const keys = fieldPath.split(\".\");\n  let current: any = errors;\n\n  for (const key of keys) {\n    if (!current) return undefined;\n    current = current[key];\n  }\n\n  return current as FieldError | undefined;\n}\n\n/**\n * Check if a field has an error\n */\nexport function hasFieldError(\n  errors: FieldErrors,\n  fieldPath: string\n): boolean {\n  return !!getFieldError(errors, fieldPath);\n}\n\n/**\n * Format field name to human-readable label\n * Example: \"firstName\" -> \"First Name\"\n */\nexport function formatFieldLabel(fieldName: string): string {\n  return fieldName\n    .replace(/([A-Z])/g, \" $1\")\n    .replace(/^./, (str) => str.toUpperCase())\n    .trim();\n}\n\n/**\n * Generate a unique field ID for accessibility\n */\nexport function generateFieldId(name: string, prefix = \"field\"): string {\n  return `${prefix}-${name.replace(/\\./g, \"-\")}`;\n}\n\n/**\n * Merge multiple class names conditionally\n */\nexport function cn(...classes: (string | undefined | null | false)[]): string {\n  return classes.filter(Boolean).join(\" \");\n}\n\n/**\n * Type-safe form field value getter\n */\nexport function getFieldValue<T = any>(\n  values: Record<string, any>,\n  fieldPath: string\n): T | undefined {\n  const keys = fieldPath.split(\".\");\n  let current: any = values;\n\n  for (const key of keys) {\n    if (current === undefined || current === null) return undefined;\n    current = current[key];\n  }\n\n  return current as T;\n}\n\n/**\n * Check if a value is empty (null, undefined, empty string, empty array)\n */\nexport function isEmpty(value: any): boolean {\n  if (value === null || value === undefined) return true;\n  if (typeof value === \"string\") return value.trim() === \"\";\n  if (Array.isArray(value)) return value.length === 0;\n  if (typeof value === \"object\") return Object.keys(value).length === 0;\n  return false;\n}\n\n/**\n * Deep clone an object (useful for default values)\n */\nexport function deepClone<T>(obj: T): T {\n  if (obj === null || typeof obj !== \"object\") return obj;\n  if (obj instanceof Date) return new Date(obj.getTime()) as any;\n  if (obj instanceof Array) return obj.map((item) => deepClone(item)) as any;\n  if (obj instanceof Object) {\n    const clonedObj: any = {};\n    for (const key in obj) {\n      if (obj.hasOwnProperty(key)) {\n        clonedObj[key] = deepClone(obj[key]);\n      }\n    }\n    return clonedObj;\n  }\n  return obj;\n}\n",
+      "type": "registry:lib"
+    }
+  ],
+  "type": "registry:lib"
+}

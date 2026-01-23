@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "field",
+  "description": "Field component for forms",
+  "registryDependencies": [
+    "http://localhost:3001/r/label.json"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/field.tsx",
+      "content": "import * as React from \"react\"\nimport { cn } from \"@/lib/utils\"\nimport { Label } from \"@/components/ui/label\"\n\nfunction FieldGroup({ className, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <div data-slot=\"field-group\" className={cn(\"grid gap-4\", className)} {...props} />\n  )\n}\n\nfunction Field({ className, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <div data-slot=\"field\" className={cn(\"grid gap-2\", className)} {...props} />\n  )\n}\n\nfunction FieldLabel({ className, ...props }: React.ComponentProps<typeof Label>) {\n  return (\n    <Label data-slot=\"field-label\" className={cn(className)} {...props} />\n  )\n}\n\nfunction FieldDescription({ className, ...props }: React.ComponentProps<\"p\">) {\n  return (\n    <p\n      data-slot=\"field-description\"\n      className={cn(\"text-muted-foreground text-sm\", className)}\n      {...props}\n    />\n  )\n}\n\nfunction FieldSeparator({ className, children, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      className={cn(\n        \"relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border\",\n        className\n      )}\n      {...props}\n    >\n      <span className=\"relative z-10 bg-background px-2 text-muted-foreground font-medium\">\n        {children}\n      </span>\n    </div>\n  )\n}\n\nexport { Field, FieldGroup, FieldLabel, FieldDescription, FieldSeparator }\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

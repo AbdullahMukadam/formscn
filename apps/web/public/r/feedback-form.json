@@ -1,0 +1,29 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "feedback-form",
+  "description": "Product feedback form with rating and comments",
+  "dependencies": [
+    "react-hook-form",
+    "@hookform/resolvers",
+    "zod",
+    "sonner"
+  ],
+  "registryDependencies": [
+    "http://localhost:3001/r/button.json",
+    "http://localhost:3001/r/card.json",
+    "http://localhost:3001/r/input.json",
+    "http://localhost:3001/r/textarea.json",
+    "http://localhost:3001/r/label.json",
+    "http://localhost:3001/r/select.json",
+    "http://localhost:3001/r/checkbox.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/default/templates/feedback-form.tsx",
+      "content": "\"use client\";\n\nimport { useForm, Controller } from \"react-hook-form\";\nimport { zodResolver } from \"@hookform/resolvers/zod\";\nimport * as z from \"zod\";\nimport { Button } from \"@/components/ui/button\";\nimport { Card, CardContent, CardDescription, CardHeader, CardTitle } from \"@/components/ui/card\";\nimport { Input } from \"@/components/ui/input\";\nimport { Label } from \"@/components/ui/label\";\nimport { toast } from \"sonner\";\nimport { Textarea } from \"@/components/ui/textarea\";\nimport { Checkbox } from \"@/components/ui/checkbox\";\n\nconst formSchema = z.object({\n  name: z.string().optional().or(z.literal(\"\")),\n  email: z.string().email(\"Invalid email address\").optional().or(z.literal(\"\")),\n  feedback: z.string().min(1, \"Your Feedback is required\"),\n  contactPermission: z.boolean().default(false),\n});\n\ntype FormValues = z.infer<typeof formSchema>;\nexport function ProductFeedbackForm() {\n  const form = useForm<FormValues>({\n    resolver: zodResolver(formSchema),\n    defaultValues: {\n      name: \"\",\n      email: \"\",\n      feedback: \"\",\n      contactPermission: false,\n    },\n  });\n\n  const onSubmit = async (data: FormValues) => {\n    console.log(\"Form submitted:\", data);\n    toast.success(\"Form submitted successfully!\");\n  };\n\n  return (\n    <Card className=\"w-full max-w-md mx-auto\">\n      <CardHeader>\n        <CardTitle>Product Feedback</CardTitle>\n        <CardDescription>Collect user feedback and suggestions</CardDescription>\n      </CardHeader>\n      <CardContent>\n        <form onSubmit={form.handleSubmit(onSubmit)} className=\"space-y-4\">\n          <div className=\"space-y-2\">\n            <Label htmlFor=\"name\">Name (Optional)</Label>\n            <Input\n              id=\"name\"\n              type=\"text\"\n              placeholder=\"Your name\"\n              {...form.register(\"name\")}\n            />\n            {form.formState.errors.name && (\n            <p className=\"text-sm text-destructive\">{form.formState.errors.name.message}</p>\n          )}\n          </div>\n\n          <div className=\"space-y-2\">\n            <Label htmlFor=\"email\">Email (Optional)</Label>\n            <Input\n              id=\"email\"\n              type=\"email\"\n              placeholder=\"your@email.com\"\n              {...form.register(\"email\")}\n            />\n            {form.formState.errors.email && (\n            <p className=\"text-sm text-destructive\">{form.formState.errors.email.message}</p>\n          )}\n          </div>\n\n          <div className=\"space-y-2\">\n            <Label htmlFor=\"feedback\">Your Feedback</Label>\n            <Textarea\n              id=\"feedback\"\n              placeholder=\"What do you think about our product?\"\n              {...form.register(\"feedback\")}\n            />\n            {form.formState.errors.feedback && (\n            <p className=\"text-sm text-destructive\">{form.formState.errors.feedback.message}</p>\n          )}\n          </div>\n\n          <div className=\"flex items-center space-x-2\">\n            <Controller\n              control={form.control}\n              name=\"contactPermission\"\n              render={({ field }) => (\n                <Checkbox\n                  id=\"contactPermission\"\n                  checked={field.value}\n                  onCheckedChange={field.onChange}\n                />\n              )}\n            />\n            <Label htmlFor=\"contactPermission\" className=\"font-normal\">\n              You may contact me about this feedback\n            </Label>\n            {form.formState.errors.contactPermission && (\n            <p className=\"text-sm text-destructive\">{form.formState.errors.contactPermission.message}</p>\n          )}\n          </div>\n\n          <Button type=\"submit\" className=\"w-full\">Submit</Button>\n        </form>\n      </CardContent>\n    </Card>\n  );\n}",
+      "type": "registry:block",
+      "target": "components/forms/feedback-form.tsx"
+    }
+  ],
+  "type": "registry:block"
+}

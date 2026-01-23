@@ -1,0 +1,10 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "complete-form",
+  "description": "Complete form with Better Auth integration (Default: Drizzle)",
+  "dependencies": [],
+  "registryDependencies": [
+    "complete-form-drizzle"
+  ],
+  "type": "registry:block"
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-form-progress",
+  "description": "Hook to track form completion progress",
+  "dependencies": [
+    "react-hook-form"
+  ],
+  "registryDependencies": [
+    "http://localhost:3001/r/form-utils.json"
+  ],
+  "files": [
+    {
+      "path": "src/registry/default/hooks/use-form-progress.ts",
+      "content": "\"use client\";\n\nimport { useMemo } from \"react\";\nimport type { UseFormReturn, FieldValues } from \"react-hook-form\";\nimport { isEmpty } from \"../lib/form-utils\";\n\nexport interface UseFormProgressOptions {\n  /**\n   * Fields to include in progress calculation\n   * If not provided, all fields are included\n   */\n  includeFields?: string[];\n\n  /**\n   * Fields to exclude from progress calculation\n   */\n  excludeFields?: string[];\n\n  /**\n   * Whether to count validation errors as incomplete\n   * @default true\n   */\n  requireValid?: boolean;\n}\n\nexport interface FormProgress {\n  /**\n   * Percentage of completion (0-100)\n   */\n  percentage: number;\n\n  /**\n   * Number of completed fields\n   */\n  completed: number;\n\n  /**\n   * Total number of fields\n   */\n  total: number;\n\n  /**\n   * Whether the form is fully completed\n   */\n  isComplete: boolean;\n\n  /**\n   * List of incomplete field names\n   */\n  incompleteFields: string[];\n}\n\n/**\n * Hook to track form completion progress\n * \n * @example\n * ```tsx\n * const form = useForm();\n * const progress = useFormProgress(form, {\n *   excludeFields: [\"agreeToTerms\"]\n * });\n * \n * return (\n *   <div>\n *     <Progress value={progress.percentage} />\n *     <p>{progress.completed} of {progress.total} fields completed</p>\n *   </div>\n * );\n * ```\n */\nexport function useFormProgress<TFieldValues extends FieldValues>(\n  form: UseFormReturn<TFieldValues>,\n  options: UseFormProgressOptions = {}\n): FormProgress {\n  const { includeFields, excludeFields = [], requireValid = true } = options;\n\n  const values = form.watch();\n  const errors = form.formState.errors;\n\n  const progress = useMemo(() => {\n    const allFields = Object.keys(values);\n    \n    // Determine which fields to track\n    let fieldsToTrack = includeFields || allFields;\n    fieldsToTrack = fieldsToTrack.filter(\n      (field) => !excludeFields.includes(field)\n    );\n\n    const total = fieldsToTrack.length;\n    let completed = 0;\n    const incompleteFields: string[] = [];\n\n    fieldsToTrack.forEach((field) => {\n      const value = values[field as keyof TFieldValues];\n      const hasError = requireValid && errors[field];\n\n      if (!isEmpty(value) && !hasError) {\n        completed++;\n      } else {\n        incompleteFields.push(field);\n      }\n    });\n\n    const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;\n    const isComplete = percentage === 100;\n\n    return {\n      percentage,\n      completed,\n      total,\n      isComplete,\n      incompleteFields,\n    };\n  }, [values, errors, includeFields, excludeFields, requireValid]);\n\n  return progress;\n}\n",
+      "type": "registry:hook"
+    }
+  ],
+  "type": "registry:hook"
+}

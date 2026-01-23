@@ -1,0 +1,38 @@
+# CLI Integration
+
+FormCN leverages the standard `shadcn` CLI to install your custom-built forms.
+
+## How it Works
+
+Instead of installing a generic package, you build your form in our **Visual Editor**, publish it, and get a unique installation URL.
+
+### 1. Build & Publish
+
+Create your form in the [Form Builder](/editor). When you're ready, click **Integrate** -> **Publish**.
+
+### 2. Install
+
+Run the command provided by the editor:
+
+```bash
+npx shadcn@latest add http://formcn.com/api/r/your-form-id
+```
+
+This command will:
+1.  **Download** the React component code for your specific form.
+2.  **Install** necessary dependencies (`zod`, `react-hook-form`, `better-auth`, etc.).
+3.  **Configure** your project (if using Auth/DB features).
+
+## Why this approach?
+
+- **No Black Box**: You get the full source code (`.tsx`) in your project.
+- **Customizable**: You can edit the installed component just like any other file.
+- **Framework Agnostic**: Works with Next.js, Vite, Remix, and TanStack Start.
+
+## Standard Components
+
+If you just want the standard shadcn UI components (Input, Button, etc.) without a pre-built form structure, use the standard shadcn registry:
+
+```bash
+npx shadcn@latest add input button label textarea
+```

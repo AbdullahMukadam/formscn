@@ -1,0 +1,59 @@
+export const metadata = {
+  title: "Installation - FormCN Documentation",
+  description: "How to install and set up FormCN in your project.",
+};
+
+# Installation
+
+Get started with FormCN in your Next.js or React project.
+
+## Prerequisites
+
+Before you begin, make sure you have:
+
+- Node.js 18+ installed
+- A React or Next.js project
+- pnpm, npm, or yarn package manager
+
+## Install Dependencies
+
+The easiest way to get started is using the **Form Builder** to generate a custom installation command.
+
+However, if you want to set up a project manually, ensure you have the standard **shadcn/ui** dependencies installed.
+
+## Install shadcn/ui
+
+FormCN forms are built on top of shadcn/ui. If you haven't already, initialize it:
+
+```bash
+npx shadcn@latest init
+```
+
+## Add Base Components
+
+Our generated forms typically rely on these standard components. You can install them ahead of time:
+
+```bash
+npx shadcn@latest add form input button label textarea card select checkbox radio-group
+```
+
+## TypeScript Configuration
+
+Ensure your `tsconfig.json` has the following settings (standard for shadcn projects):
+
+```json
+{
+  "compilerOptions": {
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
+}
+```
+
+## Next Steps
+
+Now that you have FormCN installed, check out the [Quick Start](/docs/quick-start) guide to build your first form.

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "db-drizzle",
+  "description": "Drizzle ORM setup with schema",
+  "dependencies": [
+    "drizzle-orm",
+    "postgres",
+    "drizzle-kit"
+  ],
+  "files": [
+    {
+      "path": "src/registry/default/lib/db-drizzle.ts",
+      "content": "import { drizzle } from \"drizzle-orm/postgres-js\";\nimport postgres from \"postgres\";\nimport * as schema from \"./schema\";\n\nconst connectionString = process.env.DATABASE_URL!;\nconst client = postgres(connectionString);\n\nexport const db = drizzle(client, { schema });\n",
+      "type": "registry:lib",
+      "target": "db/index.ts"
+    },
+    {
+      "path": "src/registry/default/lib/schema-drizzle.ts",
+      "content": "import { pgTable, text, timestamp, boolean, integer } from \"drizzle-orm/pg-core\";\n\nexport const user = pgTable(\"user\", {\n  id: text(\"id\").primaryKey(),\n  email: text(\"email\").notNull().unique(),\n  emailVerified: boolean(\"emailVerified\").notNull().default(false),\n  name: text(\"name\"),\n  image: text(\"image\"),\n  createdAt: timestamp(\"createdAt\").notNull().defaultNow(),\n  updatedAt: timestamp(\"updatedAt\").notNull().defaultNow(),\n});\n\nexport const account = pgTable(\"account\", {\n  id: text(\"id\").primaryKey(),\n  userId: text(\"userId\")\n    .notNull()\n    .references(() => user.id, { onDelete: \"cascade\" }),\n  type: text(\"type\").notNull(),\n  provider: text(\"provider\").notNull(),\n  providerAccountId: text(\"providerAccountId\").notNull(),\n  refresh_token: text(\"refresh_token\"),\n  access_token: text(\"access_token\"),\n  expires_at: integer(\"expires_at\"),\n  token_type: text(\"token_type\"),\n  scope: text(\"scope\"),\n  id_token: text(\"id_token\"),\n  session_state: text(\"session_state\"),\n});\n\nexport const session = pgTable(\"session\", {\n  id: text(\"id\").primaryKey(),\n  sessionToken: text(\"sessionToken\").notNull().unique(),\n  userId: text(\"userId\")\n    .notNull()\n    .references(() => user.id, { onDelete: \"cascade\" }),\n  expires: timestamp(\"expires\").notNull(),\n});\n\nexport const verificationToken = pgTable(\"verificationToken\", {\n  identifier: text(\"identifier\").notNull(),\n  token: text(\"token\").notNull().unique(),\n  expires: timestamp(\"expires\").notNull(),\n});\n",
+      "type": "registry:lib",
+      "target": "db/schema.ts"
+    }
+  ],
+  "type": "registry:lib"
+}

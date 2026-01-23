@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "auth-config-prisma",
+  "description": "Better Auth configuration for Prisma",
+  "dependencies": [
+    "better-auth"
+  ],
+  "registryDependencies": [
+    "db-prisma"
+  ],
+  "files": [
+    {
+      "path": "src/registry/default/lib/auth-prisma.ts",
+      "content": "import { betterAuth } from \"better-auth\";\nimport { prismaAdapter } from \"better-auth/adapters/prisma\";\nimport { prisma } from \"@/lib/prisma\";\n\nexport const auth = betterAuth({\n  database: prismaAdapter(prisma, {\n    provider: \"postgresql\", // Options: \"postgresql\", \"mysql\", \"sqlite\"\n  }),\n  emailAndPassword: {\n    enabled: true,\n  },\n  socialProviders: {\n    // github: {\n    //   clientId: process.env.GITHUB_CLIENT_ID!,\n    //   clientSecret: process.env.GITHUB_CLIENT_SECRET!,\n    // },\n  },\n});\n",
+      "type": "registry:lib",
+      "target": "lib/auth.ts"
+    }
+  ],
+  "type": "registry:lib"
+}
