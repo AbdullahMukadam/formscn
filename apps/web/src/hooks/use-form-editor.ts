@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { FormTemplate, FormField as FormFieldType } from "@/lib/form-templates";
+import type { FormTemplate, FormField as FormFieldType, FormStep } from "@/lib/form-templates";
 import type { OAuthProvider } from "@/lib/oauth-providers-config";
 import type { DatabaseAdapter, Framework } from "@/registry/default/lib/form-generator";
 import { toast } from "sonner";
@@ -13,13 +13,21 @@ interface UseFormEditorProps {
 export function useFormEditor({ initialTemplate }: UseFormEditorProps = {}) {
   // State for form metadata
   const [formName, setFormName] = useState(initialTemplate?.name || "My New Form");
-  const [formDescription, setFormDescription] = useState(initialTemplate?.description || "A custom form created with FormCN");
+  const [formDescription, setFormDescription] = useState(initialTemplate?.description || "A custom form created with FormSCN");
 
-  // State for fields
-  const [fields, setFields] = useState<FormFieldType[]>(initialTemplate?.fields || []);
+  // State for steps and fields
+  const [steps, setSteps] = useState<FormStep[]>(initialTemplate?.steps || []);
+  
+  // Initialize fields: if steps exist, flatten them. Otherwise use fields.
+  const initialFields = initialTemplate?.fields?.length 
+    ? initialTemplate.fields 
+    : (initialTemplate?.steps ? initialTemplate.steps.flatMap(s => s.fields) : []);
+
+  const [fields, setFields] = useState<FormFieldType[]>(initialFields);
 
   // State for OAuth
   const [oauthProviders, setOauthProviders] = useState<OAuthProvider[]>([]);
+
 
   // State for database adapter & framework
   const [databaseAdapter, setDatabaseAdapter] = useState<DatabaseAdapter>("drizzle");
@@ -97,7 +105,7 @@ export function useFormEditor({ initialTemplate }: UseFormEditorProps = {}) {
 
   const resetForm = () => {
     setFormName("My New Form");
-    setFormDescription("A custom form created with FormCN");
+    setFormDescription("A custom form created with FormSCN");
     setFields([]);
     setOauthProviders([]);
     setPublishedId(null);
@@ -113,6 +121,7 @@ export function useFormEditor({ initialTemplate }: UseFormEditorProps = {}) {
     setFormDescription,
     fields,
     setFields,
+    steps,
     oauthProviders,
     setOauthProviders,
     databaseAdapter,

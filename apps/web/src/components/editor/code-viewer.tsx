@@ -3,7 +3,6 @@
 import { useMemo } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { CodeBlock } from "@/components/code-block";
 import { Share2, Terminal, Code as CodeIcon, FileJson, Database } from "lucide-react";
 import { toast } from "sonner";
@@ -16,7 +15,7 @@ import {
   generatePrismaClient,
   generateDrizzleClient,
 } from "@/registry/default/lib/form-generator";
-import type { FormField as FormFieldType } from "@/lib/form-templates";
+import type { FormField as FormFieldType, FormStep } from "@/lib/form-templates";
 import type { OAuthProvider } from "@/lib/oauth-providers-config";
 import type { DatabaseAdapter, Framework } from "@/registry/default/lib/form-generator";
 
@@ -24,6 +23,7 @@ interface CodeViewerProps {
   formName: string;
   formDescription: string;
   fields: FormFieldType[];
+  steps?: FormStep[];
   oauthProviders: OAuthProvider[];
   databaseAdapter: DatabaseAdapter;
   framework: Framework;
@@ -39,6 +39,7 @@ export function CodeViewer({
   formName,
   formDescription,
   fields,
+  steps,
   oauthProviders,
   databaseAdapter,
   framework,
@@ -56,10 +57,11 @@ export function CodeViewer({
       formName,
       formDescription,
       fields,
+      steps,
       oauthProviders: isAuthEnabled ? oauthProviders : [],
       framework,
     });
-  }, [formName, formDescription, fields, oauthProviders, isAuthEnabled, framework]);
+  }, [formName, formDescription, fields, steps, oauthProviders, isAuthEnabled, framework]);
 
   const authConfigCode = useMemo(() => {
     if (!isAuthEnabled) return "";
@@ -83,8 +85,6 @@ export function CodeViewer({
     if (publishedId) {
       dependencyUrl = `${baseUrl}/api/r/${publishedId}.json?framework=${framework}`;
     } else {
-      // Try to match standard templates
-      // Note: In a real app, this logic should probably be shared or moved to a utility
       const fieldNames = fields.map(f => f.name).sort().join(',');
       const templates: Record<string, string> = {
         'agreeToTerms,confirmPassword,email,fullName,password': 'signup-form',

@@ -27,7 +27,7 @@ export function NewsletterSignupForm() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
-      frequency: "",
+      frequency: "daily",
     },
   });
 

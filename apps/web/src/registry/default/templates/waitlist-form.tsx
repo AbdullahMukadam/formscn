@@ -29,7 +29,7 @@ export function WaitlistSignupForm() {
     defaultValues: {
       name: "",
       email: "",
-      referralSource: "",
+      referralSource: "twitter",
     },
   });
 

@@ -1,7 +1,7 @@
-import { MetadataRoute } from "next";
+import type { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://formscn.dev";
+  const baseUrl = "https://formscn.space";
 
   return [
     {

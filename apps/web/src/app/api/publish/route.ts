@@ -16,7 +16,7 @@ export async function POST(request: Request) {
 
     const id = nanoid(10); // Generate a short, unique ID
     
-    saveForm({
+    await saveForm({
       id,
       name,
       description: description || "",

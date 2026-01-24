@@ -1,0 +1,497 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "formscn",
+  "homepage": "https://formscn.space",
+  "items": [
+    {
+      "name": "base-form",
+      "type": "registry:block",
+      "description": "Base form dependencies",
+      "files": [
+        {
+          "path": "src/lib/utils.ts",
+          "type": "registry:lib",
+          "target": "lib/utils.ts"
+        }
+      ],
+      "dependencies": [
+        "clsx",
+        "tailwind-merge"
+      ],
+      "registryDependencies": [
+        "{{BASE_URL}}/r/button.json",
+        "{{BASE_URL}}/r/card.json",
+        "{{BASE_URL}}/r/input.json",
+        "{{BASE_URL}}/r/textarea.json",
+        "{{BASE_URL}}/r/label.json",
+        "{{BASE_URL}}/r/select.json",
+        "{{BASE_URL}}/r/checkbox.json",
+        "{{BASE_URL}}/r/radio-group.json"
+      ]
+    },
+    {
+      "name": "button",
+      "type": "registry:ui",
+      "description": "Button component",
+      "files": [
+        {
+          "path": "src/components/ui/button.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "dependencies": ["@base-ui/react", "class-variance-authority"]
+    },
+    {
+      "name": "card",
+      "type": "registry:ui",
+      "description": "Card component",
+      "files": [
+        {
+          "path": "src/components/ui/card.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "input",
+      "type": "registry:ui",
+      "description": "Input component",
+      "files": [
+        {
+          "path": "src/components/ui/input.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "dependencies": ["@base-ui/react"]
+    },
+    {
+      "name": "textarea",
+      "type": "registry:ui",
+      "description": "Textarea component",
+      "files": [
+        {
+          "path": "src/components/ui/textarea.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "label",
+      "type": "registry:ui",
+      "description": "Label component",
+      "files": [
+        {
+          "path": "src/components/ui/label.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "dependencies": ["@radix-ui/react-label", "class-variance-authority"]
+    },
+    {
+      "name": "select",
+      "type": "registry:ui",
+      "description": "Select component",
+      "files": [
+        {
+          "path": "src/components/ui/select.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "dependencies": ["@radix-ui/react-select"]
+    },
+    {
+      "name": "checkbox",
+      "type": "registry:ui",
+      "description": "Checkbox component",
+      "files": [
+        {
+          "path": "src/components/ui/checkbox.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "dependencies": ["@radix-ui/react-checkbox"]
+    },
+    {
+      "name": "radio-group",
+      "type": "registry:ui",
+      "description": "Radio Group component",
+      "files": [
+        {
+          "path": "src/components/ui/radio-group.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "dependencies": ["@radix-ui/react-radio-group"]
+    },
+    {
+      "name": "auth-client",
+      "type": "registry:lib",
+      "description": "Better Auth React client utilities",
+      "dependencies": [
+        "better-auth"
+      ],
+      "files": [
+        {
+          "path": "src/registry/default/lib/auth-client.ts",
+          "type": "registry:lib",
+          "target": "lib/auth-client.ts"
+        }
+      ]
+    },
+    {
+      "name": "login-form",
+      "type": "registry:block",
+      "description": "Simple email and password login form",
+      "files": [
+        {
+          "path": "src/registry/default/templates/login-form.tsx",
+          "type": "registry:block",
+          "target": "components/forms/login-form.tsx"
+        }
+      ],
+      "registryDependencies": [
+        "{{BASE_URL}}/r/auth-client.json",
+        "{{BASE_URL}}/r/button.json",
+        "{{BASE_URL}}/r/card.json",
+        "{{BASE_URL}}/r/input.json",
+        "{{BASE_URL}}/r/label.json"
+      ],
+      "dependencies": [
+        "react-hook-form",
+        "@hookform/resolvers",
+        "zod",
+        "sonner"
+      ]
+    },
+    {
+      "name": "signup-form",
+      "type": "registry:block",
+      "description": "User registration form with email and password",
+      "files": [
+        {
+          "path": "src/registry/default/templates/signup-form.tsx",
+          "type": "registry:block",
+          "target": "components/forms/signup-form.tsx"
+        }
+      ],
+      "registryDependencies": [
+        "{{BASE_URL}}/r/auth-client.json",
+        "{{BASE_URL}}/r/button.json",
+        "{{BASE_URL}}/r/input.json",
+        "{{BASE_URL}}/r/label.json"
+      ],
+      "dependencies": [
+        "react-hook-form",
+        "@hookform/resolvers",
+        "zod",
+        "sonner"
+      ]
+    },
+    {
+      "name": "contact-form",
+      "type": "registry:block",
+      "description": "Contact form with name, email, subject, and message",
+      "files": [
+        {
+          "path": "src/registry/default/templates/contact-form.tsx",
+          "type": "registry:block",
+          "target": "components/forms/contact-form.tsx"
+        }
+      ],
+      "registryDependencies": [
+        "{{BASE_URL}}/r/button.json",
+        "{{BASE_URL}}/r/card.json",
+        "{{BASE_URL}}/r/input.json",
+        "{{BASE_URL}}/r/textarea.json",
+        "{{BASE_URL}}/r/label.json",
+        "{{BASE_URL}}/r/select.json"
+      ],
+      "dependencies": [
+        "react-hook-form",
+        "@hookform/resolvers",
+        "zod",
+        "sonner"
+      ]
+    },
+    {
+      "name": "newsletter-form",
+      "type": "registry:block",
+      "description": "Newsletter subscription form with email frequency selection",
+      "files": [
+        {
+          "path": "src/registry/default/templates/newsletter-form.tsx",
+          "type": "registry:block",
+          "target": "components/forms/newsletter-form.tsx"
+        }
+      ],
+      "registryDependencies": [
+        "{{BASE_URL}}/r/button.json",
+        "{{BASE_URL}}/r/card.json",
+        "{{BASE_URL}}/r/input.json",
+        "{{BASE_URL}}/r/label.json",
+        "{{BASE_URL}}/r/radio-group.json"
+      ],
+      "dependencies": [
+        "react-hook-form",
+        "@hookform/resolvers",
+        "zod",
+        "sonner"
+      ]
+    },
+    {
+      "name": "job-application-form",
+      "type": "registry:block",
+      "description": "Job application form with resume and cover letter",
+      "files": [
+        {
+          "path": "src/registry/default/templates/job-application-form.tsx",
+          "type": "registry:block",
+          "target": "components/forms/job-application-form.tsx"
+        }
+      ],
+      "registryDependencies": [
+        "{{BASE_URL}}/r/button.json",
+        "{{BASE_URL}}/r/card.json",
+        "{{BASE_URL}}/r/input.json",
+        "{{BASE_URL}}/r/textarea.json",
+        "{{BASE_URL}}/r/label.json",
+        "{{BASE_URL}}/r/checkbox.json"
+      ],
+      "dependencies": [
+        "react-hook-form",
+        "@hookform/resolvers",
+        "zod",
+        "sonner"
+      ]
+    },
+    {
+      "name": "feedback-form",
+      "type": "registry:block",
+      "description": "Product feedback form with rating and comments",
+      "files": [
+        {
+          "path": "src/registry/default/templates/feedback-form.tsx",
+          "type": "registry:block",
+          "target": "components/forms/feedback-form.tsx"
+        }
+      ],
+      "registryDependencies": [
+        "{{BASE_URL}}/r/button.json",
+        "{{BASE_URL}}/r/card.json",
+        "{{BASE_URL}}/r/input.json",
+        "{{BASE_URL}}/r/textarea.json",
+        "{{BASE_URL}}/r/label.json",
+        "{{BASE_URL}}/r/select.json",
+        "{{BASE_URL}}/r/checkbox.json"
+      ],
+      "dependencies": [
+        "react-hook-form",
+        "@hookform/resolvers",
+        "zod",
+        "sonner"
+      ]
+    },
+    {
+      "name": "event-registration-form",
+      "type": "registry:block",
+      "description": "Event registration form with attendee details",
+      "files": [
+        {
+          "path": "src/registry/default/templates/event-registration-form.tsx",
+          "type": "registry:block",
+          "target": "components/forms/event-registration-form.tsx"
+        }
+      ],
+      "registryDependencies": [
+        "{{BASE_URL}}/r/button.json",
+        "{{BASE_URL}}/r/card.json",
+        "{{BASE_URL}}/r/input.json",
+        "{{BASE_URL}}/r/textarea.json",
+        "{{BASE_URL}}/r/label.json",
+        "{{BASE_URL}}/r/select.json"
+      ],
+      "dependencies": [
+        "react-hook-form",
+        "@hookform/resolvers",
+        "zod",
+        "sonner"
+      ]
+    },
+    {
+      "name": "waitlist-form",
+      "type": "registry:block",
+      "description": "Waitlist signup form",
+      "files": [
+        {
+          "path": "src/registry/default/templates/waitlist-form.tsx",
+          "type": "registry:block",
+          "target": "components/forms/waitlist-form.tsx"
+        }
+      ],
+      "registryDependencies": [
+        "{{BASE_URL}}/r/button.json",
+        "{{BASE_URL}}/r/card.json",
+        "{{BASE_URL}}/r/input.json",
+        "{{BASE_URL}}/r/label.json",
+        "{{BASE_URL}}/r/radio-group.json"
+      ],
+      "dependencies": [
+        "react-hook-form",
+        "@hookform/resolvers",
+        "zod",
+        "sonner"
+      ]
+    },
+    {
+      "name": "support-ticket-form",
+      "type": "registry:block",
+      "description": "Support ticket submission form",
+      "files": [
+        {
+          "path": "src/registry/default/templates/support-ticket-form.tsx",
+          "type": "registry:block",
+          "target": "components/forms/support-ticket-form.tsx"
+        }
+      ],
+      "registryDependencies": [
+        "{{BASE_URL}}/r/button.json",
+        "{{BASE_URL}}/r/card.json",
+        "{{BASE_URL}}/r/input.json",
+        "{{BASE_URL}}/r/textarea.json",
+        "{{BASE_URL}}/r/label.json",
+        "{{BASE_URL}}/r/select.json"
+      ],
+      "dependencies": [
+        "react-hook-form",
+        "@hookform/resolvers",
+        "zod",
+        "sonner"
+      ]
+    },
+    {
+      "name": "booking-request-form",
+      "type": "registry:block",
+      "description": "Booking request form with date and service selection",
+      "files": [
+        {
+          "path": "src/registry/default/templates/booking-request-form.tsx",
+          "type": "registry:block",
+          "target": "components/forms/booking-request-form.tsx"
+        }
+      ],
+      "registryDependencies": [
+        "{{BASE_URL}}/r/button.json",
+        "{{BASE_URL}}/r/card.json",
+        "{{BASE_URL}}/r/input.json",
+        "{{BASE_URL}}/r/textarea.json",
+        "{{BASE_URL}}/r/label.json",
+        "{{BASE_URL}}/r/select.json",
+        "{{BASE_URL}}/r/radio-group.json"
+      ],
+      "dependencies": [
+        "react-hook-form",
+        "@hookform/resolvers",
+        "zod",
+        "sonner"
+      ]
+    },
+    {
+      "name": "ecommerce-checkout-form",
+      "type": "registry:block",
+      "description": "Checkout form with shipping and payment details",
+      "files": [
+        {
+          "path": "src/registry/default/templates/ecommerce-checkout-form.tsx",
+          "type": "registry:block",
+          "target": "components/forms/ecommerce-checkout-form.tsx"
+        }
+      ],
+      "registryDependencies": [
+        "{{BASE_URL}}/r/button.json",
+        "{{BASE_URL}}/r/card.json",
+        "{{BASE_URL}}/r/input.json",
+        "{{BASE_URL}}/r/label.json",
+        "{{BASE_URL}}/r/radio-group.json"
+      ],
+      "dependencies": [
+        "react-hook-form",
+        "@hookform/resolvers",
+        "zod",
+        "sonner"
+      ]
+    },
+    {
+      "name": "onboarding-wizard-form",
+      "type": "registry:block",
+      "description": "Multi-step user onboarding wizard",
+      "files": [
+        {
+          "path": "src/registry/default/templates/onboarding-wizard-form.tsx",
+          "type": "registry:block",
+          "target": "components/forms/onboarding-wizard-form.tsx"
+        }
+      ],
+      "registryDependencies": [
+        "{{BASE_URL}}/r/button.json",
+        "{{BASE_URL}}/r/card.json",
+        "{{BASE_URL}}/r/input.json",
+        "{{BASE_URL}}/r/textarea.json",
+        "{{BASE_URL}}/r/label.json",
+        "{{BASE_URL}}/r/select.json",
+        "{{BASE_URL}}/r/checkbox.json"
+      ],
+      "dependencies": [
+        "react-hook-form",
+        "@hookform/resolvers",
+        "zod",
+        "sonner"
+      ]
+    },
+    {
+      "name": "detailed-application-form",
+      "type": "registry:block",
+      "description": "Multi-step detailed application form",
+      "files": [
+        {
+          "path": "src/registry/default/templates/detailed-application-form.tsx",
+          "type": "registry:block",
+          "target": "components/forms/detailed-application-form.tsx"
+        }
+      ],
+      "registryDependencies": [
+        "{{BASE_URL}}/r/button.json",
+        "{{BASE_URL}}/r/card.json",
+        "{{BASE_URL}}/r/input.json",
+        "{{BASE_URL}}/r/textarea.json",
+        "{{BASE_URL}}/r/label.json",
+        "{{BASE_URL}}/r/select.json"
+      ],
+      "dependencies": [
+        "react-hook-form",
+        "@hookform/resolvers",
+        "zod",
+        "sonner"
+      ]
+    },
+    {
+      "name": "form-generator",
+      "type": "registry:lib",
+      "description": "Form code generation utilities",
+      "dependencies": [
+        "zod"
+      ],
+      "files": [
+        {
+          "path": "src/registry/default/lib/form-generator.ts",
+          "type": "registry:lib",
+          "target": "lib/form-generator.ts"
+        },
+        {
+          "path": "src/registry/default/types.ts",
+          "type": "registry:lib",
+          "target": "lib/types.ts"
+        }
+      ]
+    }
+  ]
+}

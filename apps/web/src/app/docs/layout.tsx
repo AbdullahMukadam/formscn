@@ -1,16 +1,17 @@
-import { Metadata } from "next";
+
 import { DocsSidebar } from "@/components/docs-sidebar";
 import { DocsPager } from "@/components/docs-pager";
 import { DocsBreadcrumb } from "@/components/docs-breadcrumb";
 import { DocsTOC } from "@/components/docs-toc";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: {
-    template: "%s - Documentation | FormCN",
-    default: "Documentation | FormCN",
+    template: "%s - Documentation | FormSCN",
+    default: "Documentation | FormSCN",
   },
-  description: "Comprehensive documentation for FormCN, the visual form builder for React.",
+  description: "Comprehensive documentation for FormSCN, the visual form builder for React.",
   keywords: ["documentation", "guide", "api reference", "form components", "react forms"],
 };
 

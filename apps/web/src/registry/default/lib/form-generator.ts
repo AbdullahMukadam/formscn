@@ -1,6 +1,6 @@
 import * as z from "zod";
 import { OAUTH_PROVIDERS, type OAuthProvider } from "@/lib/oauth-providers-config";
-import { type FormTemplate, type FormField } from "@/registry/default/types";
+import { type FormTemplate, type FormField, type FormStep } from "@/registry/default/types";
 
 export type { OAuthProvider } from "@/lib/oauth-providers-config";
 export type DatabaseAdapter = "drizzle" | "prisma";
@@ -18,8 +18,9 @@ function generateImports(config: {
   isSignup: boolean;
   hasOAuth: boolean;
   oauthIcons: string;
+  hasSteps: boolean;
 }): string {
-  const { framework, fields, isAuth, isLogin, isSignup, hasOAuth, oauthIcons } = config;
+  const { framework, fields, isAuth, isLogin, isSignup, hasOAuth, oauthIcons, hasSteps } = config;
   
   const directive = (framework === "next" || framework === "tanstack") ? '"use client";\n\n' : "";
 
@@ -32,10 +33,15 @@ function generateImports(config: {
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";`;
+
+  if (hasSteps) {
+    imports = imports.replace('import { useForm', 'import { useState } from "react";\nimport { useForm');
+    imports = imports.replace('import { toast } from "sonner";', 'import { toast } from "sonner";\nimport { cn } from "@/lib/utils";\nimport { Progress } from "@/components/ui/progress";');
+  }
 
   if (hasTextarea) {
     imports += `\nimport { Textarea } from "@/components/ui/textarea";`;
@@ -80,32 +86,33 @@ import { toast } from "sonner";`;
  */
 function generateZodSchema(fields: FormField[]): string {
   const schemaFields = fields.map((field) => {
-    if (field.type === "input") {
-      let validation = `z.string()`;
-      if (field.inputType === "email") validation += `.email("Invalid email address")`;
-      if (field.required) validation += `.min(1, "${field.label} is required")`;
-      else validation += `.optional().or(z.literal(""))`;
-      return `  ${field.name}: ${validation},`;
+    let validation = "z.any()";
+
+    switch (field.type) {
+      case "checkbox":
+        validation = `z.boolean()`;
+        if (field.required) validation += `.refine((val) => val === true, { message: "You must agree to ${field.label}" })`;
+        else validation += `.default(false)`;
+        break;
+      
+      case "select":
+      case "radio":
+        const enumValues = (field.options || []).map(opt => `"${opt.value}"`).join(', ');
+        validation = `z.enum([${enumValues}])`;
+        if (!field.required) validation += `.optional()`;
+        break;
+
+      case "input":
+      case "textarea":
+      default:
+        validation = `z.string()`;
+        if (field.type === "input" && field.inputType === "email") validation += `.email("Invalid email address")`;
+        
+        if (field.required) validation += `.min(1, "${field.label} is required")`;
+        else validation += `.optional().or(z.literal(""))`;
+        break;
     }
-    if (field.type === "textarea") {
-      let validation = `z.string()`;
-      if (field.required) validation += `.min(1, "${field.label} is required")`;
-      else validation += `.optional().or(z.literal(""))`;
-      return `  ${field.name}: ${validation},`;
-    }
-    if (field.type === "checkbox") {
-      let validation = `z.boolean()`;
-      if (field.required) validation += `.refine((val) => val === true, { message: "You must agree to ${field.label}" })`;
-      else validation += `.default(false)`;
-      return `  ${field.name}: ${validation},`;
-    }
-    if (field.type === "select" || field.type === "radio") {
-      const enumValues = (field.options || []).map(opt => `"${opt.value}"`).join(', ');
-      let validation = `z.enum([${enumValues}])`;
-      if (!field.required) validation += `.optional()`;
-      return `  ${field.name}: ${validation},`;
-    }
-    return `  ${field.name}: z.any(),`;
+    return `  ${field.name}: ${validation},`;
   }).join('\n');
 
   return `
@@ -309,9 +316,14 @@ export function generateFormComponent(config: {
   fields: FormField[];
   oauthProviders: OAuthProvider[];
   framework?: Framework;
+  steps?: FormStep[];
 }): string {
-  const { formName, formDescription, fields, oauthProviders, framework = "next" } = config;
+  const { formName, formDescription, fields: initialFields, oauthProviders, framework = "next", steps } = config;
   
+  // Use steps fields if steps are provided, otherwise use fields
+  const fields = steps ? steps.flatMap(s => s.fields) : initialFields;
+  const hasSteps = !!(steps && steps.length > 0);
+
   const hasOAuth = oauthProviders.length > 0;
   
   // Extract OAuth icons to import
@@ -328,8 +340,8 @@ export function generateFormComponent(config: {
   const hasPassword = fields.some(f => f.name === "password" || f.inputType === "password");
   const hasConfirmPassword = fields.some(f => f.name === "confirmPassword");
   
-  const isLogin = hasEmail && hasPassword && !hasConfirmPassword;
-  const isSignup = hasEmail && hasPassword && hasConfirmPassword;
+  const isLogin = hasEmail && hasPassword && !hasConfirmPassword && !hasSteps;
+  const isSignup = hasEmail && hasPassword && hasConfirmPassword && !hasSteps;
   const isAuth = isLogin || isSignup || hasOAuth;
 
   // Generate parts
@@ -341,11 +353,11 @@ export function generateFormComponent(config: {
     isLogin,
     isSignup,
     hasOAuth,
-    oauthIcons
+    oauthIcons,
+    hasSteps
   });
 
   const schema = generateZodSchema(fields);
-  const formFields = generateFormFields(fields);
   const oauthButtons = generateOAuthButtons(oauthProviders);
   const submitLogic = generateSubmitLogic({ isLogin, isSignup, fields });
 
@@ -353,7 +365,110 @@ export function generateFormComponent(config: {
   const componentName = formName.replace(/\s+/g, '') + 'Form';
   const defaultValues = fields.map(f => `      ${f.name}: ${f.type === "checkbox" ? "false" : '""'},`).join('\n');
 
-  const component = `
+  let componentBody = '';
+
+  if (hasSteps && steps) {
+    // MULTI-STEP LOGIC
+    const stepsData = JSON.stringify(steps.map(s => ({ 
+      id: s.id, 
+      title: s.title, 
+      description: s.description,
+      fields: s.fields.map(f => f.name) 
+    })), null, 2);
+
+    const stepsRender = steps.map((step, index) => {
+      const stepFields = generateFormFields(step.fields);
+      return `
+        {currentStep === ${index} && (
+          <div className="space-y-4 animate-in fade-in-50 slide-in-from-right-5">
+            ${stepFields}
+          </div>
+        )}`;
+    }).join('\n');
+
+    componentBody = `
+export function ${componentName}() {
+  const [currentStep, setCurrentStep] = useState(0);
+  const steps = ${stepsData};
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+${defaultValues}
+    },
+    mode: "onChange",
+  });
+
+  const onSubmit = async (data: FormValues) => {
+${submitLogic}
+  };
+
+  const nextStep = async () => {
+    const fields = steps[currentStep].fields;
+    const output = await form.trigger(fields as any);
+    if (output) {
+      setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
+    }
+  };
+
+  const prevStep = () => {
+    setCurrentStep((prev) => Math.max(prev - 1, 0));
+  };
+
+  return (
+    <Card className="w-full max-w-md mx-auto">
+      <CardHeader>
+        <CardTitle>${formName}</CardTitle>
+        <CardDescription>${formDescription}</CardDescription>
+        
+        {/* Stepper */}
+        <div className="space-y-2 pt-2">
+          <div className="flex items-center justify-between text-sm">
+            <span className="font-medium text-muted-foreground">
+              Step {currentStep + 1} of {steps.length}
+            </span>
+            <span className="font-medium">
+              {steps[currentStep].title}
+            </span>
+          </div>
+          <Progress value={((currentStep + 1) / steps.length) * 100} className="h-2" />
+        </div>
+        <div className="text-center text-sm font-medium text-muted-foreground pt-1">
+          {steps[currentStep].title}
+        </div>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          ${stepsRender}
+
+          <div className="flex justify-between pt-4">
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={prevStep} 
+              disabled={currentStep === 0}
+              className={cn(currentStep === 0 && "invisible")}
+            >
+              Back
+            </Button>
+            
+            {currentStep < steps.length - 1 ? (
+              <Button type="button" onClick={nextStep}>
+                Next
+              </Button>
+            ) : (
+              <Button type="submit">Submit</Button>
+            )}
+          </div>
+        </form>
+      </CardContent>
+    </Card>
+  );
+}`;
+  } else {
+    // SINGLE-STEP LOGIC (Legacy)
+    const formFields = generateFormFields(fields);
+    componentBody = `
 export function ${componentName}() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -396,8 +511,9 @@ ${oauthButtons}
     </Card>
   );
 }`;
+  }
 
-  return `${imports}${schema}${component}`;
+  return `${imports}${schema}${componentBody}`;
 }
 
 /**

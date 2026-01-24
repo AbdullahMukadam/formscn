@@ -54,7 +54,7 @@ export function MobileNav() {
                   item.to !== "/" && (
                     <Link
                       key={item.to}
-                      href={item.to}
+                      href={item.to as any}
                       className={cn(
                         "flex w-full items-center rounded-md py-2 font-medium capitalize hover:underline",
                         pathname === item.to && "text-foreground"
@@ -72,7 +72,7 @@ export function MobileNav() {
                   {item.items?.map((item) => (
                     <Link
                       key={item.href}
-                      href={item.href}
+                      href={item.href as any}
                       className={cn(
                         "text-muted-foreground transition-colors hover:text-foreground",
                         pathname === item.href && "text-foreground font-medium"

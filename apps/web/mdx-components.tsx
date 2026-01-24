@@ -87,9 +87,9 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     li: ({ className, ...props }: React.HTMLAttributes<HTMLLIElement>) => (
       <li className={cn("mt-2", className)} {...props} />
     ),
-    blockquote: ({ className, ...props }: React.HTMLAttributes<HTMLQuoteElement>) => (
+    blockquote: ({ className, ...props }: React.ComponentProps<"blockquote">) => (
       <Alert className={cn("mt-6", className)} variant="default">
-        <AlertDescription className="italic" {...props} />
+        <AlertDescription className="italic" {...(props as React.HTMLAttributes<HTMLDivElement>)} />
       </Alert>
     ),
     img: ({

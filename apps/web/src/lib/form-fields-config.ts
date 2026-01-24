@@ -46,14 +46,6 @@ export interface FormFieldConfig {
   enabled: boolean;
 }
 
-/**
- * Centralized Form Fields Configuration
- * 
- * To add a new field type:
- * 1. Add the field type to FormFieldType above if it's a new category
- * 2. Add a new entry to FORM_FIELD_TYPES below
- * 3. Update the form generator if needed for rendering logic
- */
 export const FORM_FIELD_TYPES: FormFieldConfig[] = [
   // Basic Fields
   {

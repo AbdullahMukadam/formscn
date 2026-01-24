@@ -1,9 +1,9 @@
-import { MetadataRoute } from "next";
+import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "FormCN",
-    short_name: "FormCN",
+    name: "FormSCN",
+    short_name: "FormSCN",
     description: "Build Production-Ready Forms in React",
     start_url: "/",
     display: "standalone",

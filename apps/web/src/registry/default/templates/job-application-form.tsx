@@ -16,7 +16,7 @@ const formSchema = z.object({
   email: z.string().email("Invalid email address"),
   portfolio: z.string().url("Invalid URL").optional().or(z.literal("")),
   coverLetter: z.string().min(50, "Cover letter must be at least 50 characters"),
-  remote: z.boolean().default(false),
+  remote: z.boolean(),
 });
 
 type FormValues = z.infer<typeof formSchema>;

@@ -19,14 +19,14 @@
         "tailwind-merge"
       ],
       "registryDependencies": [
-        "http://localhost:3001/r/button.json",
-        "http://localhost:3001/r/card.json",
-        "http://localhost:3001/r/input.json",
-        "http://localhost:3001/r/textarea.json",
-        "http://localhost:3001/r/label.json",
-        "http://localhost:3001/r/select.json",
-        "http://localhost:3001/r/checkbox.json",
-        "http://localhost:3001/r/radio-group.json"
+        "https://formscn.space/r/button.json",
+        "https://formscn.space/r/card.json",
+        "https://formscn.space/r/input.json",
+        "https://formscn.space/r/textarea.json",
+        "https://formscn.space/r/label.json",
+        "https://formscn.space/r/select.json",
+        "https://formscn.space/r/checkbox.json",
+        "https://formscn.space/r/radio-group.json"
       ]
     },
     {
@@ -150,11 +150,11 @@
         }
       ],
       "registryDependencies": [
-        "http://localhost:3001/r/auth-client.json",
-        "http://localhost:3001/r/button.json",
-        "http://localhost:3001/r/card.json",
-        "http://localhost:3001/r/input.json",
-        "http://localhost:3001/r/label.json"
+        "https://formscn.space/r/auth-client.json",
+        "https://formscn.space/r/button.json",
+        "https://formscn.space/r/card.json",
+        "https://formscn.space/r/input.json",
+        "https://formscn.space/r/label.json"
       ],
       "dependencies": [
         "react-hook-form",
@@ -175,10 +175,10 @@
         }
       ],
       "registryDependencies": [
-        "http://localhost:3001/r/auth-client.json",
-        "http://localhost:3001/r/button.json",
-        "http://localhost:3001/r/input.json",
-        "http://localhost:3001/r/label.json"
+        "https://formscn.space/r/auth-client.json",
+        "https://formscn.space/r/button.json",
+        "https://formscn.space/r/input.json",
+        "https://formscn.space/r/label.json"
       ],
       "dependencies": [
         "react-hook-form",
@@ -199,11 +199,12 @@
         }
       ],
       "registryDependencies": [
-        "http://localhost:3001/r/button.json",
-        "http://localhost:3001/r/card.json",
-        "http://localhost:3001/r/input.json",
-        "http://localhost:3001/r/textarea.json",
-        "http://localhost:3001/r/label.json"
+        "https://formscn.space/r/button.json",
+        "https://formscn.space/r/card.json",
+        "https://formscn.space/r/input.json",
+        "https://formscn.space/r/textarea.json",
+        "https://formscn.space/r/label.json",
+        "https://formscn.space/r/select.json"
       ],
       "dependencies": [
         "react-hook-form",
@@ -224,11 +225,11 @@
         }
       ],
       "registryDependencies": [
-        "http://localhost:3001/r/button.json",
-        "http://localhost:3001/r/card.json",
-        "http://localhost:3001/r/input.json",
-        "http://localhost:3001/r/label.json",
-        "http://localhost:3001/r/select.json"
+        "https://formscn.space/r/button.json",
+        "https://formscn.space/r/card.json",
+        "https://formscn.space/r/input.json",
+        "https://formscn.space/r/label.json",
+        "https://formscn.space/r/radio-group.json"
       ],
       "dependencies": [
         "react-hook-form",
@@ -249,12 +250,12 @@
         }
       ],
       "registryDependencies": [
-        "http://localhost:3001/r/button.json",
-        "http://localhost:3001/r/card.json",
-        "http://localhost:3001/r/input.json",
-        "http://localhost:3001/r/textarea.json",
-        "http://localhost:3001/r/label.json",
-        "http://localhost:3001/r/checkbox.json"
+        "https://formscn.space/r/button.json",
+        "https://formscn.space/r/card.json",
+        "https://formscn.space/r/input.json",
+        "https://formscn.space/r/textarea.json",
+        "https://formscn.space/r/label.json",
+        "https://formscn.space/r/checkbox.json"
       ],
       "dependencies": [
         "react-hook-form",
@@ -275,13 +276,13 @@
         }
       ],
       "registryDependencies": [
-        "http://localhost:3001/r/button.json",
-        "http://localhost:3001/r/card.json",
-        "http://localhost:3001/r/input.json",
-        "http://localhost:3001/r/textarea.json",
-        "http://localhost:3001/r/label.json",
-        "http://localhost:3001/r/select.json",
-        "http://localhost:3001/r/checkbox.json"
+        "https://formscn.space/r/button.json",
+        "https://formscn.space/r/card.json",
+        "https://formscn.space/r/input.json",
+        "https://formscn.space/r/textarea.json",
+        "https://formscn.space/r/label.json",
+        "https://formscn.space/r/select.json",
+        "https://formscn.space/r/checkbox.json"
       ],
       "dependencies": [
         "react-hook-form",
@@ -302,11 +303,12 @@
         }
       ],
       "registryDependencies": [
-        "http://localhost:3001/r/button.json",
-        "http://localhost:3001/r/card.json",
-        "http://localhost:3001/r/input.json",
-        "http://localhost:3001/r/textarea.json",
-        "http://localhost:3001/r/label.json"
+        "https://formscn.space/r/button.json",
+        "https://formscn.space/r/card.json",
+        "https://formscn.space/r/input.json",
+        "https://formscn.space/r/textarea.json",
+        "https://formscn.space/r/label.json",
+        "https://formscn.space/r/select.json"
       ],
       "dependencies": [
         "react-hook-form",
@@ -327,11 +329,11 @@
         }
       ],
       "registryDependencies": [
-        "http://localhost:3001/r/button.json",
-        "http://localhost:3001/r/card.json",
-        "http://localhost:3001/r/input.json",
-        "http://localhost:3001/r/label.json",
-        "http://localhost:3001/r/select.json"
+        "https://formscn.space/r/button.json",
+        "https://formscn.space/r/card.json",
+        "https://formscn.space/r/input.json",
+        "https://formscn.space/r/label.json",
+        "https://formscn.space/r/radio-group.json"
       ],
       "dependencies": [
         "react-hook-form",
@@ -352,13 +354,12 @@
         }
       ],
       "registryDependencies": [
-        "http://localhost:3001/r/button.json",
-        "http://localhost:3001/r/card.json",
-        "http://localhost:3001/r/input.json",
-        "http://localhost:3001/r/textarea.json",
-        "http://localhost:3001/r/label.json",
-        "http://localhost:3001/r/select.json",
-        "http://localhost:3001/r/radio-group.json"
+        "https://formscn.space/r/button.json",
+        "https://formscn.space/r/card.json",
+        "https://formscn.space/r/input.json",
+        "https://formscn.space/r/textarea.json",
+        "https://formscn.space/r/label.json",
+        "https://formscn.space/r/select.json"
       ],
       "dependencies": [
         "react-hook-form",
@@ -379,12 +380,13 @@
         }
       ],
       "registryDependencies": [
-        "http://localhost:3001/r/button.json",
-        "http://localhost:3001/r/card.json",
-        "http://localhost:3001/r/input.json",
-        "http://localhost:3001/r/textarea.json",
-        "http://localhost:3001/r/label.json",
-        "http://localhost:3001/r/select.json"
+        "https://formscn.space/r/button.json",
+        "https://formscn.space/r/card.json",
+        "https://formscn.space/r/input.json",
+        "https://formscn.space/r/textarea.json",
+        "https://formscn.space/r/label.json",
+        "https://formscn.space/r/select.json",
+        "https://formscn.space/r/radio-group.json"
       ],
       "dependencies": [
         "react-hook-form",
@@ -405,11 +407,64 @@
         }
       ],
       "registryDependencies": [
-        "http://localhost:3001/r/button.json",
-        "http://localhost:3001/r/card.json",
-        "http://localhost:3001/r/input.json",
-        "http://localhost:3001/r/label.json",
-        "http://localhost:3001/r/radio-group.json"
+        "https://formscn.space/r/button.json",
+        "https://formscn.space/r/card.json",
+        "https://formscn.space/r/input.json",
+        "https://formscn.space/r/label.json",
+        "https://formscn.space/r/radio-group.json"
+      ],
+      "dependencies": [
+        "react-hook-form",
+        "@hookform/resolvers",
+        "zod",
+        "sonner"
+      ]
+    },
+    {
+      "name": "onboarding-wizard-form",
+      "type": "registry:block",
+      "description": "Multi-step user onboarding wizard",
+      "files": [
+        {
+          "path": "src/registry/default/templates/onboarding-wizard-form.tsx",
+          "type": "registry:block",
+          "target": "components/forms/onboarding-wizard-form.tsx"
+        }
+      ],
+      "registryDependencies": [
+        "https://formscn.space/r/button.json",
+        "https://formscn.space/r/card.json",
+        "https://formscn.space/r/input.json",
+        "https://formscn.space/r/textarea.json",
+        "https://formscn.space/r/label.json",
+        "https://formscn.space/r/select.json",
+        "https://formscn.space/r/checkbox.json"
+      ],
+      "dependencies": [
+        "react-hook-form",
+        "@hookform/resolvers",
+        "zod",
+        "sonner"
+      ]
+    },
+    {
+      "name": "detailed-application-form",
+      "type": "registry:block",
+      "description": "Multi-step detailed application form",
+      "files": [
+        {
+          "path": "src/registry/default/templates/detailed-application-form.tsx",
+          "type": "registry:block",
+          "target": "components/forms/detailed-application-form.tsx"
+        }
+      ],
+      "registryDependencies": [
+        "https://formscn.space/r/button.json",
+        "https://formscn.space/r/card.json",
+        "https://formscn.space/r/input.json",
+        "https://formscn.space/r/textarea.json",
+        "https://formscn.space/r/label.json",
+        "https://formscn.space/r/select.json"
       ],
       "dependencies": [
         "react-hook-form",

@@ -1,5 +1,5 @@
 {
-  "name": "@formcn/env",
+  "name": "@formscn/env",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -12,7 +12,7 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@formcn/config": "workspace:*",
+    "@formscn/config": "workspace:*",
     "typescript": "catalog:"
   }
 }

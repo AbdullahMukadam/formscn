@@ -12,6 +12,13 @@ export interface FormField {
   inputType?: "text" | "email" | "password" | "tel" | "url" | "number" | "date";
 }
 
+export interface FormStep {
+  id: string;
+  title: string;
+  description?: string;
+  fields: FormField[];
+}
+
 export interface FormTemplate {
   id: string;
   name: string;
@@ -20,5 +27,6 @@ export interface FormTemplate {
   schema: z.ZodObject<any>;
   defaultValues: Record<string, any>;
   fields: FormField[];
+  steps?: FormStep[];
   oauthProviders?: OAuthProvider[];
 }

@@ -10,6 +10,8 @@ import { waitlistTemplate } from "./waitlist";
 import { supportTicketTemplate } from "./support-ticket";
 import { bookingRequestTemplate } from "./booking-request";
 import { ecommerceCheckoutTemplate } from "./ecommerce-checkout";
+import { onboardingWizardTemplate } from "./onboarding-wizard";
+import { detailedApplicationTemplate } from "./detailed-application";
 
 export const formTemplates: FormTemplate[] = [
   signupFormTemplate,
@@ -23,6 +25,8 @@ export const formTemplates: FormTemplate[] = [
   supportTicketTemplate,
   bookingRequestTemplate,
   ecommerceCheckoutTemplate,
+  onboardingWizardTemplate,
+  detailedApplicationTemplate,
 ];
 
 export * from "./signup";
@@ -36,3 +40,5 @@ export * from "./waitlist";
 export * from "./support-ticket";
 export * from "./booking-request";
 export * from "./ecommerce-checkout";
+export * from "./onboarding-wizard";
+export * from "./detailed-application";

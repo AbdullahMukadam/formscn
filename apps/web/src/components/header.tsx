@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { ModeToggle } from "./mode-toggle";
 import { MobileNav } from "./mobile-nav";
+import { Github } from "lucide-react";
 
 export default function Header() {
   const pathname = usePathname();
@@ -45,12 +46,15 @@ export default function Header() {
         </div>
         {/* Mobile Logo */}
         <div className="flex md:hidden mr-auto ml-2">
-           <Link href="/" className="flex items-center space-x-2">
+          <Link href="/" className="flex items-center space-x-2">
             <span className="font-bold">formscn</span>
           </Link>
         </div>
 
         <div className="flex flex-1 items-center justify-end space-x-2">
+          <Link href={"https://github.com/AbdullahMukadam/formscn"}>
+            <Github size={18}/>
+          </Link>
           <ModeToggle />
         </div>
       </div>

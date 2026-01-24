@@ -15,13 +15,8 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   // Await the params object
-  const { id: rawId } = await params;
-  const { searchParams } = new URL(request.url);
-  const frameworkParam = searchParams.get('framework') as Framework | null;
-  
-  // Strip .json extension if present
-  const id = rawId.replace(/\.json$/, "");
-  const form = getForm(id);
+  const { id } = await params;
+  const form = await getForm(id);
 
   if (!form) {
     return NextResponse.json({ error: "Form not found" }, { status: 404 });

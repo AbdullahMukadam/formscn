@@ -22,7 +22,7 @@ export function DocsSidebar() {
                 {section.items.map((item, index) => (
                   <Link
                     key={index}
-                    href={item.href}
+                    href={item.href as any}
                     className={cn(
                       "group flex w-full items-center rounded-md border border-transparent px-2 py-1 hover:underline",
                       pathname === item.href

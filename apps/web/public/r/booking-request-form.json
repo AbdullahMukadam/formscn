@@ -9,12 +9,13 @@
     "sonner"
   ],
   "registryDependencies": [
-    "http://localhost:3001/r/button.json",
-    "http://localhost:3001/r/card.json",
-    "http://localhost:3001/r/input.json",
-    "http://localhost:3001/r/textarea.json",
-    "http://localhost:3001/r/label.json",
-    "http://localhost:3001/r/select.json"
+    "https://formscn.space/r/button.json",
+    "https://formscn.space/r/card.json",
+    "https://formscn.space/r/input.json",
+    "https://formscn.space/r/textarea.json",
+    "https://formscn.space/r/label.json",
+    "https://formscn.space/r/select.json",
+    "https://formscn.space/r/radio-group.json"
   ],
   "files": [
     {

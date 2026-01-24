@@ -4,20 +4,23 @@
   "private": true,
   "scripts": {
     "dev": "next dev --port 3001",
-    "build": "next build",
+    "build": "pnpm run registry:build && next build",
     "start": "next start",
-    "registry:build": "shadcn build --output ./public/r"
+    "registry:build": "node scripts/build-registry.js && shadcn build --output ./public/r",
+    "registry:dev": "node scripts/build-registry.js --local && shadcn build --output ./public/r"
   },
   "dependencies": {
     "@base-ui/react": "^1.0.0",
-    "@formcn/env": "workspace:*",
+    "@formscn/env": "workspace:*",
     "@hookform/resolvers": "^5.2.2",
     "@mdx-js/loader": "^3.1.1",
     "@mdx-js/react": "^3.1.1",
     "@next/mdx": "^16.1.4",
     "@tailwindcss/typography": "^0.5.19",
     "@tanstack/react-form": "^1.27.3",
+    "@vercel/kv": "^3.0.0",
     "babel-plugin-react-compiler": "^1.0.0",
+    "better-auth": "^1.4.17",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dotenv": "catalog:",
@@ -38,7 +41,7 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@formcn/config": "workspace:*",
+    "@formscn/config": "workspace:*",
     "@tailwindcss/postcss": "^4.1.10",
     "@types/mdx": "^2.0.13",
     "@types/node": "^20",

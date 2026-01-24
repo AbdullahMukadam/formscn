@@ -15,7 +15,7 @@ const formSchema = z.object({
   name: z.string().optional().or(z.literal("")),
   email: z.string().email("Invalid email address").optional().or(z.literal("")),
   feedback: z.string().min(1, "Your Feedback is required"),
-  contactPermission: z.boolean().default(false),
+  contactPermission: z.boolean(),
 });
 
 type FormValues = z.infer<typeof formSchema>;

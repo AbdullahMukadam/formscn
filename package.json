@@ -1,5 +1,5 @@
 {
-  "name": "formcn",
+  "name": "formscn",
   "private": true,
   "workspaces": [
     "apps/*",
@@ -14,12 +14,12 @@
     "dev:web": "turbo -F web dev"
   },
   "dependencies": {
-    "@formcn/env": "workspace:*",
+    "@formscn/env": "workspace:*",
     "dotenv": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@formcn/config": "workspace:*",
+    "@formscn/config": "workspace:*",
     "turbo": "^2.6.3",
     "typescript": "catalog:"
   },

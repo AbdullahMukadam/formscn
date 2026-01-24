@@ -43,7 +43,8 @@ lerna-debug.log*
 coverage
 .nyc_output
 
-# Misc
+# Generated registry file
+apps/web/registry.json
 *.tgz
 .cache
 tmp

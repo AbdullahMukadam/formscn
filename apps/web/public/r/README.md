@@ -9,7 +9,7 @@ A comprehensive form building registry for React applications with Better Auth i
 Install everything you need with a single command:
 
 ```bash
-pnpx shadcn@latest add @formcn/complete-form
+pnpx shadcn@latest add @formscn/complete-form
 ```
 
 This single command installs:
@@ -24,7 +24,7 @@ This single command installs:
 ```
 your-project/
 ├── components/
-│   └── formcn/
+│   └── formscn/
 │       ├── form-input.tsx
 │       └── form-utils.ts
 └── lib/
@@ -120,26 +120,26 @@ You can also install components individually:
 
 ```bash
 # Form components only
-pnpx shadcn@latest add @formcn/form-input
+pnpx shadcn@latest add @formscn/form-input
 
 # Better Auth setup only
-pnpx shadcn@latest add @formcn/auth-config
+pnpx shadcn@latest add @formscn/auth-config
 
 # Auth client only
-pnpx shadcn@latest add @formcn/auth-client
+pnpx shadcn@latest add @formscn/auth-client
 
 # Form utilities
-pnpx shadcn@latest add @formcn/form-utils
+pnpx shadcn@latest add @formscn/form-utils
 
 # Hooks
-pnpx shadcn@latest add @formcn/use-form-persistence
-pnpx shadcn@latest add @formcn/use-form-progress
-pnpx shadcn@latest add @formcn/use-field-dependencies
+pnpx shadcn@latest add @formscn/use-form-persistence
+pnpx shadcn@latest add @formscn/use-form-progress
+pnpx shadcn@latest add @formscn/use-field-dependencies
 ```
 
 ## Form Builder
 
-Use our visual form builder at [https://formscn.dev/editor](https://formscn.dev/editor) to:
+Use our visual form builder at [https://formscn.space/editor](https://formscn.space/editor) to:
 
 1. **Design Forms Visually** - Drag and drop fields, configure properties
 2. **Configure OAuth** - Enable GitHub, Google, and other providers
@@ -159,8 +159,8 @@ Use our visual form builder at [https://formscn.dev/editor](https://formscn.dev/
 
 ```json
 {
-  "name": "formcn",
-  "homepage": "https://formscn.dev",
+  "name": "formscn",
+  "homepage": "https://formscn.space",
   "items": [
     {
       "name": "complete-form",
@@ -188,7 +188,7 @@ Use our visual form builder at [https://formscn.dev/editor](https://formscn.dev/
 
 ## Contributing
 
-Visit [https://github.com/formcn/formcn](https://github.com/formcn/formcn) to contribute.
+Visit [https://github.com/formscn/formscn](https://github.com/formscn/formscn) to contribute.
 
 ## License
 

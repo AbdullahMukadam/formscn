@@ -30,14 +30,6 @@ export interface OAuthProviderConfig {
   enabled: boolean; // Can be disabled without removing from config
 }
 
-/**
- * Centralized OAuth Providers Configuration
- * 
- * To add a new provider:
- * 1. Add the provider ID to the OAuthProvider type above
- * 2. Add a new entry to the OAUTH_PROVIDERS array below
- * 3. That's it! The UI and code generation will automatically pick it up
- */
 export const OAUTH_PROVIDERS: OAuthProviderConfig[] = [
   {
     id: "github",

@@ -1,4 +1,3 @@
-"use client";
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -47,13 +46,13 @@ export default function Home() {
           </p>
 
           <div className="flex gap-4 justify-center">
-            <Link href={"/editor" as any}>
+            <Link href={"/editor"}>
               <Button size="lg">
                 <Sparkles className="mr-2 h-4 w-4" />
                 Start Building
               </Button>
             </Link>
-            <Link href={"/docs" as any}>
+            <Link href={"/docs"}>
               <Button size="lg" variant="outline">
                 View Documentation
               </Button>
@@ -75,47 +74,63 @@ export default function Home() {
           </div>
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {featuredTemplates.map((template) => (
-              <Card key={template.id} className="group border p-6 flex flex-col justify-between hover:border-primary/50 transition-colors relative">
-                {/* Hover Shadow Effect */}
-                <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-                
-                <div className="relative z-10">
-                  <div className="flex items-start justify-between mb-4">
-                    <h3 className="text-xl tracking-tight">{template.name}</h3>
-                  </div>
-                  <p className="text-muted-foreground text-sm mb-6 leading-relaxed min-h-[40px]">
-                   {template.description}
-                  </p>
+            {featuredTemplates.map((template) => {
+              const displayFields = template.steps 
+                ? template.steps.flatMap(s => s.fields) 
+                : template.fields;
+              const isMultiStep = !!template.steps?.length;
 
-                  <div className="mb-6">
-                    <p className=" text-xs uppercase tracking-wider mb-2">Fields included:</p>
-                    <ul className="space-y-1 text-muted-foreground text-sm">
-                      {template.fields.slice(0, 3).map((field, idx) => (
-                        <li key={idx} className="flex items-center">
-                          <span className="mr-2 text-primary">-</span>
-                          {field.label}
-                        </li>
-                      ))}
-                      {template.fields.length > 3 && (
-                        <li className="text-xs text-muted-foreground/70 pt-1">
-                          + {template.fields.length - 3} more...
-                        </li>
-                      )}
-                    </ul>
-                  </div>
-                </div>
+              return (
+                <Card key={template.id} className="group border p-6 flex flex-col justify-between hover:border-primary/50 transition-all duration-300 relative overflow-hidden bg-gradient-to-b from-background to-muted/20">
+                  {/* Hover Shadow Effect */}
+                  <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                  
+                  <div className="relative z-10">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="space-y-1">
+                        <h3 className="text-xl font-semibold tracking-tight">{template.name}</h3>
+                        {isMultiStep && (
+                          <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80">
+                            Multi-step
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <p className="text-muted-foreground text-sm mb-6 leading-relaxed min-h-[40px]">
+                     {template.description}
+                    </p>
 
-                <div className="flex gap-3 relative z-10 mt-auto pt-6 border-t border-dashed">
-                  <Link href={`/editor?template=${template.id}` as any} className="flex-1">
-                    <Button className="w-full rounded-none">
-                      <Sparkles className="mr-2 h-4 w-4" />
-                      Builder
-                    </Button>
-                  </Link>
-                </div>
-              </Card>
-            ))}
+                    <div className="mb-6">
+                      <p className=" text-xs uppercase tracking-wider mb-2 font-medium text-muted-foreground/80">
+                        {isMultiStep ? 'Steps & Fields:' : 'Fields included:'}
+                      </p>
+                      <ul className="space-y-2 text-muted-foreground text-sm">
+                        {displayFields.slice(0, 3).map((field, idx) => (
+                          <li key={idx} className="flex items-center">
+                            <div className="h-1.5 w-1.5 rounded-full bg-primary/50 mr-2" />
+                            {field.label}
+                          </li>
+                        ))}
+                        {displayFields.length > 3 && (
+                          <li className="text-xs text-muted-foreground/70 pl-3.5 pt-1">
+                            + {displayFields.length - 3} more...
+                          </li>
+                        )}
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="relative z-10 mt-auto pt-6">
+                    <Link href={`/editor?template=${template.id}` as any} className="flex-1">
+                      <Button className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors" variant="outline">
+                        <Sparkles className="mr-2 h-4 w-4" />
+                        Use Template
+                      </Button>
+                    </Link>
+                  </div>
+                </Card>
+              );
+            })}
           </div>
         </div>
       </section>

@@ -2,7 +2,7 @@
 
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import * as z from "zod";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,16 +13,19 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Progress } from "@/components/ui/progress";
 import { ArrowUp, ArrowDown, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { OAUTH_PROVIDERS } from "@/lib/oauth-providers-config";
-import type { FormField as FormFieldType } from "@/lib/form-templates";
+import type { FormField as FormFieldType, FormStep } from "@/lib/form-templates";
 import type { OAuthProvider } from "@/lib/oauth-providers-config";
+import { cn } from "@/lib/utils";
 
 interface FormPreviewProps {
   formName: string;
   formDescription: string;
   fields: FormFieldType[];
+  steps?: FormStep[];
   selectedFieldIndex: number | null;
   setSelectedFieldIndex: (index: number | null) => void;
   moveField: (index: number, direction: "up" | "down") => void;
@@ -34,7 +37,8 @@ interface FormPreviewProps {
 export function FormPreview({
   formName,
   formDescription,
-  fields,
+  fields: allFields,
+  steps,
   selectedFieldIndex,
   setSelectedFieldIndex,
   moveField,
@@ -42,51 +46,82 @@ export function FormPreview({
   oauthProviders,
   toggleOAuth,
 }: FormPreviewProps) {
+  const [currentStep, setCurrentStep] = useState<number>(0);
+  const hasSteps = !!(steps && steps.length > 0);
   
+  const stepFields = useMemo(() => {
+    if (!hasSteps || !steps) return allFields;
+    
+    const currentStepDef = steps[currentStep];
+    const stepFieldNames = new Set(currentStepDef.fields.map(f => f.name));
+    return allFields.filter(f => stepFieldNames.has(f.name));
+  }, [hasSteps, steps, currentStep, allFields]);
+
+  const visibleFields = hasSteps ? stepFields : allFields;
+
   const formSchema = useMemo(() => {
     const shape: Record<string, any> = {};
-    fields.forEach((field) => {
-      if (field.type === "input") {
-        let validation = z.string();
-        if (field.inputType === "email") validation = validation.email();
-        if (field.required) validation = validation.min(1, "Required");
-        else validation = validation.optional().or(z.literal(""));
-        shape[field.name] = validation;
-      } else if (field.type === "textarea") {
-        let validation = z.string();
-        if (field.required) validation = validation.min(1, "Required");
-        else validation = validation.optional().or(z.literal(""));
-        shape[field.name] = validation;
-      } else if (field.type === "checkbox") {
-        let validation = z.boolean();
-        if (field.required) validation = validation.refine((v) => v === true, "Required");
-        else validation = validation.optional();
-        shape[field.name] = validation;
-      } else if (field.type === "select" || field.type === "radio") {
-        let validation = z.string();
-        if (field.required) validation = validation.min(1, "Required");
-        else validation = validation.optional().or(z.literal(""));
-        shape[field.name] = validation;
-      } else {
-        shape[field.name] = z.any();
+    
+    allFields.forEach((field) => {
+      let validation: z.ZodTypeAny;
+
+      switch (field.type) {
+        case "checkbox":
+          validation = z.boolean();
+          if (field.required) {
+            validation = (validation as z.ZodBoolean).refine((v) => v === true, {
+              message: "Required",
+            });
+          } else {
+            validation = (validation as z.ZodBoolean).optional();
+          }
+          break;
+          
+        case "input":
+        case "textarea":
+        case "select":
+        case "radio":
+        default:
+          validation = z.string();
+          if (field.type === "input" && field.inputType === "email") {
+            validation = (validation as z.ZodString).email();
+          }
+          
+          if (field.required) {
+            validation = (validation as z.ZodString).min(1, "Required");
+          } else {
+            validation = (validation as z.ZodString).optional().or(z.literal(""));
+          }
+          break;
       }
+      
+      shape[field.name] = validation;
     });
+    
     return z.object(shape);
-  }, [fields]);
+  }, [allFields]);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     mode: "onChange",
   });
 
-  // Reset form when fields change
-  useEffect(() => {
-    form.reset({});
-  }, [fields, form]);
-
   const onSubmit = (data: any) => {
     console.log("Form submitted:", data);
     toast.success("Form submitted successfully! (Check console)");
+  };
+
+  const nextStep = async () => {
+    if (!steps) return;
+    const currentStepFields = steps[currentStep].fields.map(f => f.name);
+    const output = await form.trigger(currentStepFields as any);
+    if (output) {
+      setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
+    }
+  };
+
+  const prevStep = () => {
+    setCurrentStep((prev) => Math.max(prev - 1, 0));
   };
 
   return (
@@ -94,139 +129,226 @@ export function FormPreview({
       <CardHeader className=" space-y-2">
         <CardTitle>{formName}</CardTitle>
         <CardDescription>{formDescription}</CardDescription>
+        
+        {hasSteps && steps && (
+          <div className="space-y-2 pt-2">
+            <div className="flex items-center justify-between text-sm">
+              <span className="font-medium text-muted-foreground">
+                Step {currentStep + 1} of {steps.length}
+              </span>
+              <span className="font-medium">
+                {steps[currentStep].title}
+              </span>
+            </div>
+            <Progress value={((currentStep + 1) / steps.length) * 100} className="h-2" />
+          </div>
+        )}
       </CardHeader>
       <CardContent>
         <form className="grid gap-2" onSubmit={form.handleSubmit(onSubmit)}>
-          {fields.length === 0 && (
+          {visibleFields.length === 0 && !hasSteps && (
             <div className="text-center py-10 border-2 border-dashed rounded-lg text-muted-foreground">
               <p>No fields added yet.</p>
               <p className="text-sm">Use the sidebar to add fields.</p>
             </div>
           )}
 
-          {fields.map((field, index) => (
-            <div
-              key={index}
-              className={`group relative p-2 -mx-2 rounded-md hover:bg-muted/50 transition-colors border-2 ${selectedFieldIndex === index ? 'border-primary' : 'border-transparent'}`}
-              onClick={() => setSelectedFieldIndex(index)}
-            >
-              {/* Actions (Visible on Hover) */}
-              <div className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-all duration-200 z-10">
-                <div className="flex items-center gap-1 bg-background shadow-md border rounded-md p-1">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7"
-                          disabled={index === 0}
-                          onClick={(e) => { e.stopPropagation(); moveField(index, "up"); }}
-                        >
-                          <ArrowUp className="h-3.5 w-3.5" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent><p>Move Up</p></TooltipContent>
-                    </Tooltip>
+          {/* Render Fields */}
+          <div className={cn("space-y-4", hasSteps && "animate-in fade-in-50 slide-in-from-right-5")}>
+            {visibleFields.map((field, index) => {
+              const realIndex = allFields.findIndex(f => f.name === field.name);
+              
+              return (
+              <div
+                key={field.name}
+                className={`group relative p-2 -mx-2 rounded-md hover:bg-muted/50 transition-colors border-2 ${selectedFieldIndex === realIndex ? 'border-primary' : 'border-transparent'}`}
+                onClick={() => setSelectedFieldIndex(realIndex)}
+              >
+                {/* Actions (Visible on Hover) */}
+                <div className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-all duration-200 z-10">
+                  <div className="flex items-center gap-1 bg-background shadow-md border rounded-md p-1">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7"
+                            disabled={realIndex === 0}
+                            onClick={(e) => { e.stopPropagation(); moveField(realIndex, "up"); }}
+                          >
+                            <ArrowUp className="h-3.5 w-3.5" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent><p>Move Up</p></TooltipContent>
+                      </Tooltip>
 
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7"
-                          disabled={index === fields.length - 1}
-                          onClick={(e) => { e.stopPropagation(); moveField(index, "down"); }}
-                        >
-                          <ArrowDown className="h-3.5 w-3.5" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent><p>Move Down</p></TooltipContent>
-                    </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7"
+                            disabled={realIndex === allFields.length - 1}
+                            onClick={(e) => { e.stopPropagation(); moveField(realIndex, "down"); }}
+                          >
+                            <ArrowDown className="h-3.5 w-3.5" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent><p>Move Down</p></TooltipContent>
+                      </Tooltip>
 
-                    <div className="w-[1px] h-4 bg-border mx-0.5" />
+                      <div className="w-[1px] h-4 bg-border mx-0.5" />
 
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7 text-destructive hover:text-destructive hover:bg-destructive/10"
-                          onClick={(e) => { e.stopPropagation(); removeField(index); }}
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent><p>Remove Field</p></TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 text-destructive hover:text-destructive hover:bg-destructive/10"
+                            onClick={(e) => { e.stopPropagation(); removeField(realIndex); }}
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent><p>Remove Field</p></TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
                 </div>
+
+                {/* Field Rendering */}
+                {field.type === "input" && (
+                  <div className="space-y-2">
+                    <Label>{field.label}{field.required && " *"}</Label>
+                    <Input 
+                      placeholder={field.placeholder} 
+                      {...form.register(field.name)}
+                    />
+                    {form.formState.errors[field.name] && (
+                      <p className="text-xs text-destructive">{form.formState.errors[field.name]?.message as string}</p>
+                    )}
+                    {field.description && <p className="text-xs text-muted-foreground">{field.description}</p>}
+                  </div>
+                )}
+
+                {field.type === "textarea" && (
+                  <div className="space-y-2">
+                    <Label>{field.label}{field.required && " *"}</Label>
+                    <Textarea 
+                      className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm" 
+                      placeholder={field.placeholder} 
+                      {...form.register(field.name)}
+                    />
+                    {form.formState.errors[field.name] && (
+                      <p className="text-xs text-destructive">{form.formState.errors[field.name]?.message as string}</p>
+                    )}
+                  </div>
+                )}
+
+                {field.type === "checkbox" && (
+                  <div className="flex items-center space-x-2 py-2">
+                    <Controller
+                      control={form.control}
+                      name={field.name}
+                      render={({ field: f }) => (
+                        <Checkbox 
+                          id={field.name} 
+                          checked={!!f.value}
+                          onCheckedChange={f.onChange}
+                        />
+                      )}
+                    />
+                    <Label htmlFor={field.name}>{field.label}</Label>
+                    {form.formState.errors[field.name] && (
+                      <p className="text-xs text-destructive ml-2">{form.formState.errors[field.name]?.message as string}</p>
+                    )}
+                  </div>
+                )}
+
+                {field.type === "select" && (
+                  <div className="space-y-2">
+                    <Label>{field.label}{field.required && " *"}</Label>
+                    <Controller
+                      control={form.control}
+                      name={field.name}
+                      render={({ field: f }) => (
+                        <Select onValueChange={f.onChange} defaultValue={f.value}>
+                          <SelectTrigger>
+                            <SelectValue placeholder={field.placeholder || "Select an option..."} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {(field.options || []).map((opt, idx) => (
+                              <SelectItem key={idx} value={opt.value}>{opt.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+                    {form.formState.errors[field.name] && (
+                      <p className="text-xs text-destructive">{form.formState.errors[field.name]?.message as string}</p>
+                    )}
+                    {field.description && <p className="text-xs text-muted-foreground">{field.description}</p>}
+                  </div>
+                )}
+
+                {field.type === "radio" && (
+                  <div className="space-y-2">
+                    <Label>{field.label}{field.required && " *"}</Label>
+                    <Controller
+                      control={form.control}
+                      name={field.name}
+                      render={({ field: f }) => (
+                        <RadioGroup onValueChange={f.onChange} defaultValue={f.value}>
+                          {(field.options || []).map((opt, idx) => (
+                            <div key={idx} className="flex items-center space-x-2">
+                              <RadioGroupItem value={opt.value} id={`${field.name}-${opt.value}`} />
+                              <Label htmlFor={`${field.name}-${opt.value}`}>{opt.label}</Label>
+                            </div>
+                          ))}
+                        </RadioGroup>
+                      )}
+                    />
+                    {form.formState.errors[field.name] && (
+                      <p className="text-xs text-destructive">{form.formState.errors[field.name]?.message as string}</p>
+                    )}
+                    {field.description && <p className="text-xs text-muted-foreground">{field.description}</p>}
+                  </div>
+                )}
               </div>
+            );
+            })}
+          </div>
 
-              {/* Field Rendering */}
-              {field.type === "input" && (
-                <div className="space-y-2 pointer-events-none">
-                  <Label>{field.label}{field.required && " *"}</Label>
-                  <Input placeholder={field.placeholder} />
-                  {field.description && <p className="text-xs text-muted-foreground">{field.description}</p>}
-                </div>
-              )}
-
-              {field.type === "textarea" && (
-                <div className="space-y-2 pointer-events-none">
-                  <Label>{field.label}{field.required && " *"}</Label>
-                  <Textarea className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder={field.placeholder} />
-                </div>
-              )}
-
-              {field.type === "checkbox" && (
-                <div className="flex items-center space-x-2 pointer-events-none py-2">
-                  <Checkbox id={field.name} />
-                  <Label htmlFor={field.name}>{field.label}</Label>
-                </div>
-              )}
-
-              {field.type === "select" && (
-                <div className="space-y-2 pointer-events-none">
-                  <Label>{field.label}{field.required && " *"}</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder={field.placeholder || "Select an option..."} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {(field.options || []).map((opt, idx) => (
-                        <SelectItem key={idx} value={opt.value}>{opt.label}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {field.description && <p className="text-xs text-muted-foreground">{field.description}</p>}
-                </div>
-              )}
-
-              {field.type === "radio" && (
-                <div className="space-y-2 pointer-events-none">
-                  <Label>{field.label}{field.required && " *"}</Label>
-                  <RadioGroup>
-                    {(field.options || []).map((opt, idx) => (
-                      <div key={idx} className="flex items-center space-x-2">
-                        <RadioGroupItem value={opt.value} id={`${field.name}-${opt.value}`} />
-                        <Label htmlFor={`${field.name}-${opt.value}`}>{opt.label}</Label>
-                      </div>
-                    ))}
-                  </RadioGroup>
-                  {field.description && <p className="text-xs text-muted-foreground">{field.description}</p>}
-                </div>
+          {hasSteps && steps ? (
+            <div className="flex justify-between pt-4">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={prevStep} 
+                disabled={currentStep === 0}
+                className={cn(currentStep === 0 && "invisible")}
+              >
+                Back
+              </Button>
+              
+              {currentStep < steps.length - 1 ? (
+                <Button type="button" onClick={nextStep}>
+                  Next
+                </Button>
+              ) : (
+                <Button type="button" onClick={form.handleSubmit(onSubmit)}>Submit</Button>
               )}
             </div>
-          ))}
-
-          <Button type="button" className="w-full pointer-events-none">Submit</Button>
+          ) : (
+            <Button type="button" className="w-full mt-4">Submit</Button>
+          )}
 
           {/* OAuth Preview */}
-          {oauthProviders.length > 0 && (
+          {!hasSteps && oauthProviders.length > 0 && (
             <div className="space-y-4 pt-4">
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
@@ -246,7 +368,7 @@ export function FormPreview({
 
                   return (
                     <div key={providerId} className="relative group">
-                      <Button variant="outline" className="w-full pointer-events-none">
+                      <Button variant="outline" className="w-full">
                         {provider.iconSvg ? (
                           <span 
                             className="contents" 

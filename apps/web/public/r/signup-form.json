@@ -9,10 +9,10 @@
     "sonner"
   ],
   "registryDependencies": [
-    "http://localhost:3001/r/auth-client.json",
-    "http://localhost:3001/r/button.json",
-    "http://localhost:3001/r/input.json",
-    "http://localhost:3001/r/label.json"
+    "https://formscn.space/r/auth-client.json",
+    "https://formscn.space/r/button.json",
+    "https://formscn.space/r/input.json",
+    "https://formscn.space/r/label.json"
   ],
   "files": [
     {

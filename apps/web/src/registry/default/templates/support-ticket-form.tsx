@@ -32,8 +32,8 @@ export function SupportTicketForm() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
-      category: "",
-      priority: "",
+      category: "bug",
+      priority: "low",
       subject: "",
       description: "",
     },

@@ -72,9 +72,6 @@ export function EditorSidebar({
   addField,
   oauthProviders,
   toggleOAuth,
-  // These props might still be passed but unused in UI now, 
-  // or we can keep them for state lifting if needed elsewhere
-  // but for now we just don't render controls for them here.
   databaseAdapter,
   setDatabaseAdapter,
   framework,
@@ -227,7 +224,7 @@ export function EditorSidebar({
             <span>Form Builder</span>
           </div>
           <AlertDialog>
-            <AlertDialogTrigger asChild>
+            <AlertDialogTrigger>
               <Button variant="ghost" size="sm" title="Create New Form">
                 <FilePlus className="h-4 w-4 mr-2" />
                 New Form

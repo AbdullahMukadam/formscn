@@ -4,7 +4,13 @@ import type { FormTemplate } from "@/lib/form-templates";
 import { useFormEditor } from "@/hooks/use-form-editor";
 import { EditorSidebar } from "@/components/editor/editor-sidebar";
 import { FormPreview } from "@/components/editor/form-preview";
-import { CodeViewer } from "@/components/editor/code-viewer";
+import dynamic from "next/dynamic";
+import Loader from "@/components/loader";
+
+const CodeViewer = dynamic(() => import("@/components/editor/code-viewer").then((mod) => mod.CodeViewer), {
+  loading: () => <Loader />,
+  ssr: false,
+});
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Eye, Code, Share2 } from "lucide-react";
@@ -22,6 +28,7 @@ export function FormEditor({ initialTemplate }: FormEditorProps) {
     formDescription,
     setFormDescription,
     fields,
+    steps,
     oauthProviders,
     setOauthProviders,
     databaseAdapter,
@@ -59,6 +66,7 @@ export function FormEditor({ initialTemplate }: FormEditorProps) {
         formName,
         formDescription,
         fields,
+        steps,
         oauthProviders: isAuthEnabled ? oauthProviders : [],
       });
 
@@ -71,6 +79,7 @@ export function FormEditor({ initialTemplate }: FormEditorProps) {
           code,
           config: {
             fields,
+            steps,
             oauthProviders,
             databaseAdapter,
             framework,
@@ -142,6 +151,7 @@ export function FormEditor({ initialTemplate }: FormEditorProps) {
               formName={formName}
               formDescription={formDescription}
               fields={fields}
+              steps={steps}
               selectedFieldIndex={selectedFieldIndex}
               setSelectedFieldIndex={setSelectedFieldIndex}
               moveField={moveField}
@@ -154,6 +164,7 @@ export function FormEditor({ initialTemplate }: FormEditorProps) {
               formName={formName}
               formDescription={formDescription}
               fields={fields}
+              steps={steps}
               oauthProviders={oauthProviders}
               databaseAdapter={databaseAdapter}
               framework={framework}

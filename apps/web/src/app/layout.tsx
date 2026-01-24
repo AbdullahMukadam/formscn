@@ -17,10 +17,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://formscn.dev"),
+  metadataBase: new URL("https://formscn.space"),
   title: {
-    default: "FormCN - Build Production-Ready Forms in React",
-    template: "%s | FormCN",
+    default: "Formscn - Build Production-Ready Forms in React",
+    template: "%s | FormSCN",
   },
   description: "The open-source form builder for modern React apps. Drag-and-drop editor, Better Auth integration, and framework-agnostic code generation (Next.js, Vite, Remix).",
   keywords: [
@@ -38,30 +38,30 @@ export const metadata: Metadata = {
   ],
   authors: [
     {
-      name: "FormCN Team",
-      url: "https://formscn.dev",
+      name: "FormSCN Team",
+      url: "https://formscn.space",
     },
   ],
-  creator: "FormCN",
+  creator: "FormSCN",
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://formscn.dev",
-    title: "FormCN - Build Production-Ready Forms in React",
+    url: "https://formscn.space",
+    title: "FormSCN - Build Production-Ready Forms in React",
     description: "The open-source form builder for modern React apps. Drag-and-drop editor, Better Auth integration, and framework-agnostic code generation.",
-    siteName: "FormCN",
+    siteName: "FormSCN",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "FormCN - Visual Form Builder",
+        alt: "FormSCN - Visual Form Builder",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "FormCN - Build Production-Ready Forms in React",
+    title: "FormSCN - Build Production-Ready Forms in React",
     description: "The open-source form builder for modern React apps. Drag-and-drop editor, Better Auth integration, and framework-agnostic code generation.",
     images: ["/og-image.png"],
     creator: "@formscn",

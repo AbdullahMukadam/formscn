@@ -14,7 +14,7 @@ import { signIn } from "@/lib/auth-client";
 const formSchema = z.object({
   email: z.string().email("Invalid email address").min(1, "Email Address is required"),
   password: z.string().min(1, "Password is required"),
-  rememberMe: z.boolean().default(false),
+  rememberMe: z.boolean(),
 });
 
 type FormValues = z.infer<typeof formSchema>;

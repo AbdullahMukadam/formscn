@@ -1,169 +1,85 @@
-# Formcn - Form Components for React
+# FormsCN
 
-**Formcn** is an open-source, shadcn/ui-inspired form component library with a visual builder. Build forms faster with pre-built components and templates.
+**FormsCN** is an open-source, shadcn/ui-inspired form builder and registry. Build production-ready forms in seconds with our visual editor, or install pre-built templates via CLI.
 
 ## Features
 
-- 🎨 **Visual Form Builder** - Customize forms with an intuitive editor
-- 📦 **Pre-built Templates** - Signup, login, contact forms, and more
-- 🔧 **CLI Installation** - Install components via `shadcn` CLI
-- ✨ **React Hook Form + Zod** - Built-in validation and type safety
-- 🎯 **TypeScript First** - Full type safety
-- 🌙 **Dark Mode** - Automatic theme support
-- 📋 **Code Export** - Copy production-ready code or install via CLI
+-  **Visual Form Builder** - Drag-and-drop editor with live preview
+-  **Rich Templates** - 10+ templates including Auth, Multi-step Wizards, and E-commerce
+-  **Multi-Step Forms** - Built-in support for wizard-style flows with state management
+-  **CLI Integration** - Install forms directly into your codebase with `shadcn add`
+-  **Type-Safe** - Full TypeScript support with React Hook Form and Zod
+-  **Authentication** - Integrated with Better Auth (OAuth, Email/Pass)
+-  **Database Ready** - Generates schemas for Prisma and Drizzle
+-  **Dark Mode** - Automatic theme support
 
 ## Quick Start
 
-### 1. Browse Templates
+### 1. Visual Builder (Recommended)
 
-Visit [http://localhost:3001](http://localhost:3001) to browse pre-built form templates.
+1.  Visit the [Visual Builder](https://formscn.space/editor).
+2.  Choose a template or start from scratch.
+3.  Customize fields, validation, and authentication settings.
+4.  Click **"Publish"** to get your unique installation command.
 
-### 2. Open in Builder
+### 2. CLI Installation
 
-Click "Open in Builder" on any template to customize it in the visual editor.
-
-### 3. Export Your Form
-
-Choose from two export options:
-- **Code Tab**: Copy the generated React component code
-- **CLI Tab**: Follow instructions to install via shadcn CLI
-
-## Development
-
-This is a Turborepo monorepo with the following structure:
-
-```
-formcn/
-├── apps/
-│   └── web/              # Next.js app (builder + registry)
-│       ├── src/
-│       │   ├── app/      # Pages
-│       │   ├── components/ # UI components
-│       │   ├── registry/  # Form component source
-│       │   │   └── default/
-│       │   │       ├── ui/     # Form components
-│       │   │       ├── lib/    # Utilities
-│       │   │       └── hooks/  # Custom hooks
-│       │   └── lib/      # Helpers
-│       └── public/r/     # Built registry files
-└── packages/
-    ├── config/           # Shared configs
-    └── env/              # Environment variables
-```
-
-### Running Locally
+You can install any standard template directly:
 
 ```bash
-# Install dependencies
-pnpm install
+# Install a login form
+npx shadcn@latest add https://formscn.space/r/login-form.json
 
-# Start dev server
-pnpm dev
-
-# Build registry
-cd apps/web
-pnpm registry:build
+# Install a multi-step onboarding wizard
+npx shadcn@latest add https://formscn.space/r/onboarding-wizard-form.json
 ```
 
-## Available Components
+## Available Templates
 
-### Form Inputs
-- `form-input` - Enhanced input with validation
-- `form-textarea` - Text area with auto-resize
+### Authentication
+- **Login Form** (`login-form`)
+- **Signup Form** (`signup-form`)
 
-### Hooks
-- `use-form-persistence` - LocalStorage form persistence
-- `use-form-progress` - Track form completion
-- `use-field-dependencies` - Conditional field logic
+### Multi-Step Wizards
+- **Onboarding Wizard** (`onboarding-wizard-form`)
+- **Detailed Application** (`detailed-application-form`)
 
-### Utilities
-- `form-utils` - Helper functions
+### E-commerce
+- **Checkout Form** (`ecommerce-checkout-form`)
 
-## Form Templates
+### Contact & Support
+- **Contact Form** (`contact-form`)
+- **Support Ticket** (`support-ticket-form`)
+- **Booking Request** (`booking-request-form`)
+- **Waitlist** (`waitlist-form`)
 
-1. **Signup Form** - User registration with validation
-2. **Login Form** - Email and password authentication
-3. **Contact Form** - Name, email, subject, and message
-4. **Newsletter Form** - Email subscription with frequency selector
-
-## Using Components in Your Project
-
-### 1. Configure Registry
-
-Add to your `components.json`:
-
-```json
-{
-  "registries": {
-    "@formcn": "http://localhost:3001/r/{name}.json"
-  }
-}
-```
-
-### 2. Install Components
-
-```bash
-pnpx shadcn@latest add @formcn/form-input
-pnpx shadcn@latest add @formcn/use-form-persistence
-```
-
-### 3. Use in Your Forms
-
-```tsx
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { FormInput } from "@/components/formcn/form-input";
-
-const schema = z.object({
-  email: z.string().email(),
-});
-
-export function MyForm() {
-  const form = useForm({
-    resolver: zodResolver(schema),
-  });
-
-  return (
-    <FormInput
-      control={form.control}
-      name="email"
-      label="Email"
-      required
-    />
-  );
-}
-```
+### Surveys
+- **Feedback Form** (`feedback-form`)
+- **Event Registration** (`event-registration-form`)
 
 ## Tech Stack
 
-- **Framework**: Next.js 16 (App Router)
-- **Styling**: Tailwind CSS v4
+- **Framework**: Next.js 15 (App Router)
+- **Styling**: Tailwind CSS
 - **Forms**: React Hook Form + Zod
 - **UI Components**: shadcn/ui
+- **Auth**: Better Auth
 - **Monorepo**: Turborepo
-- **Package Manager**: pnpm
 
 ## Roadmap
 
 - [x] Registry system with shadcn CLI integration
-- [x] Core form components (Input, Textarea)
-- [x] Form templates (Signup, Login, Contact, Newsletter)
 - [x] Visual form builder with live preview
-- [x] Code export with tabs (Code, CLI)
-- [ ] More form components (Select, Checkbox, Radio, Switch)
-- [ ] Multi-step form wizard
-- [ ] Conditional field logic component
-- [ ] Field array (dynamic repeating fields)
-- [ ] File upload component
-- [ ] Advanced validation patterns
-- [ ] Form analytics
+- [x] Multi-step form wizard support
+- [x] Auth & Database integration (Prisma/Drizzle)
+- [ ] Conditional field logic
+- [ ] Drag-and-drop step reordering
 - [ ] AI-powered form generation
+
+## Contributing
+
+We love contributions! Please read our [Contributing Guide](CONTRIBUTING.md) to get started with setting up the project and adding new templates.
 
 ## License
 
 MIT
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.

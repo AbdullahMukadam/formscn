@@ -20,7 +20,7 @@ export function DocsPager() {
     <div className="flex flex-row items-center justify-between mt-10">
       {pager?.prev?.href && (
         <Link
-          href={pager.prev.href}
+          href={pager.prev.href as any}
           className={cn(buttonVariants({ variant: "outline" }), "mr-auto")}
         >
           <ChevronLeft className="mr-2 h-4 w-4" />
@@ -29,7 +29,7 @@ export function DocsPager() {
       )}
       {pager?.next?.href && (
         <Link
-          href={pager.next.href}
+          href={pager.next.href as any}
           className={cn(buttonVariants({ variant: "outline" }), "ml-auto")}
         >
           {pager.next.title}
