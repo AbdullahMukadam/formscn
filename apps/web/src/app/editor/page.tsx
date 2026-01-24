@@ -13,7 +13,7 @@ function EditorContent() {
     ? formTemplates.find((t) => t.id === templateId)
     : null;
 
-  return <FormEditor initialTemplate={template || undefined} />;
+  return <FormEditor key={templateId} initialTemplate={template || undefined} />;
 }
 
 export default function EditorPage() {

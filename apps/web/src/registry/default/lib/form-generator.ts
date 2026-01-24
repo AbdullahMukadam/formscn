@@ -321,7 +321,7 @@ export function generateFormComponent(config: {
   const { formName, formDescription, fields: initialFields, oauthProviders, framework = "next", steps } = config;
   
   // Use steps fields if steps are provided, otherwise use fields
-  const fields = steps ? steps.flatMap(s => s.fields) : initialFields;
+  const fields = (steps && steps.length > 0) ? steps.flatMap(s => s.fields) : initialFields;
   const hasSteps = !!(steps && steps.length > 0);
 
   const hasOAuth = oauthProviders.length > 0;

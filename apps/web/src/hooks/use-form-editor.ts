@@ -26,7 +26,7 @@ export function useFormEditor({ initialTemplate }: UseFormEditorProps = {}) {
   const [fields, setFields] = useState<FormFieldType[]>(initialFields);
 
   // State for OAuth
-  const [oauthProviders, setOauthProviders] = useState<OAuthProvider[]>([]);
+  const [oauthProviders, setOauthProviders] = useState<OAuthProvider[]>(initialTemplate?.oauthProviders || []);
 
 
   // State for database adapter & framework
