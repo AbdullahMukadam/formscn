@@ -5,9 +5,7 @@
     "REGISTRY_BASE_URL",
     "BETTER_AUTH_URL",
     "BETTER_AUTH_SECRET",
-    "NEXT_PUBLIC_APP_URL",
-    "KV_REST_API_URL",
-    "KV_REST_API_TOKEN"
+    "NEXT_PUBLIC_APP_URL"
   ],
   "tasks": {
     "build": {

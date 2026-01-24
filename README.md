@@ -76,6 +76,20 @@ npx shadcn@latest add https://formscn.space/r/onboarding-wizard-form.json
 - [ ] Drag-and-drop step reordering
 - [ ] AI-powered form generation
 
+## Deployment
+
+### Deploy to Vercel
+
+1.  **Push to GitHub**.
+2.  **Import to Vercel**: Select the `apps/web` directory as the root.
+3.  **Environment Variables**:
+    ```env
+    NEXT_PUBLIC_APP_URL=https://your-domain.com
+    REGISTRY_BASE_URL=https://your-domain.com
+    BETTER_AUTH_URL=https://your-domain.com
+    BETTER_AUTH_SECRET=generate_with_openssl_rand_hex_32
+    ```
+    
 ## Contributing
 
 We love contributions! Please read our [Contributing Guide](CONTRIBUTING.md) to get started with setting up the project and adding new templates.

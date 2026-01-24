@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import { kv } from "@vercel/kv";
 
 import type { FormField, FormStep } from "@/lib/form-templates";
 import type { OAuthProvider } from "@/lib/oauth-providers-config";
@@ -24,12 +23,12 @@ export interface PublishedForm {
   createdAt: number;
 }
 
+// In a serverless environment like Vercel, the filesystem is ephemeral.
+// This means forms saved here will persist only for the duration of the container/deployment.
+// This is acceptable as per user requirements.
 const STORAGE_FILE = path.join(process.cwd(), "forms-db.json");
-const IS_PROD = !!process.env.KV_REST_API_URL;
 
-// --- Local Storage Helpers ---
-
-function getFormsLocal(): Map<string, PublishedForm> {
+function getForms(): Map<string, PublishedForm> {
   try {
     if (!fs.existsSync(STORAGE_FILE)) {
       return new Map();
@@ -41,36 +40,31 @@ function getFormsLocal(): Map<string, PublishedForm> {
   }
 }
 
-function saveFormsLocal(forms: Map<string, PublishedForm>) {
-  fs.writeFileSync(STORAGE_FILE, JSON.stringify(Array.from(forms.entries()), null, 2));
+function saveForms(forms: Map<string, PublishedForm>) {
+  try {
+    fs.writeFileSync(STORAGE_FILE, JSON.stringify(Array.from(forms.entries()), null, 2));
+  } catch (e) {
+    console.error("Failed to save forms to local storage", e);
+  }
 }
 
-// --- Exported Functions ---
+// Global cache to avoid excessive reads during the same process lifetime
+const cache = getForms();
 
 export async function saveForm(form: Omit<PublishedForm, "createdAt">) {
   const fullForm = { ...form, createdAt: Date.now() };
-
-  if (IS_PROD) {
-    // Save to Vercel KV
-    await kv.set(`form:${form.id}`, fullForm);
-  } else {
-    // Save to local JSON file
-    const forms = getFormsLocal();
-    forms.set(form.id, fullForm);
-    saveFormsLocal(forms);
-  }
-
+  cache.set(form.id, fullForm);
+  saveForms(cache);
   return form.id;
 }
 
-export async function getForm(id: string): Promise<PublishedForm | undefined> {
-  if (IS_PROD) {
-    // Read from Vercel KV
-    const form = await kv.get<PublishedForm>(`form:${id}`);
-    return form || undefined;
-  } else {
-    // Read from local JSON file
-    const forms = getFormsLocal();
-    return forms.get(id);
+export async function getForm(id: string) {
+  // Check memory cache first
+  if (cache.has(id)) {
+    return cache.get(id);
   }
+  
+  // Try reading from disk (in case another process wrote it)
+  const forms = getForms();
+  return forms.get(id);
 }
