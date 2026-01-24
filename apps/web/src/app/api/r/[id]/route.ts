@@ -8,7 +8,6 @@ import {
   generateDrizzleClient,
   generateAuthClient,
 } from "@/registry/default/lib/form-generator";
-import type { Framework } from "@/registry/default/lib/form-generator";
 
 export async function GET(
   request: Request,
@@ -23,7 +22,7 @@ export async function GET(
   }
 
   // Use the framework from query param if available, otherwise fallback to form config or default
-  const effectiveFramework = frameworkParam || form.config?.framework || "next";
+  const effectiveFramework = form.config?.framework || "next";
 
   // Determine dependencies based on the form's complexity
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3001";
