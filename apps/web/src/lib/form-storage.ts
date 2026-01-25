@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import { Redis } from "@upstash/redis";
 
 import type { FormField, FormStep } from "@/lib/form-templates";
 import type { OAuthProvider } from "@/lib/oauth-providers-config";
@@ -23,9 +24,20 @@ export interface PublishedForm {
   createdAt: number;
 }
 
+// Initialize Redis if env vars are present
+const redis = (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN)
+  ? new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN,
+    })
+  : null;
+
 const STORAGE_FILE = path.join(process.cwd(), "forms-db.json");
 
-function getForms(): Map<string, PublishedForm> {
+// In-memory fallback for when neither Redis nor FileSystem is available/writable
+const memoryCache = new Map<string, PublishedForm>();
+
+function getLocalForms(): Map<string, PublishedForm> {
   try {
     if (!fs.existsSync(STORAGE_FILE)) {
       return new Map();
@@ -37,7 +49,7 @@ function getForms(): Map<string, PublishedForm> {
   }
 }
 
-function saveForms(forms: Map<string, PublishedForm>) {
+function saveLocalForms(forms: Map<string, PublishedForm>) {
   try {
     fs.writeFileSync(STORAGE_FILE, JSON.stringify(Array.from(forms.entries()), null, 2));
   } catch (e) {
@@ -45,25 +57,51 @@ function saveForms(forms: Map<string, PublishedForm>) {
   }
 }
 
-// Global cache to avoid excessive reads during the same process lifetime
-const cache = getForms();
-
 export async function saveForm(form: Omit<PublishedForm, "createdAt">) {
   const fullForm = { ...form, createdAt: Date.now() };
-  cache.set(form.id, fullForm);
-  saveForms(cache);
+
+  // 1. Redis (Production/Serverless)
+  if (redis) {
+    try {
+      await redis.set(`form:${form.id}`, fullForm);
+      return form.id;
+    } catch (e) {
+      console.error("Redis save failed", e);
+    }
+  }
+
+  // 2. File System (Development only)
+  if (process.env.NODE_ENV !== "production") {
+    const forms = getLocalForms();
+    forms.set(form.id, fullForm);
+    saveLocalForms(forms);
+    return form.id;
+  }
+
+  // 3. In-Memory (Production fallback without Redis)
+  // Prevents EROFS crashes, but data is transient.
+  console.warn("Storage warning: Using in-memory storage. Data will be lost on server restart. Configure UPSTASH_REDIS_REST_URL to persist data.");
+  memoryCache.set(form.id, fullForm);
   return form.id;
 }
 
-export async function getForm(id: string) {
-  // Check memory cache first
-  if (cache.has(id)) {
-    console.log("id here")
-    return cache.get(id);
+export async function getForm(id: string): Promise<PublishedForm | undefined | null> {
+  // 1. Redis
+  if (redis) {
+    try {
+      const form = await redis.get<PublishedForm>(`form:${id}`);
+      if (form) return form;
+    } catch (e) {
+      console.error("Redis get failed", e);
+    }
   }
-  
-  // Try reading from disk (in case another process wrote it)
-  const forms = getForms();
-  console.log(forms)
-  return forms.get(id);
+
+  // 2. File System (Dev)
+  if (process.env.NODE_ENV !== "production") {
+     const forms = getLocalForms();
+     if (forms.has(id)) return forms.get(id);
+  }
+
+  // 3. In-Memory
+  return memoryCache.get(id);
 }
