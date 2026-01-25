@@ -8,6 +8,7 @@ import {
   Link as LinkIcon,
   Phone,
   AtSign,
+  FileUp,
   type LucideIcon 
 } from "lucide-react";
 
@@ -19,7 +20,8 @@ export type FormFieldType =
   | "radio"
   | "date"
   | "number"
-  | "switch";
+  | "switch"
+  | "file";
 
 export type InputFieldType = 
   | "text" 
@@ -30,7 +32,8 @@ export type InputFieldType =
   | "number"
   | "date"
   | "time"
-  | "datetime-local";
+  | "datetime-local"
+  | "file";
 
 export interface FormFieldConfig {
   type: FormFieldType;
@@ -44,6 +47,7 @@ export interface FormFieldConfig {
   supportsValidation?: boolean;
   category: "basic" | "advanced" | "selection";
   enabled: boolean;
+  accept?: string;
 }
 
 export const FORM_FIELD_TYPES: FormFieldConfig[] = [
@@ -153,6 +157,17 @@ export const FORM_FIELD_TYPES: FormFieldConfig[] = [
     supportsValidation: true,
     category: "advanced",
     enabled: true,
+  },
+  {
+    type: "file",
+    name: "File Upload",
+    label: "File Upload",
+    icon: FileUp,
+    description: "File upload input",
+    supportsValidation: true,
+    category: "advanced",
+    enabled: true,
+    accept: "*/*",
   },
   
   // Selection Fields

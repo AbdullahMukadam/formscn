@@ -102,6 +102,25 @@ export function FormPreview({
             }
             break;
 
+          case "file":
+            // Validate FileList with size and type checks
+            validation = z.any(); // Start with any to allow custom refinements on the FileList object
+            
+            if (field.required) {
+               validation = validation.refine((files: any) => files?.length > 0, "Required");
+            } else {
+               validation = validation.optional();
+            }
+
+            validation = validation
+              .refine((files: any) => {
+                return !files || files.length === 0 || files[0].size <= 5242880;
+              }, "Max 5MB")
+              .refine((files: any) => {
+                return !files || files.length === 0 || ["image/png", "image/jpeg", "image/gif", "image/webp"].includes(files[0].type);
+              }, "Only .jpg, .png, .gif and .webp");
+            break;
+
           case "input":
           case "textarea":
           case "select":
@@ -398,6 +417,21 @@ export function FormPreview({
                             </PopoverContent>
                           </Popover>
                         )}
+                      />
+                      {form.formState.errors[field.name] && (
+                        <p className="text-xs text-destructive">{form.formState.errors[field.name]?.message as string}</p>
+                      )}
+                      {field.description && <p className="text-xs text-muted-foreground">{field.description}</p>}
+                    </div>
+                  )}
+
+                  {field.type === "file" && (
+                    <div className="space-y-2">
+                      <Label>{field.label}{field.required && " *"}</Label>
+                      <Input
+                        type="file"
+                        accept={field.accept}
+                        {...form.register(field.name)}
                       />
                       {form.formState.errors[field.name] && (
                         <p className="text-xs text-destructive">{form.formState.errors[field.name]?.message as string}</p>

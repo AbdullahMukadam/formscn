@@ -2,7 +2,7 @@ import * as z from "zod";
 import { type OAuthProvider } from "@/lib/oauth-providers-config";
 
 export interface FormField {
-  type: "input" | "textarea" | "select" | "checkbox" | "radio" | "date";
+  type: "input" | "textarea" | "select" | "checkbox" | "radio" | "date" | "file";
   name: string;
   label: string;
   placeholder?: string;
@@ -10,6 +10,7 @@ export interface FormField {
   required?: boolean;
   options?: Array<{ label: string; value: string }>;
   inputType?: "text" | "email" | "password" | "tel" | "url" | "number" | "date";
+  accept?: string; // For file inputs
 }
 
 export interface FormStep {

@@ -64,6 +64,24 @@ export function generateZodSchema(fields: FormField[]): string {
         }
         break;
 
+      case "file":
+        validation = `z.instanceof(FileList)`;
+        if (field.required) {
+          validation += `.refine((files) => files?.length > 0, "${field.label} is required")`;
+        } else {
+          validation += `.optional()`;
+        }
+        
+        // Add detailed validation (Max 5MB, Images only)
+        validation += `
+    .refine((files) => {
+      return !files || files.length === 0 || files[0].size <= 5242880;
+    }, "Max file size is 5MB")
+    .refine((files) => {
+      return !files || files.length === 0 || ["image/png", "image/jpeg", "image/gif", "image/webp"].includes(files[0].type);
+    }, "Only .jpg, .png, .gif and .webp formats are supported")`;
+        break;
+
       case "input":
       case "textarea":
       default:
