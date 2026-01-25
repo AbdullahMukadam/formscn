@@ -404,18 +404,13 @@ export function EditorSidebar({
           </h3>
           <div className="space-y-3">
             {OAUTH_PROVIDERS.filter(p => p.enabled).map((provider) => {
-              const Icon = provider.icon;
               return (
                 <div key={provider.id} className="flex items-center justify-between">
                   <Label htmlFor={`${provider.id}-auth`} className="flex items-center gap-2 cursor-pointer">
-                    {provider.iconSvg ? (
-                      <span
-                        className="flex h-4 w-4 items-center justify-center [&>svg]:!m-0 [&>svg]:h-full [&>svg]:w-full"
-                        dangerouslySetInnerHTML={{ __html: provider.iconSvg }}
-                      />
-                    ) : (
-                      <Icon className="h-4 w-4" />
-                    )}
+                    <span
+                      className="flex h-4 w-4 items-center justify-center [&>svg]:!m-0 [&>svg]:h-full [&>svg]:w-full"
+                      dangerouslySetInnerHTML={{ __html: provider.iconSvg }}
+                    />
                     {provider.name}
                   </Label>
                   <Switch

@@ -6,12 +6,26 @@ import type { DatabaseAdapter, Framework } from "../types";
  * Server-side auth config uses process.env for all frameworks
  */
 function getEnvAccess(framework: Framework): { prefix: string; suffix: string } {
-  // Auth config runs on the server, so we use process.env for all frameworks
-  // The secret keys should never be exposed to the client
-  return { 
-    prefix: "process.env.", 
-    suffix: "!" 
-  };
+  switch (framework) {
+    case "next":
+    case "remix":
+      return { 
+        prefix: "process.env.", 
+        suffix: "!" 
+      };
+    case "tanstack":
+    case "react":
+      // Vite-based frameworks usually use import.meta.env
+      return { 
+        prefix: "import.meta.env.", 
+        suffix: "" 
+      };
+    default:
+      return { 
+        prefix: "process.env.", 
+        suffix: "!" 
+      };
+  }
 }
 
 /**

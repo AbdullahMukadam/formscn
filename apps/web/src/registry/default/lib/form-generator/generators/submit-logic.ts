@@ -1,33 +1,15 @@
-import type { GenerateSubmitLogicConfig, Framework } from "../types";
-
-
-function getNavigationCall(framework: Framework, path: string): string {
-  switch (framework) {
-    case "next":
-      return `router.push("${path}");`;
-    case "tanstack":
-      // TanStack Router uses object syntax
-      return `navigate({ to: "${path}" });`;
-    case "remix":
-    case "react":
-    default:
-      return `navigate("${path}");`;
-  }
-}
+import type { GenerateSubmitLogicConfig } from "../types";
 
 /**
- * Generate submit logic code - framework aware with proper navigation
+ * Generate submit logic code - simplified (no navigation)
  */
 export function generateSubmitLogic(config: GenerateSubmitLogicConfig): string {
-  const { isLogin, isSignup, fields, framework = "next" } = config;
+  const { isLogin, isSignup, fields } = config;
 
-  const redirectCall = getNavigationCall(framework, "/dashboard");
-  
   if (isLogin) {
     return `    await signIn.email({
       email: data.email,
       password: data.password,
-      callbackURL: "/dashboard",
       fetchOptions: {
         onRequest: () => {
           toast.loading("Signing in...");
@@ -35,7 +17,6 @@ export function generateSubmitLogic(config: GenerateSubmitLogicConfig): string {
         onSuccess: () => {
           toast.dismiss();
           toast.success("Welcome back!");
-          ${redirectCall}
         },
         onError: (ctx) => {
           toast.dismiss();
@@ -58,7 +39,6 @@ export function generateSubmitLogic(config: GenerateSubmitLogicConfig): string {
     return `    await signUp.email({
       email: data.email,
       password: data.password,${nameProp}
-      callbackURL: "/dashboard",
       fetchOptions: {
         onRequest: () => {
           toast.loading("Creating your account...");
@@ -66,7 +46,6 @@ export function generateSubmitLogic(config: GenerateSubmitLogicConfig): string {
         onSuccess: () => {
           toast.dismiss();
           toast.success("Account created successfully!");
-          ${redirectCall}
         },
         onError: (ctx) => {
           toast.dismiss();

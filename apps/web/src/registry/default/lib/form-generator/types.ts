@@ -13,7 +13,6 @@ export interface GenerateImportsConfig {
   isLogin: boolean;
   isSignup: boolean;
   hasOAuth: boolean;
-  oauthIcons: string;
   hasSteps: boolean;
 }
 

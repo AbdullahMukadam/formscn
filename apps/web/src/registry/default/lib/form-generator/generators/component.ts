@@ -7,16 +7,6 @@ import { generateSubmitLogic } from "./submit-logic";
 import { generateOAuthButtons } from "./oauth";
 
 /**
- * Get the router/navigate hook initialization for framework
- */
-function getNavigationHook(framework: Framework): string {
-  if (framework === "next") {
-    return "const router = useRouter();";
-  }
-  return "const navigate = useNavigate();";
-}
-
-/**
  * Generate a complete form component with Better Auth integration
  */
 export function generateFormComponent(config: GenerateFormComponentConfig): string {
@@ -28,14 +18,8 @@ export function generateFormComponent(config: GenerateFormComponentConfig): stri
 
   const hasOAuth = oauthProviders.length > 0;
   
-  // Extract OAuth icons to import
-  const oauthIcons = oauthProviders
-    .map(id => OAUTH_PROVIDERS.find(p => p.id === id))
-    .filter((p): p is NonNullable<typeof p> => p !== undefined)
-    .filter(p => !p.iconSvg) // Only import icons that aren't custom SVG
-    .map(p => p.icon.name)
-    .filter((name, index, self) => self.indexOf(name) === index) // Remove duplicates
-    .join(', ');
+  // Extract OAuth icons to import (Not needed anymore since we use SVGs, but kept for cleanup)
+  // const oauthIcons = ... (Removed)
 
   // Auth Detection
   const hasEmail = fields.some(f => f.name === "email" || f.inputType === "email");
@@ -46,7 +30,6 @@ export function generateFormComponent(config: GenerateFormComponentConfig): stri
   const isSignup = hasEmail && hasPassword && (hasConfirmPassword || hasName);
   const isLogin = hasEmail && hasPassword && !isSignup;
   const isAuth = isLogin || isSignup || hasOAuth;
-  const needsNavigation = isLogin || isSignup;
 
   // Generate parts
   const imports = generateImports({
@@ -57,7 +40,6 @@ export function generateFormComponent(config: GenerateFormComponentConfig): stri
     isLogin,
     isSignup,
     hasOAuth,
-    oauthIcons,
     hasSteps
   });
 
@@ -70,11 +52,9 @@ export function generateFormComponent(config: GenerateFormComponentConfig): stri
   const defaultValues = fields.map(f => {
     if (f.type === "checkbox") return `      ${f.name}: false,`;
     if (f.type === "date") return `      ${f.name}: undefined,`;
+    if (f.type === "file") return `      ${f.name}: undefined,`;
     return `      ${f.name}: "",`;
   }).join('\n');
-
-  // Navigation hook (only if needed)
-  const navigationHook = needsNavigation ? `\n  ${getNavigationHook(framework)}` : "";
 
   let componentBody = '';
 
@@ -100,12 +80,12 @@ export function generateFormComponent(config: GenerateFormComponentConfig): stri
     componentBody = `
 export function ${componentName}() {
   const [currentStep, setCurrentStep] = useState(0);
-  const steps = ${stepsData};${navigationHook}
+  const steps = ${stepsData};
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-${defaultValues}
+      ${defaultValues}
     },
     mode: "onChange",
     shouldUnregister: false,
@@ -113,7 +93,7 @@ ${defaultValues}
 
   const { isSubmitting } = form.formState;
 
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
 ${submitLogic}
   };
 
@@ -185,17 +165,17 @@ ${submitLogic}
     const loadingText = isLogin ? "Signing in..." : isSignup ? "Creating account..." : "Submitting...";
     
     componentBody = `
-export function ${componentName}() {${navigationHook}
+export function ${componentName}() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-${defaultValues}
+      ${defaultValues}
     },
   });
 
   const { isSubmitting } = form.formState;
 
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
 ${submitLogic}
   };
 

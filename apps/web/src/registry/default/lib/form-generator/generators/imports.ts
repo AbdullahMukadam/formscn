@@ -14,34 +14,20 @@ function getClientDirective(framework: Framework): string {
 /**
  * Get the navigation import for framework
  */
-function getNavigationImport(framework: Framework): string {
-  switch (framework) {
-    case "next":
-      return 'import { useRouter } from "next/navigation";';
-    case "remix":
-      return 'import { useNavigate } from "@remix-run/react";';
-    case "tanstack":
-      return 'import { useNavigate } from "@tanstack/react-router";';
-    case "react":
-    default:
-      return 'import { useNavigate } from "react-router-dom";';
-  }
-}
-
 /**
  * Generate imports for the form component
  */
 export function generateImports(config: GenerateImportsConfig): string {
-  const { framework, fields, isAuth, isLogin, isSignup, hasOAuth, oauthIcons, hasSteps } = config;
+  const { framework, fields, isAuth, isLogin, isSignup, hasOAuth, hasSteps } = config;
   
   const directive = getClientDirective(framework);
-  const needsNavigation = isLogin || isSignup;
 
   const hasSelect = fields.some(f => f.type === "select");
   const hasCheckbox = fields.some(f => f.type === "checkbox");
   const hasTextarea = fields.some(f => f.type === "textarea");
   const hasRadio = fields.some(f => f.type === "radio");
   const hasDate = fields.some(f => f.type === "date");
+  const hasFile = fields.some(f => f.type === "file");
   const needsController = hasSelect || hasCheckbox || hasRadio || hasDate;
 
   // Build React imports
@@ -57,14 +43,9 @@ export function generateImports(config: GenerateImportsConfig): string {
   }
   
   // React Hook Form
-  imports += `import { useForm${needsController ? ", Controller" : ""} } from "react-hook-form";
+  imports += `import { useForm${needsController ? ", Controller" : ""}${hasFile ? ", type SubmitHandler" : ""} } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";`;
-
-  // Navigation import (framework-specific)
-  if (needsNavigation) {
-    imports += `\n${getNavigationImport(framework)}`;
-  }
 
   // UI Components
   imports += `
@@ -112,7 +93,6 @@ import {
   if (hasDate) {
     imports += `
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
@@ -132,11 +112,6 @@ import {
     if (isSignup) authImports.push("signUp");
     
     imports += `\nimport { ${authImports.join(", ")} } from "@/lib/auth-client";`;
-    
-    // OAuth icons from lucide-react
-    if (hasOAuth && oauthIcons) {
-      imports += `\nimport { ${oauthIcons} } from "lucide-react";`;
-    }
   }
 
   return imports;
