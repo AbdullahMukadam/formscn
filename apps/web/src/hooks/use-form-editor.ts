@@ -33,8 +33,25 @@ export function useFormEditor({ initialTemplate }: UseFormEditorProps = {}) {
   const [oauthProviders, setOauthProviders] = useState<OAuthProvider[]>(initialTemplate?.oauthProviders || []);
 
   // State for database adapter & framework
-  const [databaseAdapter, setDatabaseAdapter] = useState<DatabaseAdapter>("drizzle");
-  const [framework, setFramework] = useState<Framework>("next");
+  const [databaseAdapter, _setDatabaseAdapter] = useState<DatabaseAdapter>("drizzle");
+  const [framework, _setFramework] = useState<Framework>("next");
+
+  const setDatabaseAdapter = (adapter: DatabaseAdapter) => {
+    _setDatabaseAdapter(adapter);
+    if (publishedId) {
+       setPublishedId(null);
+       toast.info("Framework/Adapter changed. Please regenerate the CLI command.");
+    }
+  };
+
+  const setFramework = (fw: Framework) => {
+    _setFramework(fw);
+    if (publishedId) {
+       setPublishedId(null);
+       toast.info("Framework/Adapter changed. Please regenerate the CLI command.");
+    }
+  };
+
 
   // State for UI
   const [selectedFieldIndex, setSelectedFieldIndex] = useState<number | null>(null);

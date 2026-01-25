@@ -24,6 +24,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "dotenv": "catalog:",
+    "framer-motion": "^12.29.0",
     "lucide-react": "^0.546.0",
     "nanoid": "^5.1.6",
     "next": "^16.1.1",

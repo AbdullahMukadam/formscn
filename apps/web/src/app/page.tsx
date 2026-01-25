@@ -5,53 +5,101 @@ import { Button } from "@/components/ui/button";
 import { formTemplates } from "@/lib/form-templates";
 import { Footer } from "@/components/footer";
 import { Github, Zap, Shield, Layout, Cpu, Box, Code2, ArrowUpRight, Wand2, Layers, Database, Sparkles, Binary, ChevronRight, Plus } from "lucide-react";
-
+import { motion } from "framer-motion";
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-[#000000] text-[#888] selection:bg-primary/30 font-sans tracking-tight overflow-x-hidden">
       
-      <section className="relative pt-24 md:pt-32 pb-16 md:pb-24 border-b border-white/[0.05]">
+      <section className="relative pt-20 md:pt-28 pb-16 md:pb-24 border-b border-white/[0.05]">
         {/* Abstract Background: Radial Mesh */}
-        <div className="absolute inset-0 z-0 opacity-[0.2]"
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.5 }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
+          className="absolute inset-0 z-0"
           style={{
-            backgroundImage: `radial-gradient(circle at 1px 1px, #1a1a1a 1px, transparent 0)`,
-            backgroundSize: '32px 32px'
+            backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.1) 1px, transparent 0)`,
+            backgroundSize: '24px 24px',
           }}
         />
         
-        {/* Horizon Glows */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full md:w-[1000px] h-[300px] md:h-[400px] bg-primary/[0.03] blur-[80px] md:blur-[120px] rounded-full -z-10" />
+        {/* Horizon Glows - Increased opacity for visibility + Pulse Animation */}
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-full md:w-[1000px] h-[300px] md:h-[400px] bg-white/[0.08] blur-[80px] md:blur-[120px] rounded-full -z-10" 
+        />
 
-        <div className="container relative z-10 mx-auto max-w-6xl px-4 md:px-6 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.03] border border-white/10 text-[8px] md:text-[12px] font-black text-primary mb-8 md:mb-10 shadow-[0_0_20px_rgba(114,227,173,0.1)]">
-            <Sparkles className="w-3 h-3" />
-            Now supports, tanstack, remix
-          </div>
+        <div className="container relative z-10 mx-auto max-w-6xl px-4 md:px-6 text-left">
 
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-white tracking-tighter leading-[1.1] md:leading-[1.0] mb-6 md:mb-8">
-            The visual engine for <br className="hidden sm:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/30 italic">technical forms.</span>
-          </h1>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="inline-flex items-center rounded-lg bg-white/5 border border-white/10 px-3 py-1 text-xs font-medium text-white/80 mb-8 backdrop-blur-xl"
+          >
+            <span className="flex h-2 w-2 rounded-full bg-primary mr-2 animate-pulse"></span>
+            v1.0 Now Public • Shadcn/UI Compatible
+          </motion.div>
 
-          <p className="text-sm md:text-lg text-white/40 max-w-xl mx-auto mb-8 md:mb-10 leading-relaxed font-medium px-4 md:px-0">
-            Stop manually wiring form state and Zod schemas. Build complex, 
-            multi-step flows visually and export production-ready React code 
-            optimized for your framework.
-          </p>
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="text-4xl sm:text-6xl lg:text-7xl font-bold text-white tracking-tighter leading-[1.1] md:leading-[1.0] mb-6 md:mb-8"
+          >
+            The Visual Registry for <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40 italic">Technical Forms.</span>
+          </motion.h1>
 
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-16 md:mb-20 px-4">
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="text-sm md:text-lg text-white/60 max-w-2xl mb-8 md:mb-10 leading-relaxed font-normal px-0"
+          >
+            FormsCN bridges the gap between visual builders and code ownership. 
+            Architect complex <strong>multi-step wizards</strong>, authentication flows, and data schemas visually. 
+            <br /><br />
+            Then, install production-ready, type-safe code directly into your project via CLI—
+            fully integrated with <strong>Zod</strong>, <strong>React Hook Form</strong>, and <strong>Shadcn/UI</strong>.
+          </motion.p>
+
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
+            className="flex flex-col sm:flex-row items-center gap-4 mb-16 md:mb-20 justify-start"
+          >
             <Link href="/editor" className="w-full sm:w-auto">
               <Button size="lg" className="h-12 px-8 rounded-xl bg-white text-black hover:bg-white/90 font-bold text-sm transition-all hover:scale-[1.02] active:scale-[0.98] w-full sm:w-auto">
-                Open The Lab
+                Open Visual Editor
               </Button>
             </Link>
             <Link href="/docs" className="w-full sm:w-auto">
-              <div className="h-12 px-6 rounded-xl border border-white/10 bg-white/[0.02] flex items-center justify-center gap-4 font-bold text-xs group hover:border-white/20 transition-all cursor-pointer w-full sm:w-auto">
-                Docs
+              <div className="h-12 px-6 rounded-xl flex items-center justify-center gap-2 font-medium text-sm text-white/60 hover:text-white border border-white/10 hover:border-white/20 transition-all cursor-pointer w-full sm:w-auto bg-white/[0.02]">
+                Read Documentation
               </div>
             </Link>
-          </div>
+          </motion.div>
+          
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.8 }}
+            className="flex items-center gap-6 text-xs text-white/30 font-mono"
+          >
+             <div className="flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-white/20"></div>
+                npx shadcn@latest add ...
+             </div>
+             <div className="flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-white/20"></div>
+                Next.js 15 Ready
+             </div>
+          </motion.div>
 
 
         </div>
@@ -174,7 +222,6 @@ export default function Home() {
                 className="group relative p-8 md:p-10 bg-[#000] hover:bg-white/[0.01] transition-all duration-300"
               >
                 <div className="mb-6 md:mb-8 flex justify-between items-start">
-                   <Box className="w-5 h-5 text-white opacity-20 group-hover:text-primary transition-colors" />
                    {template.steps && (
                       <span className="text-[8px] font-black uppercase tracking-[0.2em] text-primary border border-primary/20 px-2 py-0.5">Wizard</span>
                    )}

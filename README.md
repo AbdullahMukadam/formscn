@@ -1,6 +1,8 @@
 # FormsCN
 
-**FormsCN** is an open-source, shadcn/ui-inspired form builder and registry. Build production-ready forms in seconds with our visual editor, or install pre-built templates via CLI.
+**The Visual Registry for Technical Forms.**
+
+FormsCN bridges the gap between visual builders and code ownership. Architect complex **multi-step wizards**, authentication flows, and data schemas visually. Then, install production-ready, type-safe code directly into your project via CLI—fully integrated with **Zod**, **React Hook Form**, and **Shadcn/UI**.
 
 ## Features
 
@@ -24,7 +26,7 @@
 
 ### 2. CLI Installation
 
-You can install any standard template directly:
+You can install any standard template directly using `shadcn`:
 
 ```bash
 # Install a login form

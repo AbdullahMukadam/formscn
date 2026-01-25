@@ -14,7 +14,13 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   // Await the params object
-  const { id } = await params;
+  const { id: rawId } = await params;
+  // Strip .json extension if present
+  const id = rawId.replace(/\.json$/, "");
+  
+  const { searchParams } = new URL(request.url);
+  const queryFramework = searchParams.get("framework");
+
   const form = await getForm(id);
 
   if (!form) {
@@ -22,7 +28,8 @@ export async function GET(
   }
 
   // Use the framework from query param if available, otherwise fallback to form config or default
-  const effectiveFramework = form.config?.framework || "next";
+  const effectiveFramework = (queryFramework as any) || form.config?.framework || "next";
+
 
   // Determine dependencies based on the form's complexity
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3001";

@@ -15,7 +15,7 @@ FormCN is a monorepo managed by Turborepo.
 
 1.  **Fork & Clone**:
     ```bash
-    git clone https://github.com/YOUR_USERNAME/formcn.git
+    git clone https://github.com/AbdullahMukadam/formscn.git
     cd formcn
     ```
 2.  **Install Dependencies**:
@@ -26,7 +26,7 @@ FormCN is a monorepo managed by Turborepo.
     ```bash
     pnpm dev
     ```
-    This starts the web app at `http://localhost:3000`.
+    This starts the web app at `http://localhost:3001`.
 
 ## Project Structure
 
@@ -36,40 +36,50 @@ FormCN is a monorepo managed by Turborepo.
     *   `lib/form-generator.ts`: The logic that generates code from templates.
     *   `ui/`: Reusable UI components used within templates.
 
+## Roadmap & Areas for Contribution
+
+We are actively looking for help with:
+
+*   **Conditional Logic**: Adding `if/then` branching to the visual builder and schema generator.
+*   **Drag-and-Drop Step Reordering**: Improving the UX for multi-step form management.
+*   **AI Integration**: Generating form schemas from text prompts.
+*   **New Templates**: Adding more complex real-world forms (e.g., KYC, Medical Intake).
+
 ## Common Tasks
 
 ### Adding a New Template
 
-Want to add a new form template? Follow these steps:
+The easiest way to contribute a new template is to build it visually first.
 
-1.  **Create the Template Definition**:
-    Create a new file in `apps/web/src/registry/default/templates/` (e.g., `booking-form.ts`).
-    Define the schema, fields, and steps using the `FormTemplate` interface.
+1.  **Build Visually**:
+    Open the [Visual Builder](http://localhost:3001/editor) locally. Build your form (fields, steps, validation).
 
-2.  **Export the Template**:
-    Add your template to `apps/web/src/registry/default/templates/index.ts`.
+2.  **Export Configuration**:
+    Use the developer tools or console to inspect the form state, or look at how `useFormEditor` saves the state. We are working on a "Export to JSON" feature for contributors.
+    
+    *Currently, you can manually create the template definition file based on your design.*
 
-3.  **Generate the Component**:
-    You need to create a static `.tsx` version of your form for the registry.
-    You can use the visual builder locally to create it, or manually write it following the patterns in `*-form.tsx` files.
-    Save it as `apps/web/src/registry/default/templates/booking-form.tsx`.
+3.  **Create Template File**:
+    Create a new file in `apps/web/src/registry/default/templates/` (e.g., `medical-intake.ts`).
+    
+    ```ts
+    import type { FormTemplate } from "../types";
 
-4.  **Register the Component**:
-    Add an entry to `apps/web/registry.json` under `items`.
-    ```json
-    {
-      "name": "booking-form",
-      "type": "registry:block",
-      "files": [{ "path": "src/registry/default/templates/booking-form.tsx", ... }],
-      ...
-    }
+    export const medicalIntake: FormTemplate = {
+      id: "medical-intake",
+      name: "Medical Intake",
+      description: "Patient registration and medical history.",
+      fields: [
+         // ... your fields here
+      ],
+    };
     ```
 
-5.  **Build the Registry**:
-    Run the build script to update the public API files.
-    ```bash
-    pnpm --filter web registry:build
-    ```
+4.  **Register the Template**:
+    Add it to `apps/web/src/registry/default/templates/index.ts`.
+
+5.  **Build Registry**:
+    Run `pnpm --filter web registry:build` to generate the artifacts.
 
 ### Improving the Generator
 

@@ -51,10 +51,20 @@ export function FormPreview({
 }: FormPreviewProps) {
   const [currentStep, setCurrentStep] = useState<number>(0);
   const hasSteps = !!(steps && steps.length > 0);
-  
+
+  // Reset current step if it becomes invalid (e.g. step removed)
+  useEffect(() => {
+    if (hasSteps && steps && currentStep >= steps.length) {
+      setCurrentStep(0);
+    }
+  }, [steps, hasSteps, currentStep]);
+
   const stepFields = useMemo(() => {
     if (!hasSteps || !steps) return allFields;
-    
+
+    // Safety check: ensure the current step exists
+    if (!steps[currentStep]) return [];
+
     return steps[currentStep].fields;
   }, [hasSteps, steps, currentStep, allFields]);
 
@@ -62,57 +72,62 @@ export function FormPreview({
 
   const formSchema = useMemo(() => {
     const shape: Record<string, any> = {};
-    
-    allFields.forEach((field) => {
-      let validation: z.ZodTypeAny;
 
-      switch (field.type) {
-        case "checkbox":
-          validation = z.boolean();
-          if (field.required) {
-            validation = (validation as z.ZodBoolean).refine((v) => v === true, {
-              message: "Required",
-            });
-          } else {
-            validation = (validation as z.ZodBoolean).optional();
-          }
-          break;
+    // Ensure allFields is defined and is an array
+    if (Array.isArray(allFields)) {
+      allFields.forEach((field) => {
+        if (!field || !field.name) return;
 
-        case "date":
-          validation = z.date();
-          if (field.required) {
-             validation = (validation as z.ZodDate).min(new Date("1900-01-01"), "Required");
-          } else {
-            validation = (validation as z.ZodDate).optional();
-          }
-          break;
+        let validation: z.ZodTypeAny;
 
-        case "input":
-        case "textarea":
-        case "select":
-        case "radio":
-        default:
-          validation = z.string();
-          if (field.type === "input" && field.inputType === "email") {
-            validation = (validation as z.ZodString).email();
-          }
-          
-          if (field.required) {
-            validation = (validation as z.ZodString).min(1, "Required");
-          } else {
-            validation = (validation as z.ZodString).optional().or(z.literal(""));
-          }
-          break;
-      }
-      
-      shape[field.name] = validation;
-    });
-    
-    return z.object(shape);
-  }, [allFields]);
+        switch (field.type) {
+          case "checkbox":
+            validation = z.boolean();
+            if (field.required) {
+              validation = (validation as z.ZodBoolean).refine((v) => v === true, {
+                message: "Required",
+              });
+            } else {
+              validation = (validation as z.ZodBoolean).optional();
+            }
+            break;
+
+          case "date":
+            validation = z.date();
+            if (field.required) {
+              validation = (validation as z.ZodDate).min(new Date("1900-01-01"), "Required");
+            } else {
+              validation = (validation as z.ZodDate).optional();
+            }
+            break;
+
+          case "input":
+          case "textarea":
+          case "select":
+          case "radio":
+          default:
+            validation = z.string();
+            if (field.type === "input" && field.inputType === "email") {
+              validation = (validation as z.ZodString).email();
+            }
+
+            if (field.required) {
+              validation = (validation as z.ZodString).min(1, "Required");
+            } else {
+              validation = (validation as z.ZodString).optional().or(z.literal(""));
+            }
+            break;
+        }
+
+        shape[field.name] = validation;
+      });
+
+      return z.object(shape);
+    }
+  }, [allFields])
 
   const form = useForm({
-    resolver: zodResolver(formSchema),
+    resolver: formSchema ? zodResolver(formSchema) : undefined,
     mode: "onChange",
     shouldUnregister: false,
   });
@@ -140,7 +155,7 @@ export function FormPreview({
       <CardHeader className=" space-y-2">
         <CardTitle>{formName}</CardTitle>
         <CardDescription>{formDescription}</CardDescription>
-        
+
         {hasSteps && steps && (
           <div className="space-y-2 pt-2">
             <div className="flex items-center justify-between text-sm">
@@ -167,232 +182,235 @@ export function FormPreview({
           {/* Render Fields */}
           <div className={cn("space-y-4", hasSteps && "animate-in fade-in-50 slide-in-from-right-5")}>
             {visibleFields.map((field, index) => {
+              // Safety check for invalid fields
+              if (!field || !field.name) return null;
+
               // If steps are used, index is relative to the step. Otherwise it's global.
               const fieldIndex = hasSteps ? index : allFields.findIndex(f => f.name === field.name);
-              
+
               return (
-              <div
-                key={field.name}
-                className={`group relative p-2 -mx-2 rounded-md hover:bg-muted/50 transition-colors border-2 ${selectedFieldIndex === fieldIndex ? 'border-primary' : 'border-transparent'}`}
-                onClick={() => setSelectedFieldIndex(fieldIndex)}
-              >
-                {/* Actions (Visible on Hover) */}
-                <div className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-all duration-200 z-10">
-                  <div className="flex items-center gap-1 bg-background shadow-md border rounded-md p-1">
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            className="h-7 w-7"
-                            disabled={fieldIndex === 0}
-                            onClick={(e) => { e.stopPropagation(); moveField(fieldIndex, "up"); }}
-                          >
-                            <ArrowUp className="h-3.5 w-3.5" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent><p>Move Up</p></TooltipContent>
-                      </Tooltip>
-
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            className="h-7 w-7"
-                            disabled={fieldIndex === (hasSteps ? visibleFields.length : allFields.length) - 1}
-                            onClick={(e) => { e.stopPropagation(); moveField(fieldIndex, "down"); }}
-                          >
-                            <ArrowDown className="h-3.5 w-3.5" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent><p>Move Down</p></TooltipContent>
-                      </Tooltip>
-
-                      <div className="w-[1px] h-4 bg-border mx-0.5" />
-
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            className="h-7 w-7 text-destructive hover:text-destructive hover:bg-destructive/10"
-                            onClick={(e) => { e.stopPropagation(); removeField(fieldIndex); }}
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent><p>Remove Field</p></TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </div>
-                </div>
-
-                {/* Field Rendering */}
-                {field.type === "input" && (
-                  <div className="space-y-2">
-                    <Label>{field.label}{field.required && " *"}</Label>
-                    <Input 
-                      placeholder={field.placeholder} 
-                      {...form.register(field.name)}
-                    />
-                    {form.formState.errors[field.name] && (
-                      <p className="text-xs text-destructive">{form.formState.errors[field.name]?.message as string}</p>
-                    )}
-                    {field.description && <p className="text-xs text-muted-foreground">{field.description}</p>}
-                  </div>
-                )}
-
-                {field.type === "textarea" && (
-                  <div className="space-y-2">
-                    <Label>{field.label}{field.required && " *"}</Label>
-                    <Textarea 
-                      className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm" 
-                      placeholder={field.placeholder} 
-                      {...form.register(field.name)}
-                    />
-                    {form.formState.errors[field.name] && (
-                      <p className="text-xs text-destructive">{form.formState.errors[field.name]?.message as string}</p>
-                    )}
-                  </div>
-                )}
-
-                {field.type === "checkbox" && (
-                  <div className="flex items-center space-x-2 py-2">
-                    <Controller
-                      control={form.control}
-                      name={field.name}
-                      render={({ field: f }) => (
-                        <Checkbox 
-                          id={field.name} 
-                          checked={!!f.value}
-                          onCheckedChange={f.onChange}
-                        />
-                      )}
-                    />
-                    <Label htmlFor={field.name}>{field.label}</Label>
-                    {form.formState.errors[field.name] && (
-                      <p className="text-xs text-destructive ml-2">{form.formState.errors[field.name]?.message as string}</p>
-                    )}
-                  </div>
-                )}
-
-                {field.type === "select" && (
-                  <div className="space-y-2">
-                    <Label>{field.label}{field.required && " *"}</Label>
-                    <Controller
-                      control={form.control}
-                      name={field.name}
-                      render={({ field: f }) => (
-                        <Select onValueChange={f.onChange} defaultValue={f.value}>
-                          <SelectTrigger>
-                            <SelectValue placeholder={field.placeholder || "Select an option..."} />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {(field.options || []).map((opt, idx) => (
-                              <SelectItem key={idx} value={opt.value}>{opt.label}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      )}
-                    />
-                    {form.formState.errors[field.name] && (
-                      <p className="text-xs text-destructive">{form.formState.errors[field.name]?.message as string}</p>
-                    )}
-                    {field.description && <p className="text-xs text-muted-foreground">{field.description}</p>}
-                  </div>
-                )}
-
-                {field.type === "radio" && (
-                  <div className="space-y-2">
-                    <Label>{field.label}{field.required && " *"}</Label>
-                    <Controller
-                      control={form.control}
-                      name={field.name}
-                      render={({ field: f }) => (
-                        <RadioGroup onValueChange={f.onChange} defaultValue={f.value}>
-                          {(field.options || []).map((opt, idx) => (
-                            <div key={idx} className="flex items-center space-x-2">
-                              <RadioGroupItem value={opt.value} id={`${field.name}-${opt.value}`} />
-                              <Label htmlFor={`${field.name}-${opt.value}`}>{opt.label}</Label>
-                            </div>
-                          ))}
-                        </RadioGroup>
-                      )}
-                    />
-                    {form.formState.errors[field.name] && (
-                      <p className="text-xs text-destructive">{form.formState.errors[field.name]?.message as string}</p>
-                    )}
-                    {field.description && <p className="text-xs text-muted-foreground">{field.description}</p>}
-                  </div>
-                )}
-
-                {field.type === "date" && (
-                  <div className="space-y-2 flex flex-col">
-                    <Label>{field.label}{field.required && " *"}</Label>
-                    <Controller
-                      control={form.control}
-                      name={field.name}
-                      render={({ field: f }) => (
-                        <Popover>
-                          <PopoverTrigger>
+                <div
+                  key={field.name}
+                  className={`group relative p-2 -mx-2 rounded-md hover:bg-muted/50 transition-colors border-2 ${selectedFieldIndex === fieldIndex ? 'border-primary' : 'border-transparent'}`}
+                  onClick={() => setSelectedFieldIndex(fieldIndex)}
+                >
+                  {/* Actions (Visible on Hover) */}
+                  <div className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-all duration-200 z-10">
+                    <div className="flex items-center gap-1 bg-background shadow-md border rounded-md p-1">
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger>
                             <Button
                               type="button"
-                              variant={"outline"}
-                              className={cn(
-                                "w-full pl-3 text-left font-normal",
-                                !f.value && "text-muted-foreground"
-                              )}
+                              variant="ghost"
+                              size="icon"
+                              className="h-7 w-7"
+                              disabled={fieldIndex === 0}
+                              onClick={(e) => { e.stopPropagation(); moveField(fieldIndex, "up"); }}
                             >
-                              {f.value instanceof Date ? (
-                                format(f.value, "PPP")
-                              ) : (
-                                <span>{field.placeholder || "Pick a date"}</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              <ArrowUp className="h-3.5 w-3.5" />
                             </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              mode="single"
-                              selected={f.value instanceof Date ? f.value : undefined}
-                              onSelect={f.onChange}
-                              disabled={(date) =>
-                                date > new Date() || date < new Date("1900-01-01")
-                              }
-                              initialFocus
-                            />
-                          </PopoverContent>
-                        </Popover>
-                      )}
-                    />
-                    {form.formState.errors[field.name] && (
-                      <p className="text-xs text-destructive">{form.formState.errors[field.name]?.message as string}</p>
-                    )}
-                    {field.description && <p className="text-xs text-muted-foreground">{field.description}</p>}
+                          </TooltipTrigger>
+                          <TooltipContent><p>Move Up</p></TooltipContent>
+                        </Tooltip>
+
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="h-7 w-7"
+                              disabled={fieldIndex === (hasSteps ? visibleFields.length : allFields.length) - 1}
+                              onClick={(e) => { e.stopPropagation(); moveField(fieldIndex, "down"); }}
+                            >
+                              <ArrowDown className="h-3.5 w-3.5" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent><p>Move Down</p></TooltipContent>
+                        </Tooltip>
+
+                        <div className="w-[1px] h-4 bg-border mx-0.5" />
+
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="h-7 w-7 text-destructive hover:text-destructive hover:bg-destructive/10"
+                              onClick={(e) => { e.stopPropagation(); removeField(fieldIndex); }}
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent><p>Remove Field</p></TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
                   </div>
-                )}
-              </div>
-            );
+
+                  {/* Field Rendering */}
+                  {field.type === "input" && (
+                    <div className="space-y-2">
+                      <Label>{field.label}{field.required && " *"}</Label>
+                      <Input
+                        placeholder={field.placeholder}
+                        {...form.register(field.name)}
+                      />
+                      {form.formState.errors[field.name] && (
+                        <p className="text-xs text-destructive">{form.formState.errors[field.name]?.message as string}</p>
+                      )}
+                      {field.description && <p className="text-xs text-muted-foreground">{field.description}</p>}
+                    </div>
+                  )}
+
+                  {field.type === "textarea" && (
+                    <div className="space-y-2">
+                      <Label>{field.label}{field.required && " *"}</Label>
+                      <Textarea
+                        className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                        placeholder={field.placeholder}
+                        {...form.register(field.name)}
+                      />
+                      {form.formState.errors[field.name] && (
+                        <p className="text-xs text-destructive">{form.formState.errors[field.name]?.message as string}</p>
+                      )}
+                    </div>
+                  )}
+
+                  {field.type === "checkbox" && (
+                    <div className="flex items-center space-x-2 py-2">
+                      <Controller
+                        control={form.control}
+                        name={field.name}
+                        render={({ field: f }) => (
+                          <Checkbox
+                            id={field.name}
+                            checked={!!f.value}
+                            onCheckedChange={f.onChange}
+                          />
+                        )}
+                      />
+                      <Label htmlFor={field.name}>{field.label}</Label>
+                      {form.formState.errors[field.name] && (
+                        <p className="text-xs text-destructive ml-2">{form.formState.errors[field.name]?.message as string}</p>
+                      )}
+                    </div>
+                  )}
+
+                  {field.type === "select" && (
+                    <div className="space-y-2">
+                      <Label>{field.label}{field.required && " *"}</Label>
+                      <Controller
+                        control={form.control}
+                        name={field.name}
+                        render={({ field: f }) => (
+                          <Select onValueChange={f.onChange} defaultValue={f.value}>
+                            <SelectTrigger>
+                              <SelectValue placeholder={field.placeholder || "Select an option..."} />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {(field.options || []).map((opt, idx) => (
+                                <SelectItem key={idx} value={opt.value}>{opt.label}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        )}
+                      />
+                      {form.formState.errors[field.name] && (
+                        <p className="text-xs text-destructive">{form.formState.errors[field.name]?.message as string}</p>
+                      )}
+                      {field.description && <p className="text-xs text-muted-foreground">{field.description}</p>}
+                    </div>
+                  )}
+
+                  {field.type === "radio" && (
+                    <div className="space-y-2">
+                      <Label>{field.label}{field.required && " *"}</Label>
+                      <Controller
+                        control={form.control}
+                        name={field.name}
+                        render={({ field: f }) => (
+                          <RadioGroup onValueChange={f.onChange} defaultValue={f.value}>
+                            {(field.options || []).map((opt, idx) => (
+                              <div key={idx} className="flex items-center space-x-2">
+                                <RadioGroupItem value={opt.value} id={`${field.name}-${opt.value}`} />
+                                <Label htmlFor={`${field.name}-${opt.value}`}>{opt.label}</Label>
+                              </div>
+                            ))}
+                          </RadioGroup>
+                        )}
+                      />
+                      {form.formState.errors[field.name] && (
+                        <p className="text-xs text-destructive">{form.formState.errors[field.name]?.message as string}</p>
+                      )}
+                      {field.description && <p className="text-xs text-muted-foreground">{field.description}</p>}
+                    </div>
+                  )}
+
+                  {field.type === "date" && (
+                    <div className="space-y-2 flex flex-col">
+                      <Label>{field.label}{field.required && " *"}</Label>
+                      <Controller
+                        control={form.control}
+                        name={field.name}
+                        render={({ field: f }) => (
+                          <Popover>
+                            <PopoverTrigger>
+                              <Button
+                                type="button"
+                                variant={"outline"}
+                                className={cn(
+                                  "w-full pl-3 text-left font-normal",
+                                  !f.value && "text-muted-foreground"
+                                )}
+                              >
+                                {f.value instanceof Date ? (
+                                  format(f.value, "PPP")
+                                ) : (
+                                  <span>{field.placeholder || "Pick a date"}</span>
+                                )}
+                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={f.value instanceof Date ? f.value : undefined}
+                                onSelect={f.onChange}
+                                disabled={(date) =>
+                                  date > new Date() || date < new Date("1900-01-01")
+                                }
+                                initialFocus
+                              />
+                            </PopoverContent>
+                          </Popover>
+                        )}
+                      />
+                      {form.formState.errors[field.name] && (
+                        <p className="text-xs text-destructive">{form.formState.errors[field.name]?.message as string}</p>
+                      )}
+                      {field.description && <p className="text-xs text-muted-foreground">{field.description}</p>}
+                    </div>
+                  )}
+                </div>
+              );
             })}
           </div>
 
           {hasSteps && steps ? (
             <div className="flex justify-between pt-4">
-              <Button 
-                type="button" 
-                variant="outline" 
-                onClick={prevStep} 
+              <Button
+                type="button"
+                variant="outline"
+                onClick={prevStep}
                 disabled={currentStep === 0}
                 className={cn(currentStep === 0 && "invisible")}
               >
                 Back
               </Button>
-              
+
               {currentStep < steps.length - 1 ? (
                 <Button type="button" onClick={nextStep}>
                   Next
@@ -428,9 +446,9 @@ export function FormPreview({
                     <div key={providerId} className="relative group">
                       <Button variant="outline" className="w-full">
                         {provider.iconSvg ? (
-                          <span 
-                            className="contents" 
-                            dangerouslySetInnerHTML={{ __html: provider.iconSvg }} 
+                          <span
+                            className="contents"
+                            dangerouslySetInnerHTML={{ __html: provider.iconSvg }}
                           />
                         ) : (
                           <Icon className="mr-2 h-4 w-4" />

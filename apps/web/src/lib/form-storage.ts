@@ -58,10 +58,12 @@ export async function saveForm(form: Omit<PublishedForm, "createdAt">) {
 export async function getForm(id: string) {
   // Check memory cache first
   if (cache.has(id)) {
+    console.log("id here")
     return cache.get(id);
   }
   
   // Try reading from disk (in case another process wrote it)
   const forms = getForms();
+  console.log(forms)
   return forms.get(id);
 }

@@ -9,10 +9,10 @@ import { Github } from "lucide-react";
 export default function Header() {
   const pathname = usePathname();
   const links = [
-    { to: "/", label: "formscn" },
-    { to: "/templates", label: "templates" },
-    { to: "/docs", label: "docs" },
-    { to: "/editor", label: "editor" },
+    { to: "/", label: "FormsCN" },
+    { to: "/templates", label: "Templates" },
+    { to: "/docs", label: "Documentation" },
+    { to: "/editor", label: "Visual Editor" },
   ] as const;
 
   return (
@@ -20,7 +20,7 @@ export default function Header() {
       <div className="container flex h-14 items-center justify-between mx-auto max-w-7xl">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center space-x-2">
-            <span className="font-bold tracking-tighter text-white">formscn</span>
+            <span className="font-bold tracking-tighter text-white text-lg">FormsCN</span>
           </Link>
           <nav className="hidden md:flex items-center gap-6">
             {links.map(({ to, label }) => {
@@ -30,10 +30,10 @@ export default function Header() {
                   key={to}
                   href={to}
                   className={cn(
-                    "transition-colors hover:text-white font-semibold",
+                    "transition-colors hover:text-white font-medium text-sm",
                     pathname === to || pathname?.startsWith(to + "/")
                       ? "text-white"
-                      : "text-white/40"
+                      : "text-white/60"
                   )}
                 >
                   {label}

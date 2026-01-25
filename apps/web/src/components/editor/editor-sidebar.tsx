@@ -31,6 +31,8 @@ import { OAUTH_PROVIDERS } from "@/lib/oauth-providers-config";
 import type { FormStep, FormField as FormFieldType } from "@/lib/form-templates";
 import type { OAuthProvider } from "@/lib/oauth-providers-config";
 import type { DatabaseAdapter, Framework } from "@/registry/default/lib/form-generator";
+import { DropdownMenu } from "../ui/dropdown-menu";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
 interface EditorSidebarProps {
   // Form Meta
@@ -38,7 +40,7 @@ interface EditorSidebarProps {
   setFormName: (name: string) => void;
   formDescription: string;
   setFormDescription: (desc: string) => void;
-  
+
   // Steps
   isMultiStep: boolean;
   toggleMultiStep: (enabled: boolean) => void;
@@ -56,7 +58,7 @@ interface EditorSidebarProps {
   setSelectedFieldIndex: (index: number | null) => void;
   updateField: (index: number, updates: Partial<FormFieldType>) => void;
   addField: (type: FormFieldType["type"], inputType?: string) => void;
-  
+
   // OAuth
   oauthProviders: OAuthProvider[];
   toggleOAuth: (provider: OAuthProvider) => void;
@@ -64,7 +66,7 @@ interface EditorSidebarProps {
   setDatabaseAdapter: (adapter: DatabaseAdapter) => void;
   framework: Framework;
   setFramework: (framework: Framework) => void;
-  
+
   // Helpers
   isAuthEnabled: boolean;
   resetForm: () => void;
@@ -97,7 +99,7 @@ export function EditorSidebar({
   isAuthEnabled,
   resetForm,
 }: EditorSidebarProps) {
-  
+
   const fieldTypes = useMemo(() => ({
     basic: FORM_FIELD_TYPES.filter(f => f.enabled && f.category === "basic"),
     advanced: FORM_FIELD_TYPES.filter(f => f.enabled && f.category === "advanced"),
@@ -159,18 +161,25 @@ export function EditorSidebar({
           {selectedField.type === "input" && (
             <div className="space-y-2 pt-2">
               <Label>Input Type</Label>
-              <select
-                className="w-full h-9 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              <Select
                 value={selectedField.inputType}
-                onChange={(e) => updateField(selectedFieldIndex, { inputType: e.target.value as any })}
+                onValueChange={(e) => updateField(selectedFieldIndex, { inputType: e as any })}
               >
-                <option value="text">Text</option>
-                <option value="email">Email</option>
-                <option value="password">Password</option>
-                <option value="number">Number</option>
-                <option value="tel">Tel</option>
-                <option value="url">URL</option>
-              </select>
+                <SelectTrigger className="w-full max-w-full">
+                  <SelectValue placeholder="Select an type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="text">Text</SelectItem>
+                    <SelectItem value="email">Email</SelectItem>
+                    <SelectItem value="password">Password</SelectItem>
+                    <SelectItem value="number">Number</SelectItem>
+                    <SelectItem value="tel">Tel</SelectItem>
+                    <SelectItem value="url">URL</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+
+              </Select>
             </div>
           )}
 
@@ -309,9 +318,8 @@ export function EditorSidebar({
                 {steps.map((step, index) => (
                   <div
                     key={step.id}
-                    className={`p-3 rounded-md border text-sm cursor-pointer transition-colors ${
-                      activeStepIndex === index ? "bg-accent border-primary" : "hover:bg-muted/50"
-                    }`}
+                    className={`p-3 rounded-md border text-sm cursor-pointer transition-colors ${activeStepIndex === index ? "bg-accent border-primary" : "hover:bg-muted/50"
+                      }`}
                     onClick={() => {
                       setActiveStepIndex(index);
                       setSelectedFieldIndex(null);
@@ -367,11 +375,11 @@ export function EditorSidebar({
               const Icon = fieldConfig.icon;
               // Map config types to FormField types
               let actualType: FormFieldType["type"] = fieldConfig.type as any;
-              
+
               if (fieldConfig.type === "input" || fieldConfig.type === "number" || (fieldConfig.type === "date" && fieldConfig.name === "Date Input") || fieldConfig.type === "switch") {
                 actualType = "input";
               }
-              
+
               return (
                 <Button
                   key={`${fieldConfig.type}-${fieldConfig.inputType || fieldConfig.name}-${idx}`}
@@ -389,38 +397,38 @@ export function EditorSidebar({
 
         <Separator />
 
-          {/* Section: OAuth */}
-          <div className="space-y-4">
-            <h3 className="text-sm font-medium flex items-center gap-2">
-              <Box className="h-4 w-4" /> OAuth Providers
-            </h3>
-            <div className="space-y-3">
-              {OAUTH_PROVIDERS.filter(p => p.enabled).map((provider) => {
-                const Icon = provider.icon;
-                return (
-                  <div key={provider.id} className="flex items-center justify-between">
-                    <Label htmlFor={`${provider.id}-auth`} className="flex items-center gap-2 cursor-pointer">
-                      {provider.iconSvg ? (
-                        <span 
-                          className="flex h-4 w-4 items-center justify-center [&>svg]:!m-0 [&>svg]:h-full [&>svg]:w-full" 
-                          dangerouslySetInnerHTML={{ __html: provider.iconSvg }} 
-                        />
-                      ) : (
-                        <Icon className="h-4 w-4" />
-                      )}
-                      {provider.name}
-                    </Label>
-                    <Switch
-                      id={`${provider.id}-auth`}
-                      checked={oauthProviders.includes(provider.id)}
-                      onCheckedChange={() => toggleOAuth(provider.id)}
-                    />
-                  </div>
-                );
-              })}
-            </div>
+        {/* Section: OAuth */}
+        <div className="space-y-4">
+          <h3 className="text-sm font-medium flex items-center gap-2">
+            <Box className="h-4 w-4" /> OAuth Providers
+          </h3>
+          <div className="space-y-3">
+            {OAUTH_PROVIDERS.filter(p => p.enabled).map((provider) => {
+              const Icon = provider.icon;
+              return (
+                <div key={provider.id} className="flex items-center justify-between">
+                  <Label htmlFor={`${provider.id}-auth`} className="flex items-center gap-2 cursor-pointer">
+                    {provider.iconSvg ? (
+                      <span
+                        className="flex h-4 w-4 items-center justify-center [&>svg]:!m-0 [&>svg]:h-full [&>svg]:w-full"
+                        dangerouslySetInnerHTML={{ __html: provider.iconSvg }}
+                      />
+                    ) : (
+                      <Icon className="h-4 w-4" />
+                    )}
+                    {provider.name}
+                  </Label>
+                  <Switch
+                    id={`${provider.id}-auth`}
+                    checked={oauthProviders.includes(provider.id)}
+                    onCheckedChange={() => toggleOAuth(provider.id)}
+                  />
+                </div>
+              );
+            })}
           </div>
         </div>
+      </div>
     </aside>
   );
 }
