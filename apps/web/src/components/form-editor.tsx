@@ -13,8 +13,9 @@ const CodeViewer = dynamic(() => import("@/components/editor/code-viewer").then(
 });
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Eye, Code, Share2 } from "lucide-react";
+import { Eye, Code, Menu } from "lucide-react";
 import { toast } from "sonner";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 interface FormEditorProps {
   initialTemplate?: FormTemplate;
@@ -22,39 +23,25 @@ interface FormEditorProps {
 
 export function FormEditor({ initialTemplate }: FormEditorProps) {
   const {
-    // State
-    formName,
-    setFormName,
-    formDescription,
-    setFormDescription,
-    fields,
-    steps,
-    oauthProviders,
-    setOauthProviders,
-    databaseAdapter,
-    setDatabaseAdapter,
-    framework,
-    setFramework,
-    selectedFieldIndex,
-    setSelectedFieldIndex,
-    selectedField,
-    activeTab,
-    setActiveTab,
-    publishedId,
-    isPublishing,
-
-    // Actions
-    updateField,
-    addField,
-    removeField,
-    moveField,
-    toggleOAuth,
-    setIsPublishing,
-    setPublishedId,
-    resetForm,
+    formName, setFormName, formDescription, setFormDescription, fields, steps,
+    isMultiStep, toggleMultiStep, addStep, removeStep, updateStep, activeStepIndex,
+    setActiveStepIndex, oauthProviders, setOauthProviders, databaseAdapter,
+    setDatabaseAdapter, framework, setFramework, selectedFieldIndex,
+    setSelectedFieldIndex, selectedField, activeTab, setActiveTab,
+    publishedId, isPublishing, updateField, addField, removeField, moveField,
+    toggleOAuth, setIsPublishing, setPublishedId, resetForm,
   } = useFormEditor({ initialTemplate });
 
   const isAuthEnabled = oauthProviders.length > 0 || fields.some(f => f.name === 'password' || f.inputType === 'password');
+
+  const sidebarProps = {
+    formName, setFormName, formDescription, setFormDescription, isMultiStep,
+    toggleMultiStep, steps, activeStepIndex, setActiveStepIndex, addStep,
+    removeStep, updateStep, fields, selectedField, selectedFieldIndex,
+    setSelectedFieldIndex, updateField, addField, oauthProviders, toggleOAuth,
+    databaseAdapter, setDatabaseAdapter, framework, setFramework,
+    isAuthEnabled, resetForm
+  };
 
   const handlePublish = async () => {
     setIsPublishing(true);
@@ -63,10 +50,7 @@ export function FormEditor({ initialTemplate }: FormEditorProps) {
 
     try {
       const code = generateFormComponent({
-        formName,
-        formDescription,
-        fields,
-        steps,
+        formName, formDescription, fields, steps,
         oauthProviders: isAuthEnabled ? oauthProviders : [],
       });
 
@@ -74,26 +58,15 @@ export function FormEditor({ initialTemplate }: FormEditorProps) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: formName,
-          description: formDescription,
-          code,
-          config: {
-            fields,
-            steps,
-            oauthProviders,
-            databaseAdapter,
-            framework,
-          },
+          name: formName, description: formDescription, code,
+          config: { fields, steps, oauthProviders, databaseAdapter, framework },
           dependencies: [`${baseUrl}/r/base-form.json`],
         }),
       });
 
       if (!response.ok) throw new Error("Failed to publish");
-
       const data = await response.json();
       setPublishedId(data.id);
-      // toast.success("Form published! CLI command updated."); 
-      // Toast is handled in the UI usually, but we can do it here if we imported toast
     } catch (error) {
       console.error(error);
       toast.error("Failed to publish form");
@@ -104,78 +77,91 @@ export function FormEditor({ initialTemplate }: FormEditorProps) {
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">
-      {/* Sidebar - Settings & Fields */}
-      <EditorSidebar
-        formName={formName}
-        setFormName={setFormName}
-        formDescription={formDescription}
-        setFormDescription={setFormDescription}
-        fields={fields}
-        selectedField={selectedField}
-        selectedFieldIndex={selectedFieldIndex}
-        setSelectedFieldIndex={setSelectedFieldIndex}
-        updateField={updateField}
-        addField={addField}
-        oauthProviders={oauthProviders}
-        toggleOAuth={toggleOAuth}
-        databaseAdapter={databaseAdapter}
-        setDatabaseAdapter={setDatabaseAdapter}
-        framework={framework}
-        setFramework={setFramework}
-        isAuthEnabled={isAuthEnabled}
-        resetForm={resetForm}
-      />
+      {/* Desktop Sidebar */}
+      <div className="hidden lg:block">
+        <EditorSidebar {...sidebarProps} />
+      </div>
 
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col h-full min-w-0 bg-muted/20">
         {/* Header */}
         <header className="border-b bg-background h-14 flex items-center justify-between px-4 shrink-0">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-[400px]">
-            <TabsList>
-              <TabsTrigger value="preview" className="flex gap-2"><Eye className="h-4 w-4" /> Preview</TabsTrigger>
-              <TabsTrigger value="code" className="flex gap-2"><Code className="h-4 w-4" /> Integrate</TabsTrigger>
-            </TabsList>
-          </Tabs>
+          <div className="flex items-center gap-2 flex-1 min-w-0">
+            {/* Mobile Sidebar Trigger */}
+            <div className="lg:hidden shrink-0">
+              <Sheet>
+                <SheetTrigger>
+                  <Button variant="ghost" size="icon" className="h-9 w-9">
+                    <Menu className="h-5 w-5" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="p-0 w-80">
+                  <EditorSidebar {...sidebarProps} />
+                </SheetContent>
+              </Sheet>
+            </div>
+            
+            <div className="flex-1 lg:flex-none flex justify-center lg:justify-start min-w-0">
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full max-w-[280px] sm:max-w-[400px]">
+                <TabsList className="grid w-full grid-cols-2 h-9">
+                  <TabsTrigger value="preview" className="flex gap-2 text-[11px] sm:text-xs md:text-sm px-1 sm:px-4">
+                    <Eye className="h-3.5 w-3.5 shrink-0" /> 
+                    <span className="truncate">Preview</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="code" className="flex gap-2 text-[11px] sm:text-xs md:text-sm px-1 sm:px-4">
+                    <Code className="h-3.5 w-3.5 shrink-0" /> 
+                    <span className="truncate">Integrate</span>
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
+          </div>
 
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" onClick={() => (window.location.href = "/")}>
+          <div className="flex items-center gap-2 ml-2 shrink-0">
+            <Button variant="ghost" size="sm" onClick={() => (window.location.href = "/")} className="text-xs sm:text-sm px-2 sm:px-3 h-9">
               Exit
             </Button>
           </div>
         </header>
 
         {/* Workspace */}
-        <div className="flex-1 overflow-auto p-8 flex justify-center">
-          {activeTab === "preview" ? (
-            <FormPreview
-              formName={formName}
-              formDescription={formDescription}
-              fields={fields}
-              steps={steps}
-              selectedFieldIndex={selectedFieldIndex}
-              setSelectedFieldIndex={setSelectedFieldIndex}
-              moveField={moveField}
-              removeField={removeField}
-              oauthProviders={oauthProviders}
-              toggleOAuth={toggleOAuth}
-            />
-          ) : (
-            <CodeViewer
-              formName={formName}
-              formDescription={formDescription}
-              fields={fields}
-              steps={steps}
-              oauthProviders={oauthProviders}
-              databaseAdapter={databaseAdapter}
-              framework={framework}
-              isAuthEnabled={isAuthEnabled}
-              publishedId={publishedId}
-              isPublishing={isPublishing}
-              handlePublish={handlePublish}
-              setFramework={setFramework}
-              setDatabaseAdapter={setDatabaseAdapter}
-            />
-          )}
+        <div className="flex-1 overflow-auto p-4 sm:p-8 flex items-start justify-center">
+          <div className="w-full max-w-4xl flex justify-center">
+            {activeTab === "preview" ? (
+              <div className="w-full flex justify-center py-4">
+                <FormPreview
+                  formName={formName}
+                  formDescription={formDescription}
+                  fields={fields}
+                  steps={steps}
+                  selectedFieldIndex={selectedFieldIndex}
+                  setSelectedFieldIndex={setSelectedFieldIndex}
+                  moveField={moveField}
+                  removeField={removeField}
+                  oauthProviders={oauthProviders}
+                  toggleOAuth={toggleOAuth}
+                />
+              </div>
+            ) : (
+              <div className="w-full">
+                <CodeViewer
+                  formName={formName}
+                  formDescription={formDescription}
+                  fields={fields}
+                  steps={steps}
+                  oauthProviders={oauthProviders}
+                  databaseAdapter={databaseAdapter}
+                  framework={framework}
+                  isAuthEnabled={isAuthEnabled}
+                  publishedId={publishedId}
+                  isPublishing={isPublishing}
+                  handlePublish={handlePublish}
+                  setFramework={setFramework}
+                  setDatabaseAdapter={setDatabaseAdapter}
+                />
+              </div>
+            )}
+          </div>
         </div>
       </main>
     </div>

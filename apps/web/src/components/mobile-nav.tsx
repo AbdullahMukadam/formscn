@@ -31,6 +31,7 @@ export function MobileNav() {
 
   const links = [
     { to: "/", label: "formscn" },
+    { to: "/templates", label: "templates" },
     { to: "/docs", label: "docs" },
     { to: "/editor", label: "editor" },
   ] as const;

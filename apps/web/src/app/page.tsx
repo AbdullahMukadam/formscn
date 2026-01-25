@@ -1,206 +1,244 @@
+"use client";
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { formTemplates } from "@/lib/form-templates";
 import { Footer } from "@/components/footer";
-import { ArrowRight, Eye, Sparkles, Code, Box, Zap, Lock } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { Github, Zap, Shield, Layout, Cpu, Box, Code2, ArrowUpRight, Wand2, Layers, Database, Sparkles, Binary, ChevronRight, Plus } from "lucide-react";
 
-// All templates array
-const featuredTemplates = formTemplates
-
-const TITLE_TEXT = `
- ███████╗ ██████╗ ██████╗ ███╗   ███╗███████╗ ██████╗███╗   ██╗
- ██╔════╝██╔═══██╗██╔══██╗████╗ ████║██╔════╝██╔════╝████╗  ██║
- █████╗  ██║   ██║██████╔╝██╔████╔██║███████╗██║     ██╔██╗ ██║
- ██╔══╝  ██║   ██║██╔══██╗██║╚██╔╝██║╚════██║██║     ██║╚██╗██║
- ██║     ╚██████╔╝██║  ██║██║ ╚═╝ ██║███████║╚██████╗██║ ╚████║
- ╚═╝      ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝ ╚═════╝╚═╝  ╚═══╝
-`;
-
-const categoryColors = {
-  authentication: "bg-blue-500/10 text-blue-500 border-blue-500/20",
-  contact: "bg-green-500/10 text-green-500 border-green-500/20",
-  ecommerce: "bg-purple-500/10 text-purple-500 border-purple-500/20",
-  survey: "bg-orange-500/10 text-orange-500 border-orange-500/20",
-  profile: "bg-pink-500/10 text-pink-500 border-pink-500/20",
-};
 
 export default function Home() {
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="border-b bg-gradient-to-b from-background to-muted/20">
-        <div className="container mx-auto max-w-6xl px-4 py-16 text-center">
-          <pre className="overflow-x-auto font-mono text-xs mb-6 inline-block">
-            {TITLE_TEXT}
-          </pre>
-          
-          <h1 className="text-4xl font-bold tracking-tight mb-4">
-            Build Forms Faster
+    <div className="min-h-screen bg-[#000000] text-[#888] selection:bg-primary/30 font-sans tracking-tight overflow-x-hidden">
+      
+      <section className="relative pt-24 md:pt-32 pb-16 md:pb-24 border-b border-white/[0.05]">
+        {/* Abstract Background: Radial Mesh */}
+        <div className="absolute inset-0 z-0 opacity-[0.2]"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, #1a1a1a 1px, transparent 0)`,
+            backgroundSize: '32px 32px'
+          }}
+        />
+        
+        {/* Horizon Glows */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full md:w-[1000px] h-[300px] md:h-[400px] bg-primary/[0.03] blur-[80px] md:blur-[120px] rounded-full -z-10" />
+
+        <div className="container relative z-10 mx-auto max-w-6xl px-4 md:px-6 text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.03] border border-white/10 text-[8px] md:text-[12px] font-black text-primary mb-8 md:mb-10 shadow-[0_0_20px_rgba(114,227,173,0.1)]">
+            <Sparkles className="w-3 h-3" />
+            Now supports, tanstack, remix
+          </div>
+
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-white tracking-tighter leading-[1.1] md:leading-[1.0] mb-6 md:mb-8">
+            The visual engine for <br className="hidden sm:block" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/30 italic">technical forms.</span>
           </h1>
-          
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Pre-built form components with React Hook Form and Zod integration.
-            Choose a template, customize in our visual editor, and export clean code.
+
+          <p className="text-sm md:text-lg text-white/40 max-w-xl mx-auto mb-8 md:mb-10 leading-relaxed font-medium px-4 md:px-0">
+            Stop manually wiring form state and Zod schemas. Build complex, 
+            multi-step flows visually and export production-ready React code 
+            optimized for your framework.
           </p>
 
-          <div className="flex gap-4 justify-center">
-            <Link href={"/editor"}>
-              <Button size="lg">
-                <Sparkles className="mr-2 h-4 w-4" />
-                Start Building
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-16 md:mb-20 px-4">
+            <Link href="/editor" className="w-full sm:w-auto">
+              <Button size="lg" className="h-12 px-8 rounded-xl bg-white text-black hover:bg-white/90 font-bold text-sm transition-all hover:scale-[1.02] active:scale-[0.98] w-full sm:w-auto">
+                Open The Lab
               </Button>
             </Link>
-            <Link href={"/docs"}>
-              <Button size="lg" variant="outline">
-                View Documentation
-              </Button>
+            <Link href="/docs" className="w-full sm:w-auto">
+              <div className="h-12 px-6 rounded-xl border border-white/10 bg-white/[0.02] flex items-center justify-center gap-4 font-bold text-xs group hover:border-white/20 transition-all cursor-pointer w-full sm:w-auto">
+                Docs
+              </div>
             </Link>
+          </div>
+
+
+        </div>
+      </section>
+
+      <section className="relative py-0 overflow-hidden">
+        <div className="absolute inset-y-0 left-0 w-full grid grid-cols-1 md:grid-cols-3 pointer-events-none">
+          <div className="border-x border-white/[0.05] hidden md:block" />
+          <div className="border-r border-white/[0.05] hidden md:block" />
+          <div className="border-r border-white/[0.05] hidden md:block" />
+        </div>
+
+        <div className="container relative z-10 mx-auto max-w-7xl px-0">
+          <div className="grid grid-cols-1 md:grid-cols-3">
+            
+            <div className="p-8 md:p-16 border-b border-white/[0.05] space-y-6 hover:bg-white/[0.01] transition-colors group">
+              <Cpu className="w-4 h-4 text-white opacity-40 group-hover:opacity-100 transition-opacity" />
+              <div className="space-y-4">
+                <h3 className="text-xl font-bold text-white leading-tight">
+                  Framework Agnostic <br className="hidden md:block" />
+                  <span className="text-white/30">exporting.</span>
+                </h3>
+                <p className="text-sm leading-relaxed text-[#888]">
+                  Export optimized code for Next.js, Remix, TanStack Start, and Vite. We handle the routing and server action patterns for you.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-8 md:p-16 border-b border-white/[0.05] md:border-l md:border-l-white/[0.05] space-y-6 hover:bg-white/[0.01] transition-colors group">
+              <Shield className="w-4 h-4 text-white opacity-40 group-hover:opacity-100 transition-opacity" />
+              <div className="space-y-4">
+                <h3 className="text-xl font-bold text-white leading-tight">
+                  Type-Safe Zod <br className="hidden md:block" />
+                  <span className="text-white/30">Validation.</span>
+                </h3>
+                <p className="text-sm leading-relaxed text-[#888]">
+                   Every form generates a corresponding Zod schema. Full TypeScript support with inferred types for your form data.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-8 md:p-16 border-b border-white/[0.05] md:border-l md:border-l-white/[0.05] space-y-6 hover:bg-white/[0.01] transition-colors group">
+              <Layers className="w-4 h-4 text-white opacity-40 group-hover:opacity-100 transition-opacity" />
+              <div className="space-y-4">
+                <h3 className="text-xl font-bold text-white leading-tight">
+                  Multi-Step Wizard <br className="hidden md:block" />
+                  <span className="text-white/30">architecture.</span>
+                </h3>
+                <p className="text-sm leading-relaxed text-[#888]">
+                  Create complex multi-page forms with ease. State management and per-step validation are handled out of the box.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-8 md:p-16 border-b border-white/[0.05] space-y-6 hover:bg-white/[0.01] transition-colors group relative">
+              <Plus className="absolute -top-3 -right-3 w-6 h-6 text-white/10 z-20 hidden md:block" />
+              <Layout className="w-4 h-4 text-white opacity-40 group-hover:opacity-100 transition-opacity" />
+              <div className="space-y-4">
+                <h3 className="text-xl font-bold text-white leading-tight">
+                   Visual Drag & Drop <br className="hidden md:block" />
+                  <span className="text-white/30">Editor.</span>
+                </h3>
+                <p className="text-sm leading-relaxed text-[#888]">
+                  A powerful visual lab where you can build forms, configure fields, and see your code update in real-time.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-8 md:p-16 border-b border-white/[0.05] md:border-l md:border-l-white/[0.05] space-y-6 hover:bg-white/[0.01] transition-colors group relative">
+               <Plus className="absolute -top-3 -right-3 w-6 h-6 text-white/10 z-20 hidden md:block" />
+               <Database className="w-4 h-4 text-white opacity-40 group-hover:opacity-100 transition-opacity" />
+               <div className="space-y-4">
+                <h3 className="text-xl font-bold text-white leading-tight">
+                  Modular Code <br className="hidden md:block" /> <span className="text-white/30">Generation.</span>
+                </h3>
+                <p className="text-sm leading-relaxed text-[#888]">
+                   Clean, production-grade code structured into schemas, types, and logic—exactly how you&apos;d write it manually.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-8 md:p-16 border-b border-white/[0.05] md:border-l md:border-l-white/[0.05] space-y-6 hover:bg-white/[0.01] transition-colors group">
+              <Code2 className="w-4 h-4 text-white opacity-40 group-hover:opacity-100 transition-opacity" />
+              <div className="space-y-4">
+                <h3 className="text-xl font-bold text-white leading-tight">
+                  Better Auth <br className="hidden md:block" />
+                  <span className="text-white/30">Integration.</span>
+                </h3>
+                <p className="text-sm leading-relaxed text-[#888]">
+                  Seamlessly generate login, signup, and account forms that connect directly to your Better Auth configuration.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Templates Section */}
-      <section className="py-16">
-        <div className="container mx-auto max-w-6xl px-4">
-          <div className="mb-12">
-            <h2 className="text-3xl font-bold mb-3">
-              Pre-built Form Templates
-            </h2>
-            <p className="text-muted-foreground">
-              Start with a template and customize it to your needs
-            </p>
+      <section className="py-16 md:py-24 border-b border-white/[0.05]">
+        <div className="container mx-auto max-w-6xl px-4 md:px-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 md:mb-16 gap-6 md:gap-10">
+            <div className="space-y-3">
+               <h2 className="text-3xl font-bold text-white tracking-tighter italic">The Form Registry</h2>
+               <p className="text-sm text-white/30 max-w-md leading-relaxed">
+                 A curated inventory of form architectures. Ready to be
+                 initialized and deployed into production.
+               </p>
+            </div>
+            <Link href="/templates" className="w-full sm:w-auto">
+               <div className="px-6 py-2.5 rounded-xl border border-white/10 hover:border-white/30 text-[10px] font-black uppercase tracking-[0.2em] text-white transition-all cursor-pointer flex items-center justify-center md:justify-start gap-2 group w-full sm:w-auto">
+                 All Templates <ChevronRight className="w-3.5 h-3.5 text-primary group-hover:translate-x-1 transition-transform" />
+               </div>
+            </Link>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {featuredTemplates.map((template) => {
-              const displayFields = template.steps 
-                ? template.steps.flatMap(s => s.fields) 
-                : template.fields;
-              const isMultiStep = !!template.steps?.length;
-
-              return (
-                <Card key={template.id} className="group border p-6 flex flex-col justify-between hover:border-primary/50 transition-all duration-300 relative overflow-hidden bg-gradient-to-b from-background to-muted/20">
-                  {/* Hover Shadow Effect */}
-                  <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-                  
-                  <div className="relative z-10">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="space-y-1">
-                        <h3 className="text-xl font-semibold tracking-tight">{template.name}</h3>
-                        {isMultiStep && (
-                          <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80">
-                            Multi-step
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    <p className="text-muted-foreground text-sm mb-6 leading-relaxed min-h-[40px]">
-                     {template.description}
-                    </p>
-
-                    <div className="mb-6">
-                      <p className=" text-xs uppercase tracking-wider mb-2 font-medium text-muted-foreground/80">
-                        {isMultiStep ? 'Steps & Fields:' : 'Fields included:'}
-                      </p>
-                      <ul className="space-y-2 text-muted-foreground text-sm">
-                        {displayFields.slice(0, 3).map((field, idx) => (
-                          <li key={idx} className="flex items-center">
-                            <div className="h-1.5 w-1.5 rounded-full bg-primary/50 mr-2" />
-                            {field.label}
-                          </li>
-                        ))}
-                        {displayFields.length > 3 && (
-                          <li className="text-xs text-muted-foreground/70 pl-3.5 pt-1">
-                            + {displayFields.length - 3} more...
-                          </li>
-                        )}
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div className="relative z-10 mt-auto pt-6">
-                    <Link href={`/editor?template=${template.id}` as any} className="flex-1">
-                      <Button className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors" variant="outline">
-                        <Sparkles className="mr-2 h-4 w-4" />
-                        Use Template
-                      </Button>
-                    </Link>
-                  </div>
-                </Card>
-              );
-            })}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-white/[0.05] border border-white/[0.05]">
+            {formTemplates.slice(0, 6).map((template) => (
+              <Link
+                key={template.id}
+                href={`/editor?template=${template.id}`}
+                className="group relative p-8 md:p-10 bg-[#000] hover:bg-white/[0.01] transition-all duration-300"
+              >
+                <div className="mb-6 md:mb-8 flex justify-between items-start">
+                   <Box className="w-5 h-5 text-white opacity-20 group-hover:text-primary transition-colors" />
+                   {template.steps && (
+                      <span className="text-[8px] font-black uppercase tracking-[0.2em] text-primary border border-primary/20 px-2 py-0.5">Wizard</span>
+                   )}
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-lg font-bold text-white">{template.name}</h3>
+                  <p className="text-xs text-white/40 line-clamp-2 leading-relaxed mb-6">
+                    {template.description}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-white/20 group-hover:text-white transition-colors">
+                  Architect Form <ArrowUpRight className="w-3 h-3 text-primary" />
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Bento Grid Features Section */}
-      <section className="py-24 bg-background border-t">
-        <div className="container mx-auto max-w-6xl px-4">
-          <div className="mb-16 text-center max-w-2xl mx-auto">
-            <h2 className="text-3xl font-bold mb-4 tracking-tight uppercase">
-              Everything you need
+      <section className="py-24 md:py-40 text-center relative overflow-hidden group">
+        {/* Animated Background SVG */}
+        <div className="absolute inset-0 z-0 pointer-events-none opacity-20">
+          <svg className="w-full h-full" viewBox="0 0 1440 400" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="grid-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="var(--primary)" stopOpacity="0" />
+                <stop offset="50%" stopColor="var(--primary)" stopOpacity="0.5" />
+                <stop offset="100%" stopColor="var(--primary)" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+            <path 
+              d="M-100 200 Q 360 150, 720 200 T 1540 200" 
+              stroke="url(#grid-gradient)" 
+              strokeWidth="2" 
+              fill="none" 
+              className="animate-pulse"
+              strokeDasharray="10 20"
+            />
+          </svg>
+        </div>
+
+        <div className="container relative z-10 mx-auto max-w-3xl px-4 md:px-6 space-y-8 md:space-y-12">
+          <div className="space-y-4 md:space-y-6">
+            <h2 className="text-3xl md:text-7xl font-bold text-white tracking-tighter leading-[1.1] md:leading-[0.9] italic">
+              Architect your next <br className="hidden sm:block" /> production form.
             </h2>
-            <p className="text-muted-foreground text-lg">
-              [ A complete toolkit for building production-ready forms in React ]
+            <p className="text-sm md:text-lg text-white/40 max-w-lg mx-auto leading-relaxed px-4">
+              Stop wiring boilerplate. Start generating production-grade, 
+              type-safe forms in the lab.
             </p>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border bg-border">
-            {/* Feature 1: Visual Builder - Large */}
-            <div className="md:col-span-2 row-span-1 bg-background p-8 flex flex-col justify-between group border-b md:border-b-0 md:border-r">
-              <div className="relative z-10">
-                <div className="w-10 h-10 border flex items-center justify-center mb-6 ">
-                  <Sparkles className="h-5 w-5" />
-                </div>
-                <h3 className="text-xl font-bold mb-3 uppercase tracking-wider">Visual Editor</h3>
-                <p className="text-muted-foreground max-w-md text-sm leading-relaxed">
-                  Drag, drop, and configure your form fields in real-time.
-                  See exactly what your users will see as you build.
-                </p>
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 md:gap-6 pt-4 px-4">
+            <Link href="/editor" className="w-full sm:w-auto">
+              <Button size="lg" className="h-14 px-10 rounded-xl bg-white text-black hover:bg-white/90 font-bold text-sm transition-all hover:scale-[1.02] active:scale-[0.98] w-full sm:w-auto shadow-2xl shadow-white/10">
+                Launch The Lab
+              </Button>
+            </Link>
+            <Link href="https://github.com/AbdullahMukadam/formscn" className="w-full sm:w-auto">
+              <div className="flex items-center justify-center gap-3 text-white/30 hover:text-white transition-all cursor-pointer group text-sm font-bold h-14 px-6 rounded-xl border border-white/5 bg-white/[0.02] w-full sm:w-auto">
+                <Github className="w-5 h-5" />
+                <span>GitHub</span>
+                
               </div>
-            </div>
-
-            {/* Feature 2: Type Safe */}
-            <div className="md:col-span-1 row-span-1 bg-background p-8 flex flex-col justify-between group border-b md:border-b-0">
-              <div>
-                <div className="w-10 h-10 border flex items-center justify-center mb-6">
-                  <Code className="h-5 w-5" />
-                </div>
-                <h3 className="text-xl font-bold mb-3 uppercase tracking-wider">Type Safe</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  Generated code includes full Zod schemas and TypeScript interfaces.
-                </p>
-              </div>
-            </div>
-
-            {/* Feature 3: Accessible */}
-            <div className="md:col-span-1 row-span-1 bg-background p-8 flex flex-col justify-between group md:border-r border-t">
-              <div>
-                <div className="w-10 h-10 border flex items-center justify-center mb-6 ">
-                  <Box className="h-5 w-5" />
-                </div>
-                <h3 className="text-xl font-bold mb-3 uppercase tracking-wider">Accessible</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  Built on top of shadcn/ui and radix-ui for full accessibility compliance.
-                </p>
-              </div>
-            </div>
-
-            {/* Feature 4: Validation - Wide */}
-            <div className="md:col-span-2 row-span-1 bg-background p-8 flex flex-col justify-between group border-t">
-              <div className="relative z-10">
-                 <div className="w-10 h-10 border flex items-center justify-center mb-6 ">
-                  <Lock className="h-5 w-5" />
-                </div>
-                <h3 className="text-xl font-bold mb-3 uppercase tracking-wider">Smart Validation</h3>
-                <p className="text-muted-foreground max-w-md text-sm leading-relaxed">
-                  Complex validation logic made easy. Email, passwords,
-                  custom rules - all handled with Zod resolvers.
-                </p>
-              </div>
-            </div>
+            </Link>
           </div>
         </div>
       </section>

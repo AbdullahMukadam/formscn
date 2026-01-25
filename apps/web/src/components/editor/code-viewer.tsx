@@ -14,7 +14,7 @@ import {
   generateDrizzleSchema,
   generatePrismaClient,
   generateDrizzleClient,
-} from "@/registry/default/lib/form-generator";
+} from "@/registry/default/lib/form-generator"; // Now using modular structure
 import type { FormField as FormFieldType, FormStep } from "@/lib/form-templates";
 import type { OAuthProvider } from "@/lib/oauth-providers-config";
 import type { DatabaseAdapter, Framework } from "@/registry/default/lib/form-generator";
@@ -51,7 +51,6 @@ export function CodeViewer({
   setDatabaseAdapter,
 }: CodeViewerProps) {
 
-  // Memoize generated code to prevent re-calculations on every render
   const generatedCode = useMemo(() => {
     return generateFormComponent({
       formName,

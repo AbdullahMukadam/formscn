@@ -14,12 +14,15 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Progress } from "@/components/ui/progress";
-import { ArrowUp, ArrowDown, Trash2 } from "lucide-react";
+import { ArrowUp, ArrowDown, Trash2, CalendarIcon } from "lucide-react";
 import { toast } from "sonner";
 import { OAUTH_PROVIDERS } from "@/lib/oauth-providers-config";
 import type { FormField as FormFieldType, FormStep } from "@/lib/form-templates";
 import type { OAuthProvider } from "@/lib/oauth-providers-config";
 import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { format } from "date-fns";
 
 interface FormPreviewProps {
   formName: string;
@@ -52,9 +55,7 @@ export function FormPreview({
   const stepFields = useMemo(() => {
     if (!hasSteps || !steps) return allFields;
     
-    const currentStepDef = steps[currentStep];
-    const stepFieldNames = new Set(currentStepDef.fields.map(f => f.name));
-    return allFields.filter(f => stepFieldNames.has(f.name));
+    return steps[currentStep].fields;
   }, [hasSteps, steps, currentStep, allFields]);
 
   const visibleFields = hasSteps ? stepFields : allFields;
@@ -76,7 +77,16 @@ export function FormPreview({
             validation = (validation as z.ZodBoolean).optional();
           }
           break;
-          
+
+        case "date":
+          validation = z.date();
+          if (field.required) {
+             validation = (validation as z.ZodDate).min(new Date("1900-01-01"), "Required");
+          } else {
+            validation = (validation as z.ZodDate).optional();
+          }
+          break;
+
         case "input":
         case "textarea":
         case "select":
@@ -104,6 +114,7 @@ export function FormPreview({
   const form = useForm({
     resolver: zodResolver(formSchema),
     mode: "onChange",
+    shouldUnregister: false,
   });
 
   const onSubmit = (data: any) => {
@@ -156,13 +167,14 @@ export function FormPreview({
           {/* Render Fields */}
           <div className={cn("space-y-4", hasSteps && "animate-in fade-in-50 slide-in-from-right-5")}>
             {visibleFields.map((field, index) => {
-              const realIndex = allFields.findIndex(f => f.name === field.name);
+              // If steps are used, index is relative to the step. Otherwise it's global.
+              const fieldIndex = hasSteps ? index : allFields.findIndex(f => f.name === field.name);
               
               return (
               <div
                 key={field.name}
-                className={`group relative p-2 -mx-2 rounded-md hover:bg-muted/50 transition-colors border-2 ${selectedFieldIndex === realIndex ? 'border-primary' : 'border-transparent'}`}
-                onClick={() => setSelectedFieldIndex(realIndex)}
+                className={`group relative p-2 -mx-2 rounded-md hover:bg-muted/50 transition-colors border-2 ${selectedFieldIndex === fieldIndex ? 'border-primary' : 'border-transparent'}`}
+                onClick={() => setSelectedFieldIndex(fieldIndex)}
               >
                 {/* Actions (Visible on Hover) */}
                 <div className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-all duration-200 z-10">
@@ -175,8 +187,8 @@ export function FormPreview({
                             variant="ghost"
                             size="icon"
                             className="h-7 w-7"
-                            disabled={realIndex === 0}
-                            onClick={(e) => { e.stopPropagation(); moveField(realIndex, "up"); }}
+                            disabled={fieldIndex === 0}
+                            onClick={(e) => { e.stopPropagation(); moveField(fieldIndex, "up"); }}
                           >
                             <ArrowUp className="h-3.5 w-3.5" />
                           </Button>
@@ -191,8 +203,8 @@ export function FormPreview({
                             variant="ghost"
                             size="icon"
                             className="h-7 w-7"
-                            disabled={realIndex === allFields.length - 1}
-                            onClick={(e) => { e.stopPropagation(); moveField(realIndex, "down"); }}
+                            disabled={fieldIndex === (hasSteps ? visibleFields.length : allFields.length) - 1}
+                            onClick={(e) => { e.stopPropagation(); moveField(fieldIndex, "down"); }}
                           >
                             <ArrowDown className="h-3.5 w-3.5" />
                           </Button>
@@ -209,7 +221,7 @@ export function FormPreview({
                             variant="ghost"
                             size="icon"
                             className="h-7 w-7 text-destructive hover:text-destructive hover:bg-destructive/10"
-                            onClick={(e) => { e.stopPropagation(); removeField(realIndex); }}
+                            onClick={(e) => { e.stopPropagation(); removeField(fieldIndex); }}
                           >
                             <Trash2 className="h-3.5 w-3.5" />
                           </Button>
@@ -310,6 +322,52 @@ export function FormPreview({
                             </div>
                           ))}
                         </RadioGroup>
+                      )}
+                    />
+                    {form.formState.errors[field.name] && (
+                      <p className="text-xs text-destructive">{form.formState.errors[field.name]?.message as string}</p>
+                    )}
+                    {field.description && <p className="text-xs text-muted-foreground">{field.description}</p>}
+                  </div>
+                )}
+
+                {field.type === "date" && (
+                  <div className="space-y-2 flex flex-col">
+                    <Label>{field.label}{field.required && " *"}</Label>
+                    <Controller
+                      control={form.control}
+                      name={field.name}
+                      render={({ field: f }) => (
+                        <Popover>
+                          <PopoverTrigger>
+                            <Button
+                              type="button"
+                              variant={"outline"}
+                              className={cn(
+                                "w-full pl-3 text-left font-normal",
+                                !f.value && "text-muted-foreground"
+                              )}
+                            >
+                              {f.value instanceof Date ? (
+                                format(f.value, "PPP")
+                              ) : (
+                                <span>{field.placeholder || "Pick a date"}</span>
+                              )}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={f.value instanceof Date ? f.value : undefined}
+                              onSelect={f.onChange}
+                              disabled={(date) =>
+                                date > new Date() || date < new Date("1900-01-01")
+                              }
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
                       )}
                     />
                     {form.formState.errors[field.name] && (

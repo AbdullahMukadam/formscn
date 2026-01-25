@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { FORM_FIELD_TYPES } from "@/lib/form-fields-config";
 import { OAUTH_PROVIDERS } from "@/lib/oauth-providers-config";
-import type { FormField as FormFieldType } from "@/lib/form-templates";
+import type { FormStep, FormField as FormFieldType } from "@/lib/form-templates";
 import type { OAuthProvider } from "@/lib/oauth-providers-config";
 import type { DatabaseAdapter, Framework } from "@/registry/default/lib/form-generator";
 
@@ -39,6 +39,16 @@ interface EditorSidebarProps {
   formDescription: string;
   setFormDescription: (desc: string) => void;
   
+  // Steps
+  isMultiStep: boolean;
+  toggleMultiStep: (enabled: boolean) => void;
+  steps: FormStep[];
+  activeStepIndex: number;
+  setActiveStepIndex: (index: number) => void;
+  addStep: () => void;
+  removeStep: (index: number) => void;
+  updateStep: (index: number, updates: Partial<FormStep>) => void;
+
   // Fields
   fields: FormFieldType[];
   selectedField: FormFieldType | null;
@@ -65,6 +75,14 @@ export function EditorSidebar({
   setFormName,
   formDescription,
   setFormDescription,
+  isMultiStep,
+  toggleMultiStep,
+  steps,
+  activeStepIndex,
+  setActiveStepIndex,
+  addStep,
+  removeStep,
+  updateStep,
   selectedField,
   selectedFieldIndex,
   setSelectedFieldIndex,
@@ -88,14 +106,14 @@ export function EditorSidebar({
 
   if (selectedField && selectedFieldIndex !== null) {
     return (
-      <aside className="w-80 border-r bg-muted/10 flex flex-col h-full overflow-y-auto">
-        <div className="p-4 border-b flex items-center gap-2">
+      <aside className="w-full lg:w-80 border-r bg-muted/10 flex flex-col h-full overflow-y-auto">
+        <div className="p-4 border-b flex items-center gap-2 bg-background z-10 sticky top-0">
           <Button variant="ghost" size="icon" onClick={() => setSelectedFieldIndex(null)}>
-            <ArrowUp className="h-4 w-4 -rotate-90" />
+            <ArrowUp className="h-4 w-4 lg:-rotate-90 rotate-0" />
           </Button>
           <span className="font-semibold">Edit Field</span>
         </div>
-        <div className="p-4 space-y-4">
+        <div className="p-4 space-y-4 pb-20 lg:pb-4">
           <div className="space-y-2">
             <Label>Label</Label>
             <Input
@@ -216,8 +234,8 @@ export function EditorSidebar({
   }
 
   return (
-    <aside className="w-80 border-r bg-muted/10 flex flex-col h-full overflow-y-auto">
-      <div className="p-4 border-b">
+    <aside className="w-full lg:w-80 border-r bg-muted/10 flex flex-col h-full overflow-y-auto">
+      <div className="p-4 border-b bg-background z-10 sticky top-0">
         <div className="flex items-center justify-between mb-1">
           <div className="flex items-center gap-2 font-semibold text-lg">
             <Layout className="h-5 w-5" />
@@ -225,9 +243,9 @@ export function EditorSidebar({
           </div>
           <AlertDialog>
             <AlertDialogTrigger>
-              <Button variant="ghost" size="sm" title="Create New Form">
-                <FilePlus className="h-4 w-4 mr-2" />
-                New Form
+              <Button variant="ghost" size="sm" title="Create New Form" className="px-2">
+                <FilePlus className="h-4 w-4 md:mr-2" />
+                <span className="hidden md:inline">New Form</span>
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -247,7 +265,7 @@ export function EditorSidebar({
         <p className="text-xs text-muted-foreground">Customize your form structure</p>
       </div>
 
-      <div className="p-4 space-y-6">
+      <div className="p-4 space-y-6 pb-20 lg:pb-4">
         {/* Section: Form Info */}
         <div className="space-y-4">
           <h3 className="text-sm font-medium flex items-center gap-2">
@@ -269,6 +287,72 @@ export function EditorSidebar({
               onChange={(e) => setFormDescription(e.target.value)}
             />
           </div>
+
+          <div className="flex items-center justify-between">
+            <Label htmlFor="multiStep">Multi-step Form</Label>
+            <Switch
+              id="multiStep"
+              checked={isMultiStep}
+              onCheckedChange={toggleMultiStep}
+            />
+          </div>
+
+          {isMultiStep && (
+            <div className="space-y-3 pt-2 border-t">
+              <div className="flex items-center justify-between">
+                <h4 className="text-xs font-semibold text-muted-foreground uppercase">Steps</h4>
+                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={addStep}>
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="space-y-2">
+                {steps.map((step, index) => (
+                  <div
+                    key={step.id}
+                    className={`p-3 rounded-md border text-sm cursor-pointer transition-colors ${
+                      activeStepIndex === index ? "bg-accent border-primary" : "hover:bg-muted/50"
+                    }`}
+                    onClick={() => {
+                      setActiveStepIndex(index);
+                      setSelectedFieldIndex(null);
+                    }}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-medium">Step {index + 1}</span>
+                      <div className="flex gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-6 w-6 text-destructive hover:text-destructive"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeStep(index);
+                          }}
+                          disabled={steps.length <= 1}
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    </div>
+                    <div className="space-y-2" onClick={(e) => e.stopPropagation()}>
+                      <Input
+                        value={step.title}
+                        onChange={(e) => updateStep(index, { title: e.target.value })}
+                        className="h-7 text-xs"
+                        placeholder="Step Title"
+                      />
+                      <Input
+                        value={step.description || ""}
+                        onChange={(e) => updateStep(index, { description: e.target.value })}
+                        className="h-7 text-xs"
+                        placeholder="Description (optional)"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         <Separator />
@@ -276,16 +360,17 @@ export function EditorSidebar({
         {/* Section: Add Fields */}
         <div className="space-y-4">
           <h3 className="text-sm font-medium flex items-center gap-2">
-            <Plus className="h-4 w-4" /> Add Fields
+            <Plus className="h-4 w-4" /> Add Fields {isMultiStep && <span className="text-xs text-muted-foreground font-normal">(to {steps[activeStepIndex]?.title || "Step"})</span>}
           </h3>
           <div className="grid grid-cols-2 gap-2">
             {Object.values(fieldTypes).flat().map((fieldConfig, idx) => {
               const Icon = fieldConfig.icon;
               // Map config types to FormField types
-              const actualType: FormFieldType["type"] =
-                fieldConfig.type === "number" || fieldConfig.type === "date" || fieldConfig.type === "switch"
-                  ? "input"
-                  : fieldConfig.type;
+              let actualType: FormFieldType["type"] = fieldConfig.type as any;
+              
+              if (fieldConfig.type === "input" || fieldConfig.type === "number" || (fieldConfig.type === "date" && fieldConfig.name === "Date Input") || fieldConfig.type === "switch") {
+                actualType = "input";
+              }
               
               return (
                 <Button

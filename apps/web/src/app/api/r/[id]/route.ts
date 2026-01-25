@@ -34,6 +34,29 @@ export async function GET(
     "sonner"
   ];
 
+  // Add framework-specific router dependencies for auth forms
+  const isAuthForm = form.config?.fields?.some(
+    (f: any) => f.name === 'password' || f.inputType === 'password'
+  );
+  
+  if (isAuthForm) {
+    switch (effectiveFramework) {
+      case "react":
+        dependencies.push("react-router-dom");
+        break;
+      case "tanstack":
+        dependencies.push("@tanstack/react-router");
+        break;
+      case "remix":
+        // @remix-run/react is built-in, no extra dependency needed
+        break;
+      case "next":
+      default:
+        // next/navigation is built-in, no extra dependency needed
+        break;
+    }
+  }
+
   const files = [
     {
       path: `components/forms/${form.name.toLowerCase().replace(/\s+/g, "-")}.tsx`,
@@ -48,10 +71,7 @@ export async function GET(
     const { fields, oauthProviders, databaseAdapter, framework } = form.config;
     const hasAuth = oauthProviders.length > 0 || fields.some(f => f.name === 'password' || f.inputType === 'password');
 
-    if (hasAuth) {
-      // Inline auth-client generation to support framework-specific configuration
-      // We do NOT add registryDependencies.push(`${baseUrl}/r/auth-client.json`) because that is static.
-      
+    if (hasAuth) {     
       const hasEmailPassword = fields.some(f => f.name === 'password' || f.inputType === 'password');
 
       // 0. Generate Auth Client (Dynamic)

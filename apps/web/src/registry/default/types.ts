@@ -2,7 +2,7 @@ import * as z from "zod";
 import { type OAuthProvider } from "@/lib/oauth-providers-config";
 
 export interface FormField {
-  type: "input" | "textarea" | "select" | "checkbox" | "radio";
+  type: "input" | "textarea" | "select" | "checkbox" | "radio" | "date";
   name: string;
   label: string;
   placeholder?: string;

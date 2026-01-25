@@ -144,6 +144,16 @@ export const FORM_FIELD_TYPES: FormFieldConfig[] = [
     category: "advanced",
     enabled: true,
   },
+  {
+    type: "date",
+    name: "Calendar",
+    label: "Calendar",
+    icon: Calendar,
+    description: "Date picker with calendar component",
+    supportsValidation: true,
+    category: "advanced",
+    enabled: true,
+  },
   
   // Selection Fields
   {
@@ -158,7 +168,7 @@ export const FORM_FIELD_TYPES: FormFieldConfig[] = [
   },
   {
     type: "select",
-    name: "Select Dropdown",
+    name: " Dropdown",
     label: "Select",
     icon: List,
     description: "Dropdown selection menu",

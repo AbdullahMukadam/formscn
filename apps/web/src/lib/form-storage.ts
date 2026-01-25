@@ -23,9 +23,6 @@ export interface PublishedForm {
   createdAt: number;
 }
 
-// In a serverless environment like Vercel, the filesystem is ephemeral.
-// This means forms saved here will persist only for the duration of the container/deployment.
-// This is acceptable as per user requirements.
 const STORAGE_FILE = path.join(process.cwd(), "forms-db.json");
 
 function getForms(): Map<string, PublishedForm> {
