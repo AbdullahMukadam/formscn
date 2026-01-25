@@ -23,6 +23,7 @@ import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface FormPreviewProps {
   formName: string;
@@ -180,7 +181,8 @@ export function FormPreview({
           )}
 
           {/* Render Fields */}
-          <div className={cn("space-y-4", hasSteps && "animate-in fade-in-50 slide-in-from-right-5")}>
+          <div className={cn("space-y-4", hasSteps && "min-h-[200px]")}>
+            <AnimatePresence mode="popLayout" initial={false}>
             {visibleFields.map((field, index) => {
               // Safety check for invalid fields
               if (!field || !field.name) return null;
@@ -189,13 +191,22 @@ export function FormPreview({
               const fieldIndex = hasSteps ? index : allFields.findIndex(f => f.name === field.name);
 
               return (
-                <div
+                <motion.div
+                  layout
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 10 }}
+                  transition={{ duration: 0.2 }}
                   key={field.name}
                   className={`group relative p-2 -mx-2 rounded-md hover:bg-muted/50 transition-colors border-2 ${selectedFieldIndex === fieldIndex ? 'border-primary' : 'border-transparent'}`}
                   onClick={() => setSelectedFieldIndex(fieldIndex)}
                 >
                   {/* Actions (Visible on Hover) */}
-                  <div className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-all duration-200 z-10">
+                  <motion.div 
+                    initial={{ opacity: 0 }}
+                    whileHover={{ opacity: 1 }}
+                    className="absolute right-2 top-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                  >
                     <div className="flex items-center gap-1 bg-background shadow-md border rounded-md p-1">
                       <TooltipProvider>
                         <Tooltip>
@@ -248,7 +259,7 @@ export function FormPreview({
                         </Tooltip>
                       </TooltipProvider>
                     </div>
-                  </div>
+                  </motion.div>
 
                   {/* Field Rendering */}
                   {field.type === "input" && (
@@ -394,9 +405,10 @@ export function FormPreview({
                       {field.description && <p className="text-xs text-muted-foreground">{field.description}</p>}
                     </div>
                   )}
-                </div>
+                </motion.div>
               );
             })}
+            </AnimatePresence>
           </div>
 
           {hasSteps && steps ? (
