@@ -12,9 +12,9 @@ import { bookingRequestTemplate } from "./booking-request";
 import { ecommerceCheckoutTemplate } from "./ecommerce-checkout";
 import { onboardingWizardTemplate } from "./onboarding-wizard";
 import { detailedApplicationTemplate } from "./detailed-application";
-import { twoFactorSetupTemplate } from "./two-factor-setup";
-import { organizationInviteTemplate } from "./organization-invite";
-import { passkeyManagementTemplate } from "./passkey-management";
+import { twoFactorSetupTemplate } from "./two-factor-setup-template";
+import { organizationInviteTemplate } from "./organization-invite-template";
+import { passkeyManagementTemplate } from "./passkey-management-template";
 
 export const formTemplates: FormTemplate[] = [
   signupFormTemplate,
@@ -48,6 +48,9 @@ export * from "./booking-request";
 export * from "./ecommerce-checkout";
 export * from "./onboarding-wizard";
 export * from "./detailed-application";
+export * from "./two-factor-setup-template";
+export * from "./organization-invite-template";
+export * from "./passkey-management-template";
 export * from "./two-factor-setup";
-export * from "./organization-invite";
+export * from "./organization-switcher";
 export * from "./passkey-management";
