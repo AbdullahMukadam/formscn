@@ -14,12 +14,27 @@ Before you begin, make sure you have:
 - Node.js 18+ installed
 - A React or Next.js project
 - pnpm, npm, or yarn package manager
+- **Better Auth CLI** (Optional, recommended for auth features)
 
 ## Install Dependencies
 
-The easiest way to get started is using the **Form Builder** to generate a custom installation command.
+The easiest way to get started is using the **Form Builder** to generate a custom installation command. 
 
-However, if you want to set up a project manually, ensure you have the standard **shadcn/ui** dependencies installed.
+If you are adding **Better Auth** features, the CLI will automatically add `better-auth` and your chosen database adapter (`@prisma/client` or `drizzle-orm`) to your project dependencies.
+
+## Post-Installation (Auth Features)
+
+If you enabled authentication features (2FA, Orgs, etc.), you must sync your database schema after adding the component:
+
+```bash
+# For Prisma
+npx @better-auth/cli generate
+
+# For Drizzle
+npx @better-auth/cli migrate
+```
+
+Check the **Setup Guide** in the Form Builder's **Integrate** tab for a personalized checklist.
 
 ## Install shadcn/ui
 
