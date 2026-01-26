@@ -30,9 +30,12 @@ export function FormEditor({ initialTemplate }: FormEditorProps) {
     setSelectedFieldIndex, selectedField, activeTab, setActiveTab,
     publishedId, isPublishing, updateField, addField, removeField, moveField,
     toggleOAuth, setIsPublishing, setPublishedId, resetForm,
+    authPlugins, toggleAuthPlugin
   } = useFormEditor({ initialTemplate });
 
-  const isAuthEnabled = oauthProviders.length > 0 || fields.some(f => f.name === 'password' || f.inputType === 'password');
+  const isAuthEnabled = oauthProviders.length > 0 || 
+    fields.some(f => f.name === 'password' || f.inputType === 'password') ||
+    Object.values(authPlugins).some(Boolean);
 
   const sidebarProps = {
     formName, setFormName, formDescription, setFormDescription, isMultiStep,
@@ -40,7 +43,8 @@ export function FormEditor({ initialTemplate }: FormEditorProps) {
     removeStep, updateStep, fields, selectedField, selectedFieldIndex,
     setSelectedFieldIndex, updateField, addField, oauthProviders, toggleOAuth,
     databaseAdapter, setDatabaseAdapter, framework, setFramework,
-    isAuthEnabled, resetForm
+    isAuthEnabled, resetForm,
+    authPlugins, toggleAuthPlugin
   };
 
   const handlePublish = async () => {
@@ -59,7 +63,7 @@ export function FormEditor({ initialTemplate }: FormEditorProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: formName, description: formDescription, code,
-          config: { fields, steps, oauthProviders, databaseAdapter, framework },
+          config: { fields, steps, oauthProviders, databaseAdapter, framework, plugins: authPlugins },
           dependencies: [`${baseUrl}/r/base-form.json`],
         }),
       });
@@ -140,6 +144,8 @@ export function FormEditor({ initialTemplate }: FormEditorProps) {
                   removeField={removeField}
                   oauthProviders={oauthProviders}
                   toggleOAuth={toggleOAuth}
+                  authPlugins={authPlugins}
+                  toggleAuthPlugin={toggleAuthPlugin}
                 />
               </div>
             ) : (
@@ -155,11 +161,12 @@ export function FormEditor({ initialTemplate }: FormEditorProps) {
                   isAuthEnabled={isAuthEnabled}
                   publishedId={publishedId}
                   isPublishing={isPublishing}
-                  handlePublish={handlePublish}
-                  setFramework={setFramework}
-                  setDatabaseAdapter={setDatabaseAdapter}
-                />
-              </div>
+                   handlePublish={handlePublish}
+                   setFramework={setFramework}
+                   setDatabaseAdapter={setDatabaseAdapter}
+                   authPlugins={authPlugins}
+                 />
+               </div>
             )}
           </div>
         </div>

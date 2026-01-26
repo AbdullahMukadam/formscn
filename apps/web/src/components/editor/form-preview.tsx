@@ -19,11 +19,14 @@ import { toast } from "sonner";
 import { OAUTH_PROVIDERS } from "@/lib/oauth-providers-config";
 import type { FormField as FormFieldType, FormStep } from "@/lib/form-templates";
 import type { OAuthProvider } from "@/lib/oauth-providers-config";
+import type { AuthPluginsConfig } from "@/registry/default/lib/form-generator";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
+import { Badge } from "@/components/ui/badge";
+import { ShieldCheck } from "lucide-react";
 
 interface FormPreviewProps {
   formName: string;
@@ -36,6 +39,8 @@ interface FormPreviewProps {
   removeField: (index: number) => void;
   oauthProviders: OAuthProvider[];
   toggleOAuth: (provider: OAuthProvider) => void;
+  authPlugins: AuthPluginsConfig;
+  toggleAuthPlugin: (plugin: keyof AuthPluginsConfig) => void;
 }
 
 export function FormPreview({
@@ -49,6 +54,8 @@ export function FormPreview({
   removeField,
   oauthProviders,
   toggleOAuth,
+  authPlugins,
+  toggleAuthPlugin,
 }: FormPreviewProps) {
   const [currentStep, setCurrentStep] = useState<number>(0);
   const hasSteps = !!(steps && steps.length > 0);
@@ -506,6 +513,36 @@ export function FormPreview({
                         <Trash2 className="h-3 w-3" />
                       </Button>
                     </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Auth Plugins Preview */}
+          {!hasSteps && Object.values(authPlugins).some(Boolean) && (
+            <div className="pt-4 space-y-2">
+              <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase">
+                <ShieldCheck className="h-3 w-3" /> Enabled Features
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { id: "twoFactor", name: "2FA" },
+                  { id: "magicLink", name: "Magic Link" },
+                  { id: "passkey", name: "Passkeys" },
+                  { id: "username", name: "Username" },
+                  { id: "organization", name: "Orgs" },
+                  { id: "admin", name: "Admin" },
+                ].map((plugin) => {
+                  if (!authPlugins[plugin.id as keyof AuthPluginsConfig]) return null;
+                  return (
+                    <Badge 
+                      key={plugin.id} 
+                      variant="secondary" 
+                      className="cursor-default"
+                    >
+                      {plugin.name}
+                    </Badge>
                   );
                 })}
               </div>

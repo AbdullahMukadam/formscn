@@ -12,10 +12,16 @@ import { bookingRequestTemplate } from "./booking-request";
 import { ecommerceCheckoutTemplate } from "./ecommerce-checkout";
 import { onboardingWizardTemplate } from "./onboarding-wizard";
 import { detailedApplicationTemplate } from "./detailed-application";
+import { twoFactorSetupTemplate } from "./two-factor-setup";
+import { organizationInviteTemplate } from "./organization-invite";
+import { passkeyManagementTemplate } from "./passkey-management";
 
 export const formTemplates: FormTemplate[] = [
   signupFormTemplate,
   loginFormTemplate,
+  twoFactorSetupTemplate,
+  organizationInviteTemplate,
+  passkeyManagementTemplate,
   contactFormTemplate,
   newsletterFormTemplate,
   jobApplicationTemplate,
@@ -42,3 +48,6 @@ export * from "./booking-request";
 export * from "./ecommerce-checkout";
 export * from "./onboarding-wizard";
 export * from "./detailed-application";
+export * from "./two-factor-setup";
+export * from "./organization-invite";
+export * from "./passkey-management";

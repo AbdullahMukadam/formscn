@@ -4,6 +4,7 @@ export type {
   OAuthProvider,
   DatabaseAdapter,
   Framework,
+  AuthPluginsConfig,
   GenerateImportsConfig,
   GenerateSubmitLogicConfig,
   GenerateFormComponentConfig,

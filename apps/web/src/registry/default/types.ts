@@ -1,5 +1,6 @@
 import * as z from "zod";
 import { type OAuthProvider } from "@/lib/oauth-providers-config";
+import { type AuthPluginsConfig } from "./lib/form-generator/types";
 
 export interface FormField {
   type: "input" | "textarea" | "select" | "checkbox" | "radio" | "date" | "file";
@@ -30,4 +31,5 @@ export interface FormTemplate {
   fields: FormField[];
   steps?: FormStep[];
   oauthProviders?: OAuthProvider[];
+  authPlugins?: AuthPluginsConfig;
 }

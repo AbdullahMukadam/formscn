@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { CodeBlock } from "@/components/code-block";
-import { Share2, Terminal, Code as CodeIcon, FileJson, Database } from "lucide-react";
+import { Share2, Terminal, Code as CodeIcon, FileJson, Database, CheckCircle2, ChevronRight, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import {
   generateFormComponent,
@@ -17,7 +17,10 @@ import {
 } from "@/registry/default/lib/form-generator"; // Now using modular structure
 import type { FormField as FormFieldType, FormStep } from "@/lib/form-templates";
 import type { OAuthProvider } from "@/lib/oauth-providers-config";
-import type { DatabaseAdapter, Framework } from "@/registry/default/lib/form-generator";
+import type { DatabaseAdapter, Framework, AuthPluginsConfig } from "@/registry/default/lib/form-generator";
+import { getAuthChecklist } from "@/lib/auth-checklist-config";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { cn } from "@/lib/utils";
 
 interface CodeViewerProps {
   formName: string;
@@ -33,6 +36,7 @@ interface CodeViewerProps {
   handlePublish: () => void;
   setFramework: (framework: Framework) => void;
   setDatabaseAdapter: (adapter: DatabaseAdapter) => void;
+  authPlugins: AuthPluginsConfig;
 }
 
 export function CodeViewer({
@@ -49,6 +53,7 @@ export function CodeViewer({
   handlePublish,
   setFramework,
   setDatabaseAdapter,
+  authPlugins,
 }: CodeViewerProps) {
 
   const generatedCode = useMemo(() => {
@@ -73,8 +78,27 @@ export function CodeViewer({
       hasEmailPassword,
       databaseAdapter,
       framework,
+      plugins: authPlugins,
     });
-  }, [fields, oauthProviders, databaseAdapter, isAuthEnabled, framework]);
+  }, [fields, oauthProviders, databaseAdapter, isAuthEnabled, framework, authPlugins]);
+
+  const checklist = useMemo(() => {
+    return getAuthChecklist(authPlugins, databaseAdapter);
+  }, [authPlugins, databaseAdapter]);
+
+  const warnings = useMemo(() => {
+    const list: string[] = [];
+    const hasEmail = fields.some(f => f.name === 'email' || f.inputType === 'email');
+    const hasUsername = fields.some(f => f.name === 'username');
+
+    if (authPlugins.magicLink && !hasEmail) {
+      list.push("Magic Link enabled but no Email field found in form.");
+    }
+    if (authPlugins.username && !hasUsername) {
+      list.push("Username Auth enabled but no Username field found in form.");
+    }
+    return list;
+  }, [authPlugins, fields]);
 
   // Generate installation instructions
   const generateInstallationInstructions = (packageManager: 'pnpm' | 'npm' | 'yarn' | 'bun') => {
@@ -235,9 +259,14 @@ export function CodeViewer({
                   <CodeIcon className="h-4 w-4" /> Component
                 </TabsTrigger>
                 {isAuthEnabled && (
-                  <TabsTrigger value="auth" className="data-[state=active]:bg-background data-[state=active]:shadow-none rounded-none border-b-2 border-transparent data-[state=active]:border-primary h-full px-4 gap-2">
-                    <Database className="h-4 w-4" /> Auth & DB
-                  </TabsTrigger>
+                  <>
+                    <TabsTrigger value="auth" className="data-[state=active]:bg-background data-[state=active]:shadow-none rounded-none border-b-2 border-transparent data-[state=active]:border-primary h-full px-4 gap-2">
+                      <Database className="h-4 w-4" /> Auth & DB
+                    </TabsTrigger>
+                    <TabsTrigger value="checklist" className="data-[state=active]:bg-background data-[state=active]:shadow-none rounded-none border-b-2 border-transparent data-[state=active]:border-primary h-full px-4 gap-2">
+                      <CheckCircle2 className="h-4 w-4" /> Setup Guide
+                    </TabsTrigger>
+                  </>
                 )}
               </TabsList>
               <Button
@@ -261,7 +290,18 @@ export function CodeViewer({
 
             {isAuthEnabled && (
               <TabsContent value="auth" className="flex-1 overflow-auto p-4 m-0 data-[state=active]:flex data-[state=active]:flex-col">
-                <div className="space-y-8 max-w-3xl mx-auto">
+                <div className="space-y-8 max-w-3xl mx-auto w-full">
+                  {warnings.length > 0 && (
+                    <div className="space-y-3">
+                      {warnings.map((warning, idx) => (
+                        <Alert key={idx} variant="destructive">
+                          <AlertCircle className="h-4 w-4" />
+                          <AlertTitle>Requirement Missing</AlertTitle>
+                          <AlertDescription>{warning}</AlertDescription>
+                        </Alert>
+                      ))}
+                    </div>
+                  )}
                   <div>
                     <h4 className="font-semibold mb-2 flex items-center gap-2">
                       <FileJson className="h-4 w-4" /> Better Auth Configuration
@@ -277,7 +317,7 @@ export function CodeViewer({
                     <p className="text-sm text-muted-foreground mb-3">
                       Client utilities will be created at <code className="bg-muted px-1 py-0.5 rounded">lib/auth-client.ts</code>
                     </p>
-                    <CodeBlock code={generateAuthClient(framework)} language="typescript" className="font-mono text-sm border rounded-md" />
+                    <CodeBlock code={generateAuthClient(framework, authPlugins)} language="typescript" className="font-mono text-sm border rounded-md" />
                   </div>
 
                   <div>
@@ -327,6 +367,64 @@ ${framework === 'next' || framework === 'remix' ? '' : 'VITE_'}${p.toUpperCase()
                       className="font-mono text-sm border rounded-md"
                     />
                   </div>
+                </div>
+              </TabsContent>
+            )}
+
+            {isAuthEnabled && (
+              <TabsContent value="checklist" className="flex-1 overflow-auto p-6 m-0 data-[state=active]:flex data-[state=active]:flex-col">
+                <div className="max-w-2xl mx-auto w-full space-y-6">
+                  <div className="space-y-1">
+                    <h3 className="text-lg font-semibold">Post-Installation Guide</h3>
+                    <p className="text-sm text-muted-foreground">Follow these steps to finish setting up your authentication.</p>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    {checklist.map((item, idx) => (
+                      <div key={item.id} className="flex gap-4 p-4 border rounded-lg bg-card/50 relative">
+                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                          <item.icon className="h-4 w-4" />
+                        </div>
+                        <div className="flex-1 space-y-1">
+                          <h4 className="font-medium text-sm leading-none flex items-center gap-2">
+                            {idx + 1}. {item.title}
+                          </h4>
+                          <p className="text-xs text-muted-foreground leading-relaxed">
+                            {item.description}
+                          </p>
+                          {item.command && (
+                            <div className="mt-3 relative group">
+                              <code className="block p-2 bg-muted rounded border text-[10px] font-mono whitespace-nowrap overflow-hidden text-ellipsis pr-8">
+                                {item.command}
+                              </code>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                                onClick={() => {
+                                  navigator.clipboard.writeText(item.command!);
+                                  toast.success("Command copied!");
+                                }}
+                              >
+                                <Share2 className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          )}
+                        </div>
+                        {idx < checklist.length - 1 && (
+                          <div className="absolute left-8 top-12 bottom-0 w-[1px] bg-border -mb-4" />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  <Alert className="bg-primary/5 border-primary/20">
+                    <CheckCircle2 className="h-4 w-4 text-primary" />
+                    <AlertTitle className="text-primary font-semibold">You're all set!</AlertTitle>
+                    <AlertDescription className="text-xs text-primary/80">
+                      Once these steps are completed, your Better Auth integration will be fully functional.
+                    </AlertDescription>
+                  </Alert>
                 </div>
               </TabsContent>
             )}

@@ -1,5 +1,5 @@
 import type { OAuthProvider } from "@/lib/oauth-providers-config";
-import type { DatabaseAdapter, Framework } from "../types";
+import type { DatabaseAdapter, Framework, AuthPluginsConfig } from "../types";
 
 /**
  * Get the environment variable access pattern for framework
@@ -54,8 +54,9 @@ export function generateAuthConfig(config: {
   hasEmailPassword: boolean;
   databaseAdapter?: DatabaseAdapter;
   framework?: Framework;
+  plugins?: AuthPluginsConfig;
 }): string {
-  const { oauthProviders, hasEmailPassword, databaseAdapter = "drizzle", framework = "next" } = config;
+  const { oauthProviders, hasEmailPassword, databaseAdapter = "drizzle", framework = "next", plugins = {} } = config;
   
   const { prefix, suffix } = getEnvAccess(framework);
   const filePath = getFilePath(framework);
@@ -67,50 +68,72 @@ export function generateAuthConfig(config: {
     },`;
   }).join('\n');
 
+  // Plugin Imports
+  const pluginImports: string[] = [];
+  const pluginInstances: string[] = [];
+
+  if (plugins.twoFactor) {
+    pluginImports.push('import { twoFactor } from "better-auth/plugins/two-factor";');
+    pluginInstances.push('    twoFactor(),');
+  }
+  if (plugins.magicLink) {
+    pluginImports.push('import { magicLink } from "better-auth/plugins/magic-link";');
+    pluginInstances.push('    magicLink(),');
+  }
+  if (plugins.organization) {
+    pluginImports.push('import { organization } from "better-auth/plugins/organization";');
+    pluginInstances.push('    organization(),');
+  }
+  if (plugins.passkey) {
+    pluginImports.push('import { passkey } from "better-auth/plugins/passkey";');
+    pluginInstances.push('    passkey(),');
+  }
+  if (plugins.username) {
+    pluginImports.push('import { username } from "better-auth/plugins/username";');
+    pluginInstances.push('    username(),');
+  }
+  if (plugins.admin) {
+    pluginImports.push('import { admin } from "better-auth/plugins/admin";');
+    pluginInstances.push('    admin(),');
+  }
+
+  const pluginSection = pluginInstances.length > 0 
+    ? `\n  plugins: [\n${pluginInstances.join('\n')}\n  ],`
+    : "";
+
   const commonConfig = `${hasEmailPassword ? `
   emailAndPassword: {
     enabled: true,
-    // Optional: Configure password requirements
-    // minPasswordLength: 8,
-    // requireEmailVerification: true,
   },` : ''}${oauthProviders.length > 0 ? `
   socialProviders: {
 ${socialProviders}
-  },` : ''}
+  },` : ''}${pluginSection}
   // Optional: Configure session
   // session: {
   //   expiresIn: 60 * 60 * 24 * 7, // 7 days
   //   updateAge: 60 * 60 * 24, // 1 day
   // },`;
 
-  if (databaseAdapter === "prisma") {
-    return `// ${filePath}
-import { betterAuth } from "better-auth";
-import { prismaAdapter } from "better-auth/adapters/prisma";
-import { prisma } from "@/lib/prisma";
+  const adapterImport = databaseAdapter === "prisma" 
+    ? 'import { prismaAdapter } from "better-auth/adapters/prisma";\nimport { prisma } from "@/lib/prisma";'
+    : 'import { drizzleAdapter } from "better-auth/adapters/drizzle";\nimport { db } from "@/db";';
 
-export const auth = betterAuth({
-  database: prismaAdapter(prisma, {
-    provider: "postgresql", // "postgresql" | "mysql" | "sqlite"
-  }),${commonConfig}
-});
+  const adapterConfig = databaseAdapter === "prisma"
+    ? `database: prismaAdapter(prisma, {
+    provider: "postgresql",
+  }),`
+    : `database: drizzleAdapter(db, {
+    provider: "pg",
+  }),`;
 
-// Export type for use in API routes
-export type Auth = typeof auth;`;
-  }
-
-  // Default to Drizzle
   return `// ${filePath}
 import { betterAuth } from "better-auth";
-import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { db } from "@/db";
+${adapterImport}
+${pluginImports.join('\n')}
 
 export const auth = betterAuth({
-  database: drizzleAdapter(db, {
-    provider: "pg", // "pg" | "mysql" | "sqlite"
-  }),${commonConfig}
+  ${adapterConfig}${commonConfig}
 });
 
-// Export type for use in API routes
 export type Auth = typeof auth;`;
 }
