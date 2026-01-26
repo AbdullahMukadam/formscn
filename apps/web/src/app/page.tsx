@@ -100,8 +100,19 @@ export default function Home() {
                 Next.js 15 Ready
              </div>
           </motion.div>
+        </div>
 
-
+        {/* Static Tech Marquee */}
+        <div className="mt-20 md:mt-32 w-full overflow-hidden border-y border-white/[0.03] bg-white/[0.01] py-4">
+          <div className="container mx-auto px-4">
+            <div className="flex flex-wrap items-center justify-center md:justify-between gap-8 md:gap-4 opacity-40 grayscale contrast-200">
+              {["Next.js 15", "Better Auth", "Shadcn UI", "Tailwind CSS", "TypeScript", "Zod", "Drizzle", "Prisma", "React Hook Form"].map((tech) => (
+                <span key={tech} className="text-[10px] md:text-xs font-black uppercase tracking-[0.3em] text-white whitespace-nowrap">
+                  {tech}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
