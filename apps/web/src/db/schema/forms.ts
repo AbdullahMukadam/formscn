@@ -4,8 +4,8 @@ export const publishedForms = pgTable("published_forms", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
   description: text("description"),
-  code: text("code").notNull(), // Small forms can stay in DB, large ones in Blob
-  blobUrl: text("blob_url"),   // URL to Vercel Blob if stored there
+  code: text("code"), // Nullable now, only used as failover if Blob fails
+  blobUrl: text("blob_url"),   // URL to Vercel Blob
   config: jsonb("config").$type<any>().notNull(),
   dependencies: jsonb("dependencies").$type<string[]>().notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),

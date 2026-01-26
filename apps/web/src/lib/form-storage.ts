@@ -43,13 +43,18 @@ const redis = (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_R
 const STORAGE_FILE = path.join(process.cwd(), "forms-db.json");
 const memoryCache = new Map<string, PublishedForm>();
 
+/**
+ * Optimized saving logic with failover
+ */
 export async function saveForm(form: Omit<PublishedForm, "createdAt" | "expiresAt">) {
   const now = Date.now();
   const expiresAt = now + TTL_MS;
   const fullForm: PublishedForm = { ...form, createdAt: now, expiresAt };
 
-  // 1. Vercel Blob (For code storage if it's large, but let's always use it for durability if token exists)
-  let blobUrl: string | undefined;
+  let blobUrl: string | null = null;
+  let codeForDb: string | null = null;
+
+  // 1. Try Vercel Blob first (Primary for code)
   if (process.env.BLOB_READ_WRITE_TOKEN) {
     try {
       const { url } = await put(`forms/${form.id}.tsx`, form.code, {
@@ -58,18 +63,21 @@ export async function saveForm(form: Omit<PublishedForm, "createdAt" | "expiresA
       });
       blobUrl = url;
     } catch (e) {
-      console.error("Vercel Blob save failed", e);
+      console.error("Vercel Blob save failed, falling back to DB storage for code", e);
+      codeForDb = form.code; // Failover: store code in DB if Blob fails
     }
+  } else {
+    codeForDb = form.code; // No blob token, must store in DB
   }
 
-  // 2. Neon DB (Persistence)
+  // 2. Neon DB (Primary for Metadata + Fallback for Code)
   if (process.env.DATABASE_URL) {
     try {
       await db.insert(publishedForms).values({
         id: form.id,
         name: form.name,
         description: form.description,
-        code: form.code,
+        code: codeForDb,
         blobUrl: blobUrl,
         config: form.config,
         dependencies: form.dependencies,
@@ -77,7 +85,9 @@ export async function saveForm(form: Omit<PublishedForm, "createdAt" | "expiresA
       }).onConflictDoUpdate({
         target: publishedForms.id,
         set: {
-          code: form.code,
+          name: form.name,
+          description: form.description,
+          code: codeForDb,
           blobUrl: blobUrl,
           config: form.config,
           expiresAt: new Date(expiresAt),
@@ -88,16 +98,16 @@ export async function saveForm(form: Omit<PublishedForm, "createdAt" | "expiresA
     }
   }
 
-  // 3. Redis (Fast retrieval + auto-expiry)
+  // 3. Redis (Hot Cache - always stores everything for 24h)
   if (redis) {
     try {
       await redis.set(`form:${form.id}`, fullForm, { ex: TTL_SECONDS });
     } catch (e) {
-      console.error("Redis save failed", e);
+      console.error("Redis cache update failed", e);
     }
   }
 
-  // 4. Fallbacks
+  // 4. Local Dev Fallback
   if (process.env.NODE_ENV !== "production") {
     try {
       const data = fs.existsSync(STORAGE_FILE) ? JSON.parse(fs.readFileSync(STORAGE_FILE, "utf-8")) : [];
@@ -111,14 +121,17 @@ export async function saveForm(form: Omit<PublishedForm, "createdAt" | "expiresA
   return form.id;
 }
 
+/**
+ * Optimized retrieval logic with auto-healing cache
+ */
 export async function getForm(id: string): Promise<PublishedForm | undefined | null> {
-  // 1. Memory Cache
+  // Tier 1: Memory Cache (Fastest)
   if (memoryCache.has(id)) {
     const form = memoryCache.get(id);
     if (form && form.expiresAt && form.expiresAt > Date.now()) return form;
   }
 
-  // 2. Redis
+  // Tier 2: Redis (Hot Cache)
   if (redis) {
     try {
       const form = await redis.get<PublishedForm>(`form:${id}`);
@@ -126,27 +139,50 @@ export async function getForm(id: string): Promise<PublishedForm | undefined | n
     } catch (e) {}
   }
 
-  // 3. Neon DB
+  // Tier 3: Neon DB + Vercel Blob
   if (process.env.DATABASE_URL) {
     try {
       const results = await db.select().from(publishedForms).where(eq(publishedForms.id, id)).limit(1);
       if (results.length > 0) {
         const row = results[0];
-        // Check expiry
-        if (row.expiresAt.getTime() < Date.now()) {
-          // Effectively deleted
-          return null;
+        if (row.expiresAt.getTime() < Date.now()) return null;
+
+        let code = row.code;
+
+        // If code isn't in DB, fetch from Blob
+        if (!code && row.blobUrl) {
+          try {
+            const response = await fetch(row.blobUrl);
+            if (response.ok) {
+              code = await response.text();
+            }
+          } catch (e) {
+            console.error("Failed to fetch code from Vercel Blob", e);
+          }
         }
-        return {
-          id: row.id,
-          name: row.name,
-          description: row.description || "",
-          code: row.code,
-          config: row.config as any,
-          dependencies: row.dependencies as any,
-          createdAt: row.createdAt.getTime(),
-          expiresAt: row.expiresAt.getTime(),
-        };
+
+        if (code) {
+          const fullForm: PublishedForm = {
+            id: row.id,
+            name: row.name,
+            description: row.description || "",
+            code: code,
+            config: row.config as any,
+            dependencies: row.dependencies as any,
+            createdAt: row.createdAt.getTime(),
+            expiresAt: row.expiresAt.getTime(),
+          };
+
+          // Auto-heal Redis cache
+          if (redis) {
+            const remainingTtl = Math.floor((row.expiresAt.getTime() - Date.now()) / 1000);
+            if (remainingTtl > 0) {
+              await redis.set(`form:${id}`, fullForm, { ex: remainingTtl });
+            }
+          }
+
+          return fullForm;
+        }
       }
     } catch (e) {}
   }
@@ -154,16 +190,11 @@ export async function getForm(id: string): Promise<PublishedForm | undefined | n
   return null;
 }
 
-/**
- * Cleanup function to be called by a cron job or manual trigger
- * Deletes expired forms from DB and Vercel Blob
- */
 export async function cleanupExpiredForms() {
   if (!process.env.DATABASE_URL) return;
 
   try {
     const now = new Date();
-    // 1. Find expired forms to clean up their blobs
     const expired = await db.select().from(publishedForms).where(lt(publishedForms.expiresAt, now));
     
     for (const form of expired) {
@@ -176,8 +207,7 @@ export async function cleanupExpiredForms() {
       }
     }
 
-    // 2. Delete from DB
-    const deleted = await db.delete(publishedForms).where(lt(publishedForms.expiresAt, now));
+    await db.delete(publishedForms).where(lt(publishedForms.expiresAt, now));
     return { count: expired.length };
   } catch (e) {
     console.error("Cleanup failed", e);
