@@ -43,7 +43,7 @@ export function generateImports(config: GenerateImportsConfig): string {
   }
   
   // React Hook Form
-  imports += `import { useForm${needsController ? ", Controller" : ""}${hasFile ? ", type SubmitHandler" : ""} } from "react-hook-form";
+  imports += `import { useForm${needsController ? ", Controller" : ""} type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";`;
 

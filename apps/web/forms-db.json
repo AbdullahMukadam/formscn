@@ -763,5 +763,73 @@
       ],
       "createdAt": 1769335647150
     }
+  ],
+  [
+    "HNK4ZFHMRg",
+    {
+      "id": "HNK4ZFHMRg",
+      "name": "2FA Setup",
+      "description": "Configure two-factor authentication for user accounts",
+      "code": "\"use client\";\n\nimport { useForm } from \"react-hook-form\";\nimport { zodResolver } from \"@hookform/resolvers/zod\";\nimport * as z from \"zod\";\nimport { Button } from \"@/components/ui/button\";\nimport { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from \"@/components/ui/card\";\nimport { Input } from \"@/components/ui/input\";\nimport { Label } from \"@/components/ui/label\";\nimport { toast } from \"sonner\";\nconst formSchema = z.object({\n  code: z.string().min(1, \"Verification Code is required\"),\n});\n\ntype FormValues = z.infer<typeof formSchema>;\nexport function 2FASetupForm() {\n  const form = useForm<FormValues>({\n    resolver: zodResolver(formSchema),\n    defaultValues: {\n            code: \"\",\n    },\n  });\n\n  const { isSubmitting } = form.formState;\n\n  const onSubmit: SubmitHandler<FormValues> = async (data) => {\n    try {\n      // TODO: Replace with your API endpoint\n      console.log(\"Form submitted:\", data);\n      toast.success(\"Form submitted successfully!\");\n    } catch (error) {\n      toast.error(\"Something went wrong. Please try again.\");\n    }\n  };\n\n  return (\n    <Card className=\"w-full max-w-md mx-auto\">\n      <CardHeader>\n        <CardTitle>2FA Setup</CardTitle>\n        <CardDescription>Configure two-factor authentication for user accounts</CardDescription>\n      </CardHeader>\n      <CardContent>\n        <form onSubmit={form.handleSubmit(onSubmit)} className=\"space-y-4\">\n          <div className=\"space-y-2\">\n            <Label htmlFor=\"code\">Verification Code</Label>\n            <Input\n              id=\"code\"\n              type=\"text\"\n              placeholder=\"000000\"\n              {...form.register(\"code\")}\n            />\n            {form.formState.errors.code && (\n            <p className=\"text-sm text-destructive\">{form.formState.errors.code.message}</p>\n          )}\n            <p className=\"text-sm text-muted-foreground\">Enter the 6-digit code from your authenticator app</p>\n          </div>\n\n          <Button type=\"submit\" className=\"w-full\" disabled={isSubmitting}>\n            {isSubmitting ? \"Submitting...\" : \"Submit\"}\n          </Button>\n        </form>\n      </CardContent>\n    </Card>\n  );\n}",
+      "config": {
+        "fields": [
+          {
+            "type": "input",
+            "name": "code",
+            "label": "Verification Code",
+            "placeholder": "000000",
+            "description": "Enter the 6-digit code from your authenticator app",
+            "required": true,
+            "inputType": "text"
+          }
+        ],
+        "steps": [],
+        "oauthProviders": [],
+        "databaseAdapter": "drizzle",
+        "framework": "next",
+        "plugins": {
+          "twoFactor": true
+        }
+      },
+      "dependencies": [
+        "http://localhost:3001/r/base-form.json"
+      ],
+      "createdAt": 1769423694068,
+      "expiresAt": 1769510094068
+    }
+  ],
+  [
+    "CeJJre04G0",
+    {
+      "id": "CeJJre04G0",
+      "name": "2FA Setup",
+      "description": "Configure two-factor authentication for user accounts",
+      "code": "\"use client\";\n\nimport { useForm } from \"react-hook-form\";\nimport { zodResolver } from \"@hookform/resolvers/zod\";\nimport * as z from \"zod\";\nimport { Button } from \"@/components/ui/button\";\nimport { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from \"@/components/ui/card\";\nimport { Input } from \"@/components/ui/input\";\nimport { Label } from \"@/components/ui/label\";\nimport { toast } from \"sonner\";\nconst formSchema = z.object({\n  code: z.string().min(1, \"Verification Code is required\"),\n});\n\ntype FormValues = z.infer<typeof formSchema>;\nexport function 2FASetupForm() {\n  const form = useForm<FormValues>({\n    resolver: zodResolver(formSchema),\n    defaultValues: {\n            code: \"\",\n    },\n  });\n\n  const { isSubmitting } = form.formState;\n\n  const onSubmit: SubmitHandler<FormValues> = async (data) => {\n    try {\n      // TODO: Replace with your API endpoint\n      console.log(\"Form submitted:\", data);\n      toast.success(\"Form submitted successfully!\");\n    } catch (error) {\n      toast.error(\"Something went wrong. Please try again.\");\n    }\n  };\n\n  return (\n    <Card className=\"w-full max-w-md mx-auto\">\n      <CardHeader>\n        <CardTitle>2FA Setup</CardTitle>\n        <CardDescription>Configure two-factor authentication for user accounts</CardDescription>\n      </CardHeader>\n      <CardContent>\n        <form onSubmit={form.handleSubmit(onSubmit)} className=\"space-y-4\">\n          <div className=\"space-y-2\">\n            <Label htmlFor=\"code\">Verification Code</Label>\n            <Input\n              id=\"code\"\n              type=\"text\"\n              placeholder=\"000000\"\n              {...form.register(\"code\")}\n            />\n            {form.formState.errors.code && (\n            <p className=\"text-sm text-destructive\">{form.formState.errors.code.message}</p>\n          )}\n            <p className=\"text-sm text-muted-foreground\">Enter the 6-digit code from your authenticator app</p>\n          </div>\n\n          <Button type=\"submit\" className=\"w-full\" disabled={isSubmitting}>\n            {isSubmitting ? \"Submitting...\" : \"Submit\"}\n          </Button>\n        </form>\n      </CardContent>\n    </Card>\n  );\n}",
+      "config": {
+        "fields": [
+          {
+            "type": "input",
+            "name": "code",
+            "label": "Verification Code",
+            "placeholder": "000000",
+            "description": "Enter the 6-digit code from your authenticator app",
+            "required": true,
+            "inputType": "text"
+          }
+        ],
+        "steps": [],
+        "oauthProviders": [],
+        "databaseAdapter": "drizzle",
+        "framework": "react",
+        "plugins": {
+          "twoFactor": true
+        }
+      },
+      "dependencies": [
+        "http://localhost:3001/r/base-form.json"
+      ],
+      "createdAt": 1769423809831,
+      "expiresAt": 1769510209831
+    }
   ]
 ]
