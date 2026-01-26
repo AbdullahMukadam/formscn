@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { formTemplates } from "@/lib/form-templates";
 import { Footer } from "@/components/footer";
-import { Github, Zap, Shield, Layout, Cpu, Box, Code2, ArrowUpRight, Wand2, Layers, Database, Sparkles, Binary, ChevronRight, Plus } from "lucide-react";
+import { Github, Zap, Shield, Layout, Cpu, Box, Code2, ArrowUpRight, Wand2, Layers, Database, Sparkles, Binary, ChevronRight, Plus, ShieldCheck } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function Home() {
@@ -61,10 +61,10 @@ export default function Home() {
             className="text-sm md:text-lg text-white/60 max-w-2xl mb-8 md:mb-10 leading-relaxed font-normal px-0"
           >
             FormsCN bridges the gap between visual builders and code ownership. 
-            Architect complex <strong>multi-step wizards</strong>, authentication flows, and data schemas visually. 
+            Architect complex <strong>multi-step wizards</strong>, full authentication flows (2FA, Passkeys, Magic Links), and data schemas visually. 
             <br /><br />
             Then, install production-ready, type-safe code directly into your project via CLI—
-            fully integrated with <strong>Zod</strong>, <strong>React Hook Form</strong>, and <strong>Shadcn/UI</strong>.
+            fully integrated with <strong>Better Auth</strong>, <strong>Zod</strong>, and <strong>Shadcn/UI</strong>.
           </motion.p>
 
           <motion.div 
@@ -170,13 +170,13 @@ export default function Home() {
 
             <div className="p-8 md:p-16 border-b border-white/[0.05] md:border-l md:border-l-white/[0.05] space-y-6 hover:bg-white/[0.01] transition-colors group relative">
                <Plus className="absolute -top-3 -right-3 w-6 h-6 text-white/10 z-20 hidden md:block" />
-               <Database className="w-4 h-4 text-white opacity-40 group-hover:opacity-100 transition-opacity" />
+               <ShieldCheck className="w-4 h-4 text-white opacity-40 group-hover:opacity-100 transition-opacity" />
                <div className="space-y-4">
                 <h3 className="text-xl font-bold text-white leading-tight">
-                  Modular Code <br className="hidden md:block" /> <span className="text-white/30">Generation.</span>
+                  Advanced Auth <br className="hidden md:block" /> <span className="text-white/30">Features.</span>
                 </h3>
                 <p className="text-sm leading-relaxed text-[#888]">
-                   Clean, production-grade code structured into schemas, types, and logic—exactly how you&apos;d write it manually.
+                   One-click support for 2FA, Magic Links, Passkeys, and Organizations. We generate both the complex logic and the polished UI components.
                 </p>
               </div>
             </div>
@@ -185,11 +185,11 @@ export default function Home() {
               <Code2 className="w-4 h-4 text-white opacity-40 group-hover:opacity-100 transition-opacity" />
               <div className="space-y-4">
                 <h3 className="text-xl font-bold text-white leading-tight">
-                  Better Auth <br className="hidden md:block" />
-                  <span className="text-white/30">Integration.</span>
+                  Interactive Setup <br className="hidden md:block" />
+                  <span className="text-white/30">Checklist.</span>
                 </h3>
                 <p className="text-sm leading-relaxed text-[#888]">
-                  Seamlessly generate login, signup, and account forms that connect directly to your Better Auth configuration.
+                  Don&apos;t guess the integration steps. Get a dynamic checklist for secret generation, database migrations, and environment setup.
                 </p>
               </div>
             </div>
