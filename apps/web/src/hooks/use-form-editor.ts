@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { FormTemplate, FormField as FormFieldType, FormStep } from "@/lib/form-templates";
 import type { OAuthProvider } from "@/lib/oauth-providers-config";
-import type { DatabaseAdapter, Framework } from "@/registry/default/lib/form-generator";
+import type { DatabaseAdapter, Framework, AuthPluginsConfig } from "@/registry/default/lib/form-generator";
 import { toast } from "sonner";
 
 interface UseFormEditorProps {
@@ -35,6 +35,7 @@ export function useFormEditor({ initialTemplate }: UseFormEditorProps = {}) {
   // State for database adapter & framework
   const [databaseAdapter, _setDatabaseAdapter] = useState<DatabaseAdapter>("drizzle");
   const [framework, _setFramework] = useState<Framework>("next");
+  const [authPlugins, setAuthPlugins] = useState<AuthPluginsConfig>(initialTemplate?.authPlugins || {});
 
   const setDatabaseAdapter = (adapter: DatabaseAdapter) => {
     _setDatabaseAdapter(adapter);
@@ -170,7 +171,8 @@ export function useFormEditor({ initialTemplate }: UseFormEditorProps = {}) {
       if (!newSteps[activeStepIndex]) return;
       newSteps[activeStepIndex].fields.splice(index, 1);
       setSteps(newSteps);
-      setSelectedFieldIndex(null);
+      if (selectedFieldIndex === index) setSelectedFieldIndex(null);
+      if (selectedFieldIndex !== null && selectedFieldIndex > index) setSelectedFieldIndex(selectedFieldIndex - 1);
     } else {
       const newFields = [...fields];
       newFields.splice(index, 1);
@@ -217,6 +219,14 @@ export function useFormEditor({ initialTemplate }: UseFormEditorProps = {}) {
     setPublishedId(null);
   };
 
+  const toggleAuthPlugin = (plugin: keyof AuthPluginsConfig) => {
+    setAuthPlugins((prev) => ({
+      ...prev,
+      [plugin]: !prev[plugin]
+    }));
+    setPublishedId(null);
+  };
+
   const resetForm = () => {
     setFormName("My New Form");
     setFormDescription("A custom form created with FormSCN");
@@ -255,6 +265,10 @@ export function useFormEditor({ initialTemplate }: UseFormEditorProps = {}) {
     setPublishedId,
     isPublishing,
     setIsPublishing,
+
+    authPlugins,
+    setAuthPlugins,
+    toggleAuthPlugin,
 
     // Actions
     updateField,

@@ -80,11 +80,12 @@ export async function GET(
 
     if (hasAuth) {     
       const hasEmailPassword = fields.some(f => f.name === 'password' || f.inputType === 'password');
+      const plugins = (form.config as any).plugins || {};
 
       // 0. Generate Auth Client (Dynamic)
       files.push({
         path: "lib/auth-client.ts",
-        content: generateAuthClient(effectiveFramework),
+        content: generateAuthClient(effectiveFramework, plugins),
         type: "registry:lib",
         target: "lib/auth-client.ts",
       });
@@ -96,7 +97,8 @@ export async function GET(
           oauthProviders, 
           hasEmailPassword, 
           databaseAdapter, 
-          framework: effectiveFramework 
+          framework: effectiveFramework,
+          plugins
         }),
         type: "registry:lib",
         target: "lib/auth.ts",

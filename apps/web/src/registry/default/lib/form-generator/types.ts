@@ -32,9 +32,19 @@ export interface GenerateFormComponentConfig {
   steps?: FormStep[];
 }
 
+export interface AuthPluginsConfig {
+  twoFactor?: boolean;
+  magicLink?: boolean;
+  organization?: boolean;
+  passkey?: boolean;
+  username?: boolean;
+  admin?: boolean;
+}
+
 export interface GenerateAuthConfigOptions {
   oauthProviders: OAuthProvider[];
   hasEmailPassword: boolean;
   databaseAdapter?: DatabaseAdapter;
   framework?: Framework;
+  plugins?: AuthPluginsConfig;
 }

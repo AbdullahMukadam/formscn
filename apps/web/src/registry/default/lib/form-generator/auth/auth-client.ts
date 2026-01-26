@@ -1,4 +1,4 @@
-import type { Framework } from "../types";
+import type { Framework, AuthPluginsConfig } from "../types";
 
 /**
  * Get the base URL environment variable for framework
@@ -38,9 +38,27 @@ function getDefaultPort(framework: Framework): string {
 }
 
 /**
+ * Get display name for framework
+ */
+function getFrameworkDisplayName(framework: Framework): string {
+  switch (framework) {
+    case "next":
+      return "Next.js";
+    case "react":
+      return "React (Vite)";
+    case "tanstack":
+      return "TanStack Start";
+    case "remix":
+      return "Remix";
+    default:
+      return "React";
+  }
+}
+
+/**
  * Generate auth client helper - framework specific
  */
-export function generateAuthClient(framework: Framework = "next"): string {
+export function generateAuthClient(framework: Framework = "next", plugins: AuthPluginsConfig = {}): string {
   const envVar = getBaseUrlEnvVar(framework);
   const defaultPort = getDefaultPort(framework);
   
@@ -49,20 +67,43 @@ export function generateAuthClient(framework: Framework = "next"): string {
     ? '"use client";\n\n' 
     : "";
 
+  // Plugin Imports & Instances
+  const pluginImports: string[] = [];
+  const pluginInstances: string[] = [];
+
+  if (plugins.twoFactor) {
+    pluginImports.push('import { twoFactorClient } from "better-auth/client/plugins";');
+    pluginInstances.push('    twoFactorClient(),');
+  }
+  if (plugins.organization) {
+    pluginImports.push('import { organizationClient } from "better-auth/client/plugins";');
+    pluginInstances.push('    organizationClient(),');
+  }
+  if (plugins.passkey) {
+    pluginImports.push('import { passkeyClient } from "better-auth/client/plugins";');
+    pluginInstances.push('    passkeyClient(),');
+  }
+  if (plugins.magicLink) {
+    pluginImports.push('import { magicLinkClient } from "better-auth/client/plugins";');
+    pluginInstances.push('    magicLinkClient(),');
+  }
+  if (plugins.admin) {
+    pluginImports.push('import { adminClient } from "better-auth/client/plugins";');
+    pluginInstances.push('    adminClient(),');
+  }
+
+  const pluginSection = pluginInstances.length > 0
+    ? `,\n  plugins: [\n${pluginInstances.join('\n')}\n  ]`
+    : "";
+
   return `${directive}import { createAuthClient } from "better-auth/react";
+${pluginImports.join('\n')}
 
 /**
  * Better Auth client for ${getFrameworkDisplayName(framework)}
- * 
- * This client handles:
- * - Email/password authentication (signIn, signUp)
- * - OAuth social authentication
- * - Session management
- * 
- * @see https://www.better-auth.com/docs/react
  */
 export const authClient = createAuthClient({
-  baseURL: ${envVar} ?? "http://localhost:${defaultPort}",
+  baseURL: ${envVar} ?? "http://localhost:${defaultPort}"${pluginSection}
 });
 
 // Export individual methods for convenience
@@ -88,22 +129,4 @@ export function useAuthSession() {
     error: session.error,
   };
 }`;
-}
-
-/**
- * Get display name for framework
- */
-function getFrameworkDisplayName(framework: Framework): string {
-  switch (framework) {
-    case "next":
-      return "Next.js";
-    case "react":
-      return "React (Vite)";
-    case "tanstack":
-      return "TanStack Start";
-    case "remix":
-      return "Remix";
-    default:
-      return "React";
-  }
 }

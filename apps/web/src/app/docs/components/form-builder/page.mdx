@@ -50,20 +50,25 @@ Click on any field to configure:
 - Default values
 - Field styling
 
-### Step 3: Add Authentication & Framework
+### Step 3: Add Authentication & Features
 
-Enable "Better Auth" integration in the sidebar:
-- Toggle **OAuth Providers** (Google, GitHub, etc.)
-- Select your **Database Adapter** (Prisma or Drizzle)
-- Select your **Framework** (Next.js, Vite/React, TanStack Start, Remix)
+Enable **Better Auth** features in the sidebar:
+- **Auth Features**: Toggle advanced capabilities like **Two-Factor (2FA)**, **Magic Links**, **Passkeys**, **Username Auth**, and **Organizations**.
+- **OAuth Providers**: One-click integration for Google, GitHub, etc.
+- **Database Adapter**: Select **Prisma** or **Drizzle** to generate compatible schemas.
+- **Framework**: Choose your target stack (**Next.js**, **Vite/React**, **TanStack Start**, **Remix**) for tailored environment variables and client hooks.
 
-The builder automatically generates the auth configuration, client hooks, and environment variable examples tailored to your stack.
+The builder automatically validates your configuration (e.g., ensuring an Email field exists if Magic Link is enabled) and generates the full backend boilerplate.
 
-### Step 4: Publish & Install
+### Step 4: Setup & Install
 
 1. Go to the **Integrate** tab.
 2. Click **Publish & Get CLI Command**.
-3. Run the unique command provided:
+3. **Follow the Setup Guide**: Use the interactive checklist to finalize your integration:
+   - Generate your `BETTER_AUTH_SECRET`.
+   - Sync your database schema (The guide provides the exact `migrate` or `generate` command).
+   - Configure environment variables.
+4. Run the unique install command provided:
 
 ```bash
 npx shadcn@latest add https://formscn.space/api/r/YOUR_UNIQUE_FORM_ID.json

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { formTemplates } from "@/lib/form-templates";
 import { Footer } from "@/components/footer";
-import { Github, Zap, Shield, Layout, Cpu, Box, Code2, ArrowUpRight, Wand2, Layers, Database, Sparkles, Binary, ChevronRight, Plus } from "lucide-react";
+import { Github, Zap, Shield, Layout, Cpu, Box, Code2, ArrowUpRight, Wand2, Layers, Database, Sparkles, Binary, ChevronRight, Plus, ShieldCheck } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function Home() {
@@ -61,10 +61,10 @@ export default function Home() {
             className="text-sm md:text-lg text-white/60 max-w-2xl mb-8 md:mb-10 leading-relaxed font-normal px-0"
           >
             FormsCN bridges the gap between visual builders and code ownership. 
-            Architect complex <strong>multi-step wizards</strong>, authentication flows, and data schemas visually. 
+            Architect complex <strong>multi-step wizards</strong>, full authentication flows (2FA, Passkeys, Magic Links), and data schemas visually. 
             <br /><br />
             Then, install production-ready, type-safe code directly into your project via CLI—
-            fully integrated with <strong>Zod</strong>, <strong>React Hook Form</strong>, and <strong>Shadcn/UI</strong>.
+            fully integrated with <strong>Better Auth</strong>, <strong>Zod</strong>, and <strong>Shadcn/UI</strong>.
           </motion.p>
 
           <motion.div 
@@ -100,8 +100,33 @@ export default function Home() {
                 Next.js 15 Ready
              </div>
           </motion.div>
+        </div>
 
-
+        {/* Static Tech Marquee */}
+        <div className="mt-20 md:mt-32 w-full overflow-hidden border-y border-white/[0.03] bg-white/[0.01] py-6">
+          <div className="container mx-auto px-4">
+            <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-8 opacity-30 grayscale contrast-200">
+              {[
+                { name: "Next.js", icon: <Cpu className="w-4 h-4" /> },
+                { name: "Better Auth", icon: <ShieldCheck className="w-4 h-4" /> },
+                { name: "Shadcn UI", icon: <Layout className="w-4 h-4" /> },
+                { name: "Drizzle", icon: <Database className="w-4 h-4" /> },
+                { name: "Prisma", icon: <Binary className="w-4 h-4" /> },
+                { name: "TypeScript", icon: <Code2 className="w-4 h-4" /> },
+                { name: "Tailwind", icon: <Sparkles className="w-4 h-4" /> },
+                { name: "Zod", icon: <Zap className="w-4 h-4" /> },
+              ].map((tech) => (
+                <div key={tech.name} className="flex items-center gap-2 group cursor-default">
+                  <div className="text-white group-hover:text-primary transition-colors">
+                    {tech.icon}
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white whitespace-nowrap">
+                    {tech.name}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -170,13 +195,13 @@ export default function Home() {
 
             <div className="p-8 md:p-16 border-b border-white/[0.05] md:border-l md:border-l-white/[0.05] space-y-6 hover:bg-white/[0.01] transition-colors group relative">
                <Plus className="absolute -top-3 -right-3 w-6 h-6 text-white/10 z-20 hidden md:block" />
-               <Database className="w-4 h-4 text-white opacity-40 group-hover:opacity-100 transition-opacity" />
+               <ShieldCheck className="w-4 h-4 text-white opacity-40 group-hover:opacity-100 transition-opacity" />
                <div className="space-y-4">
                 <h3 className="text-xl font-bold text-white leading-tight">
-                  Modular Code <br className="hidden md:block" /> <span className="text-white/30">Generation.</span>
+                  Advanced Auth <br className="hidden md:block" /> <span className="text-white/30">Features.</span>
                 </h3>
                 <p className="text-sm leading-relaxed text-[#888]">
-                   Clean, production-grade code structured into schemas, types, and logic—exactly how you&apos;d write it manually.
+                   One-click support for 2FA, Magic Links, Passkeys, and Organizations. We generate both the complex logic and the polished UI components.
                 </p>
               </div>
             </div>
@@ -185,11 +210,11 @@ export default function Home() {
               <Code2 className="w-4 h-4 text-white opacity-40 group-hover:opacity-100 transition-opacity" />
               <div className="space-y-4">
                 <h3 className="text-xl font-bold text-white leading-tight">
-                  Better Auth <br className="hidden md:block" />
-                  <span className="text-white/30">Integration.</span>
+                  Interactive Setup <br className="hidden md:block" />
+                  <span className="text-white/30">Checklist.</span>
                 </h3>
                 <p className="text-sm leading-relaxed text-[#888]">
-                  Seamlessly generate login, signup, and account forms that connect directly to your Better Auth configuration.
+                  Don&apos;t guess the integration steps. Get a dynamic checklist for secret generation, database migrations, and environment setup.
                 </p>
               </div>
             </div>
@@ -241,52 +266,67 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-24 md:py-40 text-center relative overflow-hidden group">
-        {/* Animated Background SVG */}
-        <div className="absolute inset-0 z-0 pointer-events-none opacity-20">
-          <svg className="w-full h-full" viewBox="0 0 1440 400" preserveAspectRatio="none">
+      <section className="py-24 md:py-48 text-center relative overflow-hidden group">
+        {/* Dynamic Architectural Background */}
+        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/10 blur-[120px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+          <svg className="absolute inset-0 w-full h-full opacity-[0.03]" xmlns="http://www.w3.org/2000/svg">
             <defs>
-              <linearGradient id="grid-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="var(--primary)" stopOpacity="0" />
-                <stop offset="50%" stopColor="var(--primary)" stopOpacity="0.5" />
-                <stop offset="100%" stopColor="var(--primary)" stopOpacity="0" />
-              </linearGradient>
+              <pattern id="cta-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="0.5" />
+              </pattern>
             </defs>
-            <path 
-              d="M-100 200 Q 360 150, 720 200 T 1540 200" 
-              stroke="url(#grid-gradient)" 
-              strokeWidth="2" 
-              fill="none" 
-              className="animate-pulse"
-              strokeDasharray="10 20"
-            />
+            <rect width="100%" height="100%" fill="url(#cta-grid)" />
           </svg>
         </div>
 
-        <div className="container relative z-10 mx-auto max-w-3xl px-4 md:px-6 space-y-8 md:space-y-12">
-          <div className="space-y-4 md:space-y-6">
-            <h2 className="text-3xl md:text-7xl font-bold text-white tracking-tighter leading-[1.1] md:leading-[0.9] italic">
-              Architect your next <br className="hidden sm:block" /> production form.
-            </h2>
-            <p className="text-sm md:text-lg text-white/40 max-w-lg mx-auto leading-relaxed px-4">
-              Stop wiring boilerplate. Start generating production-grade, 
-              type-safe forms in the lab.
-            </p>
-          </div>
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 md:gap-6 pt-4 px-4">
-            <Link href="/editor" className="w-full sm:w-auto">
-              <Button size="lg" className="h-14 px-10 rounded-xl bg-white text-black hover:bg-white/90 font-bold text-sm transition-all hover:scale-[1.02] active:scale-[0.98] w-full sm:w-auto shadow-2xl shadow-white/10">
-                Launch The Lab
-              </Button>
-            </Link>
-            <Link href="https://github.com/AbdullahMukadam/formscn" className="w-full sm:w-auto">
-              <div className="flex items-center justify-center gap-3 text-white/30 hover:text-white transition-all cursor-pointer group text-sm font-bold h-14 px-6 rounded-xl border border-white/5 bg-white/[0.02] w-full sm:w-auto">
-                <Github className="w-5 h-5" />
-                <span>GitHub</span>
-                
+        <div className="container relative z-10 mx-auto max-w-4xl px-4 md:px-6">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="relative p-8 md:p-16 rounded-[2.5rem] border border-white/5 bg-gradient-to-b from-white/[0.03] to-transparent backdrop-blur-sm overflow-hidden"
+          >
+            {/* Decorative Corner Accents */}
+            <div className="absolute top-0 left-0 w-16 h-16 border-t border-l border-white/20 rounded-tl-[2.5rem]" />
+            <div className="absolute bottom-0 right-0 w-16 h-16 border-b border-r border-white/20 rounded-br-[2.5rem]" />
+            
+            <div className="space-y-6 md:space-y-10">
+              <div className="space-y-4">
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-[10px] font-black uppercase tracking-[0.2em] text-primary"
+                >
+                  <Sparkles className="w-3 h-3" /> Ready to build?
+                </motion.div>
+                <h2 className="text-4xl md:text-7xl font-bold text-white tracking-tighter leading-[0.9] italic">
+                  Architect your next <br className="hidden sm:block" /> production form.
+                </h2>
+                <p className="text-sm md:text-lg text-white/40 max-w-xl mx-auto leading-relaxed font-medium">
+                  Stop wiring boilerplate and manual validation. <br className="hidden md:block" /> 
+                  Generate production-grade, type-safe architectures in seconds.
+                </p>
               </div>
-            </Link>
-          </div>
+
+              <div className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-4">
+                <Link href="/editor" className="w-full sm:w-auto">
+                  <Button size="lg" className="h-14 px-10 rounded-2xl bg-white text-black hover:bg-white/90 font-bold text-sm transition-all hover:scale-[1.05] active:scale-[0.95] w-full sm:w-auto shadow-[0_0_40px_rgba(255,255,255,0.1)] group">
+                    Launch The Lab
+                    <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </Link>
+                <Link href="https://github.com/AbdullahMukadam/formscn" className="w-full sm:w-auto">
+                  <div className="flex items-center justify-center gap-3 text-white/50 hover:text-white transition-all cursor-pointer group text-sm font-bold h-14 px-8 rounded-2xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] w-full sm:w-auto">
+                    <Github className="w-5 h-5" />
+                    <span>View Source</span>
+                  </div>
+                </Link>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </section>
 

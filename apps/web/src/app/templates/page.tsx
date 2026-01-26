@@ -46,17 +46,17 @@ export default function TemplatesPage() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 md:gap-8 mb-12 md:mb-16 border-b border-white/5 pb-8 md:pb-12 px-4 md:px-6">
           <div className="space-y-3 md:space-y-4">
             <h1 className="text-3xl md:text-6xl font-bold text-white tracking-tighter italic">
-              Template Registry
+              Component Registry
             </h1>
             <p className="text-base md:text-lg text-white/40 max-w-xl leading-relaxed font-medium">
-              A curated collection of form architectures. Each template is fully customizable, 
-              type-safe, and ready for deployment.
+              Explore production-ready form architectures. Fully customizable 
+              logic, type-safe schemas, and CLI-ready integration.
             </p>
           </div>
-          <div className="inline-flex items-center gap-2 text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] text-primary bg-primary/5 px-3 py-1.5 border border-primary/10 rounded-full w-fit">
-            <Layers className="w-3 h-3" />
-            {filteredTemplates.length} Available Modules
-          </div>
+              <div className="inline-flex items-center gap-2 text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] text-primary bg-primary/5 px-3 py-1.5 border border-primary/10 rounded-full w-fit">
+                <Box className="w-3 h-3" />
+                {filteredTemplates.length} Registry Modules
+              </div>
         </div>
 
         {/* Filters & Search */}
@@ -72,22 +72,22 @@ export default function TemplatesPage() {
             />
           </div>
           
-          <div className="flex bg-white/[0.02] border border-white/10 p-1 rounded-xl overflow-x-auto no-scrollbar">
-            {(["all", "standard", "wizard"] as const).map((type) => (
-              <button
-                key={type}
-                onClick={() => setSelectedType(type)}
-                className={cn(
-                  "px-4 md:px-6 py-2 text-[9px] md:text-[10px] font-black uppercase tracking-widest rounded-lg transition-all flex-shrink-0",
-                  selectedType === type 
-                    ? "bg-white text-black shadow-lg" 
-                    : "text-white/40 hover:text-white/60"
-                )}
-              >
-                {type}
-              </button>
-            ))}
-          </div>
+              <div className="flex bg-white/[0.02] border border-white/10 p-1 rounded-xl overflow-x-auto no-scrollbar">
+                {(["all", "standard", "wizard"] as const).map((type) => (
+                  <button
+                    key={type}
+                    onClick={() => setSelectedType(type)}
+                    className={cn(
+                      "px-4 md:px-6 py-2 text-[9px] md:text-[10px] font-black uppercase tracking-widest rounded-lg transition-all flex-shrink-0",
+                      selectedType === type 
+                        ? "bg-white text-black shadow-lg" 
+                        : "text-white/40 hover:text-white/60"
+                    )}
+                  >
+                    {type === "all" ? "All Modules" : type === "wizard" ? "Multi-Step" : "Single-Page"}
+                  </button>
+                ))}
+              </div>
         </div>
 
         {/* Grid */}
@@ -117,7 +117,7 @@ export default function TemplatesPage() {
                   <div className="space-y-3 md:space-y-4">
                     <h3 className="text-xl font-bold text-white leading-tight">
                       {template.name} <br />
-                      <span className="text-white/30">{isWizard ? "wizard architecture." : "standard module."}</span>
+                      <span className="text-white/30">{isWizard ? "multi-step architecture." : "functional module."}</span>
                     </h3>
                     <p className="text-sm leading-relaxed text-[#888] line-clamp-3">
                       {template.description}

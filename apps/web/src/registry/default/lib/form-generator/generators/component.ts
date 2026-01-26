@@ -31,6 +31,11 @@ export function generateFormComponent(config: GenerateFormComponentConfig): stri
   const isLogin = hasEmail && hasPassword && !isSignup;
   const isAuth = isLogin || isSignup || hasOAuth;
 
+  // Add Username hint for plugins
+  if (isAuth && !fields.some(f => f.name === 'username') && fields.some(f => f.name === 'fullName')) {
+     // Optional: Logic to inject username could go here
+  }
+
   // Generate parts
   const imports = generateImports({
     framework,

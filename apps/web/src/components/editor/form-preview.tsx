@@ -19,11 +19,14 @@ import { toast } from "sonner";
 import { OAUTH_PROVIDERS } from "@/lib/oauth-providers-config";
 import type { FormField as FormFieldType, FormStep } from "@/lib/form-templates";
 import type { OAuthProvider } from "@/lib/oauth-providers-config";
+import type { AuthPluginsConfig } from "@/registry/default/lib/form-generator";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
+import { Badge } from "@/components/ui/badge";
+import { ShieldCheck } from "lucide-react";
 
 interface FormPreviewProps {
   formName: string;
@@ -36,6 +39,8 @@ interface FormPreviewProps {
   removeField: (index: number) => void;
   oauthProviders: OAuthProvider[];
   toggleOAuth: (provider: OAuthProvider) => void;
+  authPlugins: AuthPluginsConfig;
+  toggleAuthPlugin: (plugin: keyof AuthPluginsConfig) => void;
 }
 
 export function FormPreview({
@@ -49,6 +54,8 @@ export function FormPreview({
   removeField,
   oauthProviders,
   toggleOAuth,
+  authPlugins,
+  toggleAuthPlugin,
 }: FormPreviewProps) {
   const [currentStep, setCurrentStep] = useState<number>(0);
   const hasSteps = !!(steps && steps.length > 0);
@@ -183,7 +190,7 @@ export function FormPreview({
                 Step {currentStep + 1} of {steps.length}
               </span>
               <span className="font-medium">
-                {steps[currentStep].title}
+                {steps[currentStep]?.title}
               </span>
             </div>
             <Progress value={((currentStep + 1) / steps.length) * 100} className="h-2" />
@@ -511,6 +518,7 @@ export function FormPreview({
               </div>
             </div>
           )}
+
         </form>
       </CardContent>
     </Card>

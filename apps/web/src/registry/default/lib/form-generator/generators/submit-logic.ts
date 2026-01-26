@@ -1,3 +1,4 @@
+import { error } from "console";
 import type { GenerateSubmitLogicConfig } from "../types";
 
 /**
@@ -24,18 +25,18 @@ export function generateSubmitLogic(config: GenerateSubmitLogicConfig): string {
         },
       },
     });`;
-  } 
-  
+  }
+
   if (isSignup) {
     // Find name field (fullName, name, etc)
-    const nameField = fields.find(f => 
+    const nameField = fields.find(f =>
       ["name", "fullName", "firstName", "username"].includes(f.name)
     )?.name;
-    
-    const nameProp = nameField 
-      ? `\n      name: data.${nameField},` 
+
+    const nameProp = nameField
+      ? `\n      name: data.${nameField},`
       : `\n      name: data.email.split("@")[0],`;
-    
+
     return `    await signUp.email({
       email: data.email,
       password: data.password,${nameProp}
@@ -61,6 +62,7 @@ export function generateSubmitLogic(config: GenerateSubmitLogicConfig): string {
       console.log("Form submitted:", data);
       toast.success("Form submitted successfully!");
     } catch (error) {
-      toast.error("Something went wrong. Please try again.");
+      toast.error( error instanceof Error ? error.message : "Something went wrong. Please try again.");
     }`;
 }
+

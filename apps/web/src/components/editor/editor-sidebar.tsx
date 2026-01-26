@@ -30,9 +30,10 @@ import { FORM_FIELD_TYPES } from "@/lib/form-fields-config";
 import { OAUTH_PROVIDERS } from "@/lib/oauth-providers-config";
 import type { FormStep, FormField as FormFieldType } from "@/lib/form-templates";
 import type { OAuthProvider } from "@/lib/oauth-providers-config";
-import type { DatabaseAdapter, Framework } from "@/registry/default/lib/form-generator";
+import type { DatabaseAdapter, Framework, AuthPluginsConfig } from "@/registry/default/lib/form-generator";
 import { DropdownMenu } from "../ui/dropdown-menu";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { ShieldCheck } from "lucide-react";
 
 interface EditorSidebarProps {
   // Form Meta
@@ -67,6 +68,10 @@ interface EditorSidebarProps {
   framework: Framework;
   setFramework: (framework: Framework) => void;
 
+  // Auth Plugins
+  authPlugins: AuthPluginsConfig;
+  toggleAuthPlugin: (plugin: keyof AuthPluginsConfig) => void;
+
   // Helpers
   isAuthEnabled: boolean;
   resetForm: () => void;
@@ -96,6 +101,8 @@ export function EditorSidebar({
   setDatabaseAdapter,
   framework,
   setFramework,
+  authPlugins,
+  toggleAuthPlugin,
   isAuthEnabled,
   resetForm,
 }: EditorSidebarProps) {
@@ -392,6 +399,36 @@ export function EditorSidebar({
                 </Button>
               );
             })}
+          </div>
+        </div>
+
+        <Separator />
+
+        {/* Section: Auth Plugins */}
+        <div className="space-y-4">
+          <h3 className="text-sm font-medium flex items-center gap-2">
+            <ShieldCheck className="h-4 w-4" /> Auth Features
+          </h3>
+          <div className="space-y-3">
+            {[
+              { id: "twoFactor", name: "Two-Factor (2FA)" },
+              { id: "magicLink", name: "Magic Link" },
+              { id: "passkey", name: "Passkeys" },
+              { id: "username", name: "Username Auth" },
+              { id: "organization", name: "Organizations" },
+              { id: "admin", name: "Admin Dashboard" },
+            ].map((plugin) => (
+              <div key={plugin.id} className="flex items-center justify-between">
+                <Label htmlFor={`${plugin.id}-plugin`} className="cursor-pointer">
+                  {plugin.name}
+                </Label>
+                <Switch
+                  id={`${plugin.id}-plugin`}
+                  checked={!!authPlugins[plugin.id as keyof AuthPluginsConfig]}
+                  onCheckedChange={() => toggleAuthPlugin(plugin.id as keyof AuthPluginsConfig)}
+                />
+              </div>
+            ))}
           </div>
         </div>
 
