@@ -1,14 +1,8 @@
 {
   "crons": [
     {
-      "path": "/api/cron/cleanup?token=YOUR_CLEANUP_TOKEN",
+      "path": "/api/cron/cleanup",
       "schedule": "0 * * * *"
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/api/r/:id",
-      "destination": "/api/r/:id"
     }
   ]
 }

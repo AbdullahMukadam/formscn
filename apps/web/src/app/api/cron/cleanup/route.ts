@@ -2,11 +2,11 @@ import { NextResponse } from "next/server";
 import { cleanupExpiredForms } from "@/lib/form-storage";
 
 export async function GET(request: Request) {
-  // Simple protection using a secret token if available
-  const { searchParams } = new URL(request.url);
-  const token = searchParams.get("token");
+  // Protection using Authorization header (standard for Vercel Cron)
+  const authHeader = request.headers.get('authorization');
+  const cronSecret = process.env.CRON_SECRET || process.env.CLEANUP_TOKEN;
   
-  if (process.env.CLEANUP_TOKEN && token !== process.env.CLEANUP_TOKEN) {
+  if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
