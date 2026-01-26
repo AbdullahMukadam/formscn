@@ -190,7 +190,7 @@ export function FormPreview({
                 Step {currentStep + 1} of {steps.length}
               </span>
               <span className="font-medium">
-                {steps[currentStep].title}
+                {steps[currentStep]?.title}
               </span>
             </div>
             <Progress value={((currentStep + 1) / steps.length) * 100} className="h-2" />
@@ -519,35 +519,6 @@ export function FormPreview({
             </div>
           )}
 
-          {/* Auth Plugins Preview */}
-          {!hasSteps && Object.values(authPlugins).some(Boolean) && (
-            <div className="pt-4 space-y-2">
-              <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase">
-                <ShieldCheck className="h-3 w-3" /> Enabled Features
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {[
-                  { id: "twoFactor", name: "2FA" },
-                  { id: "magicLink", name: "Magic Link" },
-                  { id: "passkey", name: "Passkeys" },
-                  { id: "username", name: "Username" },
-                  { id: "organization", name: "Orgs" },
-                  { id: "admin", name: "Admin" },
-                ].map((plugin) => {
-                  if (!authPlugins[plugin.id as keyof AuthPluginsConfig]) return null;
-                  return (
-                    <Badge 
-                      key={plugin.id} 
-                      variant="secondary" 
-                      className="cursor-default"
-                    >
-                      {plugin.name}
-                    </Badge>
-                  );
-                })}
-              </div>
-            </div>
-          )}
         </form>
       </CardContent>
     </Card>

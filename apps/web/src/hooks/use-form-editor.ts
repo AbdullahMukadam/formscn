@@ -171,7 +171,8 @@ export function useFormEditor({ initialTemplate }: UseFormEditorProps = {}) {
       if (!newSteps[activeStepIndex]) return;
       newSteps[activeStepIndex].fields.splice(index, 1);
       setSteps(newSteps);
-      setSelectedFieldIndex(null);
+      if (selectedFieldIndex === index) setSelectedFieldIndex(null);
+      if (selectedFieldIndex !== null && selectedFieldIndex > index) setSelectedFieldIndex(selectedFieldIndex - 1);
     } else {
       const newFields = [...fields];
       newFields.splice(index, 1);
