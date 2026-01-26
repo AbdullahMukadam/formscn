@@ -266,52 +266,67 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-24 md:py-40 text-center relative overflow-hidden group">
-        {/* Animated Background SVG */}
-        <div className="absolute inset-0 z-0 pointer-events-none opacity-20">
-          <svg className="w-full h-full" viewBox="0 0 1440 400" preserveAspectRatio="none">
+      <section className="py-24 md:py-48 text-center relative overflow-hidden group">
+        {/* Dynamic Architectural Background */}
+        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/10 blur-[120px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+          <svg className="absolute inset-0 w-full h-full opacity-[0.03]" xmlns="http://www.w3.org/2000/svg">
             <defs>
-              <linearGradient id="grid-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="var(--primary)" stopOpacity="0" />
-                <stop offset="50%" stopColor="var(--primary)" stopOpacity="0.5" />
-                <stop offset="100%" stopColor="var(--primary)" stopOpacity="0" />
-              </linearGradient>
+              <pattern id="cta-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="0.5" />
+              </pattern>
             </defs>
-            <path 
-              d="M-100 200 Q 360 150, 720 200 T 1540 200" 
-              stroke="url(#grid-gradient)" 
-              strokeWidth="2" 
-              fill="none" 
-              className="animate-pulse"
-              strokeDasharray="10 20"
-            />
+            <rect width="100%" height="100%" fill="url(#cta-grid)" />
           </svg>
         </div>
 
-        <div className="container relative z-10 mx-auto max-w-3xl px-4 md:px-6 space-y-8 md:space-y-12">
-          <div className="space-y-4 md:space-y-6">
-            <h2 className="text-3xl md:text-7xl font-bold text-white tracking-tighter leading-[1.1] md:leading-[0.9] italic">
-              Architect your next <br className="hidden sm:block" /> production form.
-            </h2>
-            <p className="text-sm md:text-lg text-white/40 max-w-lg mx-auto leading-relaxed px-4">
-              Stop wiring boilerplate. Start generating production-grade, 
-              type-safe forms in the lab.
-            </p>
-          </div>
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 md:gap-6 pt-4 px-4">
-            <Link href="/editor" className="w-full sm:w-auto">
-              <Button size="lg" className="h-14 px-10 rounded-xl bg-white text-black hover:bg-white/90 font-bold text-sm transition-all hover:scale-[1.02] active:scale-[0.98] w-full sm:w-auto shadow-2xl shadow-white/10">
-                Launch The Lab
-              </Button>
-            </Link>
-            <Link href="https://github.com/AbdullahMukadam/formscn" className="w-full sm:w-auto">
-              <div className="flex items-center justify-center gap-3 text-white/30 hover:text-white transition-all cursor-pointer group text-sm font-bold h-14 px-6 rounded-xl border border-white/5 bg-white/[0.02] w-full sm:w-auto">
-                <Github className="w-5 h-5" />
-                <span>GitHub</span>
-                
+        <div className="container relative z-10 mx-auto max-w-4xl px-4 md:px-6">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="relative p-8 md:p-16 rounded-[2.5rem] border border-white/5 bg-gradient-to-b from-white/[0.03] to-transparent backdrop-blur-sm overflow-hidden"
+          >
+            {/* Decorative Corner Accents */}
+            <div className="absolute top-0 left-0 w-16 h-16 border-t border-l border-white/20 rounded-tl-[2.5rem]" />
+            <div className="absolute bottom-0 right-0 w-16 h-16 border-b border-r border-white/20 rounded-br-[2.5rem]" />
+            
+            <div className="space-y-6 md:space-y-10">
+              <div className="space-y-4">
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-[10px] font-black uppercase tracking-[0.2em] text-primary"
+                >
+                  <Sparkles className="w-3 h-3" /> Ready to build?
+                </motion.div>
+                <h2 className="text-4xl md:text-7xl font-bold text-white tracking-tighter leading-[0.9] italic">
+                  Architect your next <br className="hidden sm:block" /> production form.
+                </h2>
+                <p className="text-sm md:text-lg text-white/40 max-w-xl mx-auto leading-relaxed font-medium">
+                  Stop wiring boilerplate and manual validation. <br className="hidden md:block" /> 
+                  Generate production-grade, type-safe architectures in seconds.
+                </p>
               </div>
-            </Link>
-          </div>
+
+              <div className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-4">
+                <Link href="/editor" className="w-full sm:w-auto">
+                  <Button size="lg" className="h-14 px-10 rounded-2xl bg-white text-black hover:bg-white/90 font-bold text-sm transition-all hover:scale-[1.05] active:scale-[0.95] w-full sm:w-auto shadow-[0_0_40px_rgba(255,255,255,0.1)] group">
+                    Launch The Lab
+                    <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </Link>
+                <Link href="https://github.com/AbdullahMukadam/formscn" className="w-full sm:w-auto">
+                  <div className="flex items-center justify-center gap-3 text-white/50 hover:text-white transition-all cursor-pointer group text-sm font-bold h-14 px-8 rounded-2xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] w-full sm:w-auto">
+                    <Github className="w-5 h-5" />
+                    <span>View Source</span>
+                  </div>
+                </Link>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
