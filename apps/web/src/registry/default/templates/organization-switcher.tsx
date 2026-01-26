@@ -20,7 +20,7 @@ export function OrganizationSwitcher() {
   return (
     <div className="flex items-center gap-3">
       <DropdownMenu onOpenChange={setIsOpen}>
-        <DropdownMenuTrigger asChild>
+        <DropdownMenuTrigger>
           <Button variant="outline" className="h-12 px-3 justify-start gap-3 min-w-[200px] border-2 bg-background hover:bg-muted/50 transition-all shadow-sm ring-1 ring-black/5">
             <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary font-bold text-xs ring-1 ring-primary/20">
               {activeOrg.name.charAt(0)}
