@@ -103,13 +103,27 @@ export default function Home() {
         </div>
 
         {/* Static Tech Marquee */}
-        <div className="mt-20 md:mt-32 w-full overflow-hidden border-y border-white/[0.03] bg-white/[0.01] py-4">
+        <div className="mt-20 md:mt-32 w-full overflow-hidden border-y border-white/[0.03] bg-white/[0.01] py-6">
           <div className="container mx-auto px-4">
-            <div className="flex flex-wrap items-center justify-center md:justify-between gap-8 md:gap-4 opacity-40 grayscale contrast-200">
-              {["Next.js 15", "Better Auth", "Shadcn UI", "Tailwind CSS", "TypeScript", "Zod", "Drizzle", "Prisma", "React Hook Form"].map((tech) => (
-                <span key={tech} className="text-[10px] md:text-xs font-black uppercase tracking-[0.3em] text-white whitespace-nowrap">
-                  {tech}
-                </span>
+            <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-8 opacity-30 grayscale contrast-200">
+              {[
+                { name: "Next.js", icon: <Cpu className="w-4 h-4" /> },
+                { name: "Better Auth", icon: <ShieldCheck className="w-4 h-4" /> },
+                { name: "Shadcn UI", icon: <Layout className="w-4 h-4" /> },
+                { name: "Drizzle", icon: <Database className="w-4 h-4" /> },
+                { name: "Prisma", icon: <Binary className="w-4 h-4" /> },
+                { name: "TypeScript", icon: <Code2 className="w-4 h-4" /> },
+                { name: "Tailwind", icon: <Sparkles className="w-4 h-4" /> },
+                { name: "Zod", icon: <Zap className="w-4 h-4" /> },
+              ].map((tech) => (
+                <div key={tech.name} className="flex items-center gap-2 group cursor-default">
+                  <div className="text-white group-hover:text-primary transition-colors">
+                    {tech.icon}
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white whitespace-nowrap">
+                    {tech.name}
+                  </span>
+                </div>
               ))}
             </div>
           </div>
