@@ -34,6 +34,7 @@ import type { DatabaseAdapter, Framework, AuthPluginsConfig } from "@/registry/d
 import { DropdownMenu } from "../ui/dropdown-menu";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { ShieldCheck } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface EditorSidebarProps {
   // Form Meta
@@ -421,60 +422,68 @@ export function EditorSidebar({
             />
           </div>
           
-          {enableBetterAuth && (
-            <>
-              <div className="space-y-3 pt-2">
-                {[
-                  { id: "twoFactor", name: "Two-Factor (2FA)" },
-                  { id: "magicLink", name: "Magic Link" },
-                  { id: "passkey", name: "Passkeys" },
-                  { id: "username", name: "Username Auth" },
-                  { id: "organization", name: "Organizations" },
-                  { id: "admin", name: "Admin Dashboard" },
-                ].map((plugin) => (
-                  <div key={plugin.id} className="flex items-center justify-between">
-                    <Label htmlFor={`${plugin.id}-plugin`} className="cursor-pointer">
-                      {plugin.name}
-                    </Label>
-                    <Switch
-                      id={`${plugin.id}-plugin`}
-                      checked={!!authPlugins[plugin.id as keyof AuthPluginsConfig]}
-                      onCheckedChange={() => toggleAuthPlugin(plugin.id as keyof AuthPluginsConfig)}
-                    />
-                  </div>
-                ))}
-              </div>
-
-              <Separator className="my-4" />
-
-              {/* Section: OAuth */}
-              <div className="space-y-4">
-                <h3 className="text-sm font-medium flex items-center gap-2">
-                  <Box className="h-4 w-4" /> OAuth Providers
-                </h3>
-                <div className="space-y-3">
-                  {OAUTH_PROVIDERS.filter(p => p.enabled).map((provider) => {
-                    return (
-                      <div key={provider.id} className="flex items-center justify-between">
-                        <Label htmlFor={`${provider.id}-auth`} className="flex items-center gap-2 cursor-pointer">
-                          <span
-                            className="flex h-4 w-4 items-center justify-center [&>svg]:!m-0 [&>svg]:h-full [&>svg]:w-full"
-                            dangerouslySetInnerHTML={{ __html: provider.iconSvg }}
-                          />
-                          {provider.name}
-                        </Label>
-                        <Switch
-                          id={`${provider.id}-auth`}
-                          checked={oauthProviders.includes(provider.id)}
-                          onCheckedChange={() => toggleOAuth(provider.id)}
-                        />
-                      </div>
-                    );
-                  })}
+          <AnimatePresence>
+            {enableBetterAuth && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="overflow-hidden"
+              >
+                <div className="space-y-3 pt-2">
+                  {[
+                    { id: "twoFactor", name: "Two-Factor (2FA)" },
+                    { id: "magicLink", name: "Magic Link" },
+                    { id: "passkey", name: "Passkeys" },
+                    { id: "username", name: "Username Auth" },
+                    { id: "organization", name: "Organizations" },
+                    { id: "admin", name: "Admin Dashboard" },
+                  ].map((plugin) => (
+                    <div key={plugin.id} className="flex items-center justify-between">
+                      <Label htmlFor={`${plugin.id}-plugin`} className="cursor-pointer">
+                        {plugin.name}
+                      </Label>
+                      <Switch
+                        id={`${plugin.id}-plugin`}
+                        checked={!!authPlugins[plugin.id as keyof AuthPluginsConfig]}
+                        onCheckedChange={() => toggleAuthPlugin(plugin.id as keyof AuthPluginsConfig)}
+                      />
+                    </div>
+                  ))}
                 </div>
-              </div>
-            </>
-          )}
+
+                <Separator className="my-4" />
+
+                {/* Section: OAuth */}
+                <div className="space-y-4">
+                  <h3 className="text-sm font-medium flex items-center gap-2">
+                    <Box className="h-4 w-4" /> OAuth Providers
+                  </h3>
+                  <div className="space-y-3">
+                    {OAUTH_PROVIDERS.filter(p => p.enabled).map((provider) => {
+                      return (
+                        <div key={provider.id} className="flex items-center justify-between">
+                          <Label htmlFor={`${provider.id}-auth`} className="flex items-center gap-2 cursor-pointer">
+                            <span
+                              className="flex h-4 w-4 items-center justify-center [&>svg]:!m-0 [&>svg]:h-full [&>svg]:w-full"
+                              dangerouslySetInnerHTML={{ __html: provider.iconSvg }}
+                            />
+                            {provider.name}
+                          </Label>
+                          <Switch
+                            id={`${provider.id}-auth`}
+                            checked={oauthProviders.includes(provider.id)}
+                            onCheckedChange={() => toggleOAuth(provider.id)}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </aside>
