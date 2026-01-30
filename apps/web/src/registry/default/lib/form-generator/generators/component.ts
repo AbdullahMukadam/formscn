@@ -5,13 +5,53 @@ import { generateZodSchema } from "./schema";
 import { generateFormFields } from "./fields";
 import { generateSubmitLogic } from "./submit-logic";
 import { generateOAuthButtons } from "./oauth";
+import { THEMES } from "@/lib/themes-config";
+import { FONTS } from "@/lib/appearance-config";
 
 /**
  * Generate a complete form component with Better Auth integration
  */
 export function generateFormComponent(config: GenerateFormComponentConfig): string {
-  const { formName, formDescription, fields: initialFields, oauthProviders, framework = "next", steps, isAuthEnabled } = config;
+  const { formName, formDescription, fields: initialFields, oauthProviders, framework = "next", steps, isAuthEnabled, themeConfig } = config;
   
+  // Theme Injection Logic
+  const themeStyles = (() => {
+    if (!themeConfig) return null;
+    
+    const defaults = { color: "zinc", font: "default", radius: "0.5" };
+    const isDefault = 
+      themeConfig.color === defaults.color && 
+      themeConfig.font === defaults.font && 
+      themeConfig.radius === defaults.radius;
+
+    if (isDefault) return null;
+
+    const theme = THEMES.find(t => t.name === themeConfig.color);
+    const font = FONTS.find(f => f.name === themeConfig.font);
+
+    // CSS variables for inline styles
+    const styles: Record<string, string> = {
+      ...(theme ? theme.cssVars.light : {}),
+      "--radius": `${themeConfig.radius}rem`,
+    };
+
+    // System font stacks if non-default
+    if (themeConfig.font === 'serif') {
+       styles['fontFamily'] = 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif';
+    } else if (themeConfig.font === 'mono') {
+       styles['fontFamily'] = 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace';
+    }
+
+    return styles;
+  })();
+
+  const themeConstant = themeStyles 
+    ? `
+  const theme = ${JSON.stringify(themeStyles, null, 2)} as React.CSSProperties;`
+    : '';
+
+  const styleProp = themeStyles ? ' style={theme}' : '';
+
   // Use steps fields if steps are provided, otherwise use fields
   const fields = (steps && steps.length > 0) ? steps.flatMap(s => s.fields) : initialFields;
   const hasSteps = !!(steps && steps.length > 0);
@@ -127,10 +167,10 @@ ${submitLogic}
 
   const prevStep = () => {
     setCurrentStep((prev) => Math.max(prev - 1, 0));
-  };
+  };${themeConstant}
 
   return (
-    <Card className={cn("w-full max-w-md mx-auto", className)}>
+    <Card className={cn("w-full max-w-md mx-auto", className)}${styleProp}>
       <CardHeader>
         <CardTitle>${formName}</CardTitle>
         <CardDescription>${formDescription}</CardDescription>
@@ -214,10 +254,10 @@ export function ${componentName}({ defaultValues, onValuesChange, onSubmit, clas
     } else {
 ${submitLogic}
     }
-  };
+  };${themeConstant}
 
   return (
-    <Card className={cn("w-full max-w-md mx-auto", className)}>
+    <Card className={cn("w-full max-w-md mx-auto", className)}${styleProp}>
       <CardHeader>
         <CardTitle>${formName}</CardTitle>
         <CardDescription>${formDescription}</CardDescription>

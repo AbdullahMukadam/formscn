@@ -7,23 +7,62 @@ import type { DatabaseAdapter, Framework, AuthPluginsConfig } from "@/registry/d
 import { toast } from "sonner";
 import type { ThemeConfig } from "@/lib/appearance-config";
 
-// ... inside useFormEditor
+interface UseFormEditorProps {
+  initialTemplate?: FormTemplate;
+}
+
+export function useFormEditor({ initialTemplate }: UseFormEditorProps = {}) {
+  // State for form metadata
+  const [formName, setFormName] = useState(initialTemplate?.name || "My New Form");
+  const [formDescription, setFormDescription] = useState(initialTemplate?.description || "A custom form created with FormSCN");
+
+  // State for steps and fields
+  const [steps, setSteps] = useState<FormStep[]>(initialTemplate?.steps || []);
+  
+  // Initialize fields: if steps exist, flatten them. Otherwise use fields.
+  const initialFields = initialTemplate?.fields?.length 
+    ? initialTemplate.fields 
+    : (initialTemplate?.steps ? initialTemplate.steps.flatMap(s => s.fields) : []);
+
+  const [fields, setFields] = useState<FormFieldType[]>(initialFields);
+
+  // Helper to determine if we are in multi-step mode
+  const isMultiStep = steps.length > 0;
+  const [activeStepIndex, setActiveStepIndex] = useState(0);
+
+  // State for OAuth
+  const [oauthProviders, setOauthProviders] = useState<OAuthProvider[]>(initialTemplate?.oauthProviders || []);
+
+  // State for database adapter & framework
+  const [databaseAdapter, _setDatabaseAdapter] = useState<DatabaseAdapter>("drizzle");
+  const [framework, _setFramework] = useState<Framework>("next");
+  const [authPlugins, setAuthPlugins] = useState<AuthPluginsConfig>(initialTemplate?.authPlugins || {});
+  
+  // Master Switch for Better Auth
+  const [enableBetterAuth, setEnableBetterAuth] = useState(
+    !!initialTemplate?.oauthProviders?.length || 
+    !!Object.keys(initialTemplate?.authPlugins || {}).length ||
+    false
+  );
+
   // State for theme preview
   const [themeConfig, setThemeConfig] = useState<ThemeConfig>({
     color: "zinc",
     font: "default",
-    radius: "0.5",
+    radius: "0.5"
   });
 
   const updateThemeConfig = (updates: Partial<ThemeConfig>) => {
-    setThemeConfig(prev => ({ ...prev, ...updates }));
+    setThemeConfig((prev) => ({ ...prev, ...updates }));
+    setPublishedId(null);
   };
 
-  return {
-    // ... other exports
-    themeConfig,
-    updateThemeConfig,
-    // ...
+  const setDatabaseAdapter = (adapter: DatabaseAdapter) => {
+    _setDatabaseAdapter(adapter);
+    if (publishedId) {
+       setPublishedId(null);
+       toast.info("Framework/Adapter changed. Please regenerate the CLI command.");
+    }
   };
 
   const setFramework = (fw: Framework) => {
@@ -252,7 +291,6 @@ import type { ThemeConfig } from "@/lib/appearance-config";
     toggleAuthPlugin,
     enableBetterAuth,
     setEnableBetterAuth,
-    // Theme
     themeConfig,
     updateThemeConfig,
 
