@@ -295,22 +295,18 @@ export function EditorSidebar({
       </div>
 
       <div className="p-4 space-y-6 pb-20 lg:pb-4">
-        {/* Section: Theme */}
+        {/* Section: Appearance */}
         <div className="space-y-4">
           <h3 className="text-sm font-medium flex items-center gap-2">
-            <Settings className="h-4 w-4" /> Theme
+            <Settings className="h-4 w-4" /> Appearance
           </h3>
-          <ThemeSelector currentTheme={theme} onThemeChange={setTheme} />
-        </div>
-
-        <Separator />
-
-        {/* Section: Form Info */}
-        <div className="space-y-4">
-          <h3 className="text-sm font-medium flex items-center gap-2">
-            <Settings className="h-4 w-4" /> Theme
-          </h3>
-          <ThemeSelector currentTheme={theme} onThemeChange={setTheme} />
+          
+          <div className="space-y-3">
+            <div className="space-y-1.5">
+              <Label className="text-xs text-muted-foreground">Color Theme</Label>
+              <ThemeSelector currentTheme={theme} onThemeChange={setTheme} />
+            </div>
+          </div>
         </div>
 
         <Separator />
