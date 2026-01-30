@@ -36,6 +36,13 @@ export function useFormEditor({ initialTemplate }: UseFormEditorProps = {}) {
   const [databaseAdapter, _setDatabaseAdapter] = useState<DatabaseAdapter>("drizzle");
   const [framework, _setFramework] = useState<Framework>("next");
   const [authPlugins, setAuthPlugins] = useState<AuthPluginsConfig>(initialTemplate?.authPlugins || {});
+  
+  // Master Switch for Better Auth
+  const [enableBetterAuth, setEnableBetterAuth] = useState(
+    !!initialTemplate?.oauthProviders?.length || 
+    !!Object.keys(initialTemplate?.authPlugins || {}).length ||
+    false
+  );
 
   const setDatabaseAdapter = (adapter: DatabaseAdapter) => {
     _setDatabaseAdapter(adapter);
@@ -269,6 +276,8 @@ export function useFormEditor({ initialTemplate }: UseFormEditorProps = {}) {
     authPlugins,
     setAuthPlugins,
     toggleAuthPlugin,
+    enableBetterAuth,
+    setEnableBetterAuth,
 
     // Actions
     updateField,

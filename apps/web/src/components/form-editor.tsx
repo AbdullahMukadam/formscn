@@ -30,12 +30,10 @@ export function FormEditor({ initialTemplate }: FormEditorProps) {
     setSelectedFieldIndex, selectedField, activeTab, setActiveTab,
     publishedId, isPublishing, updateField, addField, removeField, moveField,
     toggleOAuth, setIsPublishing, setPublishedId, resetForm,
-    authPlugins, toggleAuthPlugin
+    authPlugins, toggleAuthPlugin, enableBetterAuth, setEnableBetterAuth
   } = useFormEditor({ initialTemplate });
 
-  const isAuthEnabled = oauthProviders.length > 0 || 
-    fields.some(f => f.name === 'password' || f.inputType === 'password') ||
-    Object.values(authPlugins).some(Boolean);
+  const isAuthEnabled = enableBetterAuth;
 
   const sidebarProps = {
     formName, setFormName, formDescription, setFormDescription, isMultiStep,
@@ -44,7 +42,8 @@ export function FormEditor({ initialTemplate }: FormEditorProps) {
     setSelectedFieldIndex, updateField, addField, oauthProviders, toggleOAuth,
     databaseAdapter, setDatabaseAdapter, framework, setFramework,
     isAuthEnabled, resetForm,
-    authPlugins, toggleAuthPlugin
+    authPlugins, toggleAuthPlugin,
+    enableBetterAuth, setEnableBetterAuth
   };
 
   const handlePublish = async () => {

@@ -10,7 +10,7 @@ import { generateOAuthButtons } from "./oauth";
  * Generate a complete form component with Better Auth integration
  */
 export function generateFormComponent(config: GenerateFormComponentConfig): string {
-  const { formName, formDescription, fields: initialFields, oauthProviders, framework = "next", steps } = config;
+  const { formName, formDescription, fields: initialFields, oauthProviders, framework = "next", steps, isAuthEnabled } = config;
   
   // Use steps fields if steps are provided, otherwise use fields
   const fields = (steps && steps.length > 0) ? steps.flatMap(s => s.fields) : initialFields;
@@ -18,18 +18,16 @@ export function generateFormComponent(config: GenerateFormComponentConfig): stri
 
   const hasOAuth = oauthProviders.length > 0;
   
-  // Extract OAuth icons to import (Not needed anymore since we use SVGs, but kept for cleanup)
-  // const oauthIcons = ... (Removed)
-
   // Auth Detection
   const hasEmail = fields.some(f => f.name === "email" || f.inputType === "email");
   const hasPassword = fields.some(f => f.name === "password" || f.inputType === "password");
   const hasConfirmPassword = fields.some(f => f.name === "confirmPassword");
   const hasName = fields.some(f => ["name", "fullName", "firstName", "username"].includes(f.name));
   
-  const isSignup = hasEmail && hasPassword && (hasConfirmPassword || hasName);
-  const isLogin = hasEmail && hasPassword && !isSignup;
-  const isAuth = isLogin || isSignup || hasOAuth;
+  // Only enable auth logic if master switch is ON
+  const isSignup = !!isAuthEnabled && hasEmail && hasPassword && (hasConfirmPassword || hasName);
+  const isLogin = !!isAuthEnabled && hasEmail && hasPassword && !isSignup;
+  const isAuth = !!isAuthEnabled && (isLogin || isSignup || hasOAuth);
 
   // Add Username hint for plugins
   if (isAuth && !fields.some(f => f.name === 'username') && fields.some(f => f.name === 'fullName')) {

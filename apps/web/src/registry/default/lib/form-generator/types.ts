@@ -30,6 +30,7 @@ export interface GenerateFormComponentConfig {
   oauthProviders: OAuthProvider[];
   framework?: Framework;
   steps?: FormStep[];
+  isAuthEnabled?: boolean;
 }
 
 export interface AuthPluginsConfig {
