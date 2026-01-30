@@ -87,14 +87,19 @@ export function FormEditor({ initialTemplate }: FormEditorProps) {
 
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col h-full min-w-0 bg-muted/20">
-        {/* Header */}
-        <header className="border-b bg-background h-14 flex items-center justify-between px-4 shrink-0">
-          <div className="flex items-center gap-2 flex-1 min-w-0">
-            {/* Mobile Sidebar Trigger */}
-            <div className="lg:hidden shrink-0">
-              <Sheet>
+        {/* Header - REMOVED per user request */}
+        {/* <header className="border-b bg-background h-14 flex items-center justify-between px-4 shrink-0">
+          ... (removed content)
+        </header> */}
+
+        {/* Workspace */}
+        <div className="flex-1 overflow-auto p-4 sm:p-8 flex items-start justify-center relative">
+          
+          {/* Floating Mobile Menu & Tabs - Integrated directly into workspace */}
+          <div className="absolute top-4 left-4 z-20 lg:hidden">
+             <Sheet>
                 <SheetTrigger>
-                  <Button variant="ghost" size="icon" className="h-9 w-9">
+                  <Button variant="outline" size="icon" className="h-10 w-10 bg-background shadow-sm">
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
@@ -102,34 +107,30 @@ export function FormEditor({ initialTemplate }: FormEditorProps) {
                   <EditorSidebar {...sidebarProps} />
                 </SheetContent>
               </Sheet>
-            </div>
+          </div>
+
+          <div className="absolute top-4 right-4 z-20 flex gap-2">
+             <Button variant="outline" size="sm" onClick={() => (window.location.href = "/")} className="h-10 bg-background shadow-sm px-4">
+               Exit
+             </Button>
+          </div>
+
+          <div className="w-full max-w-4xl flex flex-col items-center">
             
-            <div className="flex-1 lg:flex-none flex justify-center lg:justify-start min-w-0">
-              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full max-w-[280px] sm:max-w-[400px]">
-                <TabsList className="grid w-full grid-cols-2 h-9">
-                  <TabsTrigger value="preview" className="flex gap-2 text-[11px] sm:text-xs md:text-sm px-1 sm:px-4">
-                    <Eye className="h-3.5 w-3.5 shrink-0" /> 
-                    <span className="truncate">Preview</span>
+            {/* Centered Tabs */}
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full max-w-[400px] mb-6 z-10">
+                <TabsList className="grid w-full grid-cols-2 h-10 shadow-sm bg-background border">
+                  <TabsTrigger value="preview" className="flex gap-2">
+                    <Eye className="h-4 w-4" /> 
+                    <span>Preview</span>
                   </TabsTrigger>
-                  <TabsTrigger value="code" className="flex gap-2 text-[11px] sm:text-xs md:text-sm px-1 sm:px-4">
-                    <Code className="h-3.5 w-3.5 shrink-0" /> 
-                    <span className="truncate">Integrate</span>
+                  <TabsTrigger value="code" className="flex gap-2">
+                    <Code className="h-4 w-4" /> 
+                    <span>Integrate</span>
                   </TabsTrigger>
                 </TabsList>
-              </Tabs>
-            </div>
-          </div>
+            </Tabs>
 
-          <div className="flex items-center gap-2 ml-2 shrink-0">
-            <Button variant="ghost" size="sm" onClick={() => (window.location.href = "/")} className="text-xs sm:text-sm px-2 sm:px-3 h-9">
-              Exit
-            </Button>
-          </div>
-        </header>
-
-        {/* Workspace */}
-        <div className="flex-1 overflow-auto p-4 sm:p-8 flex items-start justify-center">
-          <div className="w-full max-w-4xl flex justify-center">
             {activeTab === "preview" ? (
               <div className="w-full flex justify-center py-4">
                 <FormPreview
