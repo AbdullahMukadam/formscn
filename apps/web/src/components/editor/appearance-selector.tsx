@@ -57,9 +57,12 @@ export function AppearanceSelector({ config, onUpdate }: AppearanceSelectorProps
           <Square className="h-3 w-3" /> Corner Radius
         </Label>
         <ToggleGroup
-          type="single"
-          value={config.radius}
-          onValueChange={(val) => val && onUpdate({ radius: val as any })}
+          value={[config.radius]}
+          onValueChange={(val: any) => {
+            if (Array.isArray(val) && val.length > 0) {
+              onUpdate({ radius: val[val.length - 1] });
+            }
+          }}
           className="justify-start gap-1"
         >
           {RADII.map((radius) => (
