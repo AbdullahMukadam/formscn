@@ -123,5 +123,6 @@ const formSchema = z.object({
 ${schemaFields}
 })${refineClause};
 
-type FormValues = z.infer<typeof formSchema>;`;
+export type FormValues = z.infer<typeof formSchema>;
+export { formSchema };`;
 }

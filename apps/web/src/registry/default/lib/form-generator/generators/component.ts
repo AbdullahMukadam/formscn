@@ -5,31 +5,69 @@ import { generateZodSchema } from "./schema";
 import { generateFormFields } from "./fields";
 import { generateSubmitLogic } from "./submit-logic";
 import { generateOAuthButtons } from "./oauth";
+import { THEMES } from "@/lib/themes-config";
+import { FONTS } from "@/lib/appearance-config";
 
 /**
  * Generate a complete form component with Better Auth integration
  */
 export function generateFormComponent(config: GenerateFormComponentConfig): string {
-  const { formName, formDescription, fields: initialFields, oauthProviders, framework = "next", steps } = config;
+  const { formName, formDescription, fields: initialFields, oauthProviders, framework = "next", steps, isAuthEnabled, themeConfig } = config;
   
+  // Theme Injection Logic
+  const themeStyles = (() => {
+    if (!themeConfig) return null;
+    
+    const defaults = { color: "zinc", font: "default", radius: "0.5" };
+    const isDefault = 
+      themeConfig.color === defaults.color && 
+      themeConfig.font === defaults.font && 
+      themeConfig.radius === defaults.radius;
+
+    if (isDefault) return null;
+
+    const theme = THEMES.find(t => t.name === themeConfig.color);
+    const font = FONTS.find(f => f.name === themeConfig.font);
+
+    // CSS variables for inline styles
+    const styles: Record<string, string> = {
+      ...(theme ? theme.cssVars.light : {}),
+      "--radius": `${themeConfig.radius}rem`,
+    };
+
+    // System font stacks if non-default
+    if (themeConfig.font === 'serif') {
+       styles['fontFamily'] = 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif';
+    } else if (themeConfig.font === 'mono') {
+       styles['fontFamily'] = 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace';
+    }
+
+    return styles;
+  })();
+
+  const themeConstant = themeStyles 
+    ? `
+  const theme = ${JSON.stringify(themeStyles, null, 2)} as React.CSSProperties;`
+    : '';
+
+  const styleProp = themeStyles ? ' style={theme}' : '';
+
   // Use steps fields if steps are provided, otherwise use fields
   const fields = (steps && steps.length > 0) ? steps.flatMap(s => s.fields) : initialFields;
   const hasSteps = !!(steps && steps.length > 0);
 
   const hasOAuth = oauthProviders.length > 0;
   
-  // Extract OAuth icons to import (Not needed anymore since we use SVGs, but kept for cleanup)
-  // const oauthIcons = ... (Removed)
-
   // Auth Detection
   const hasEmail = fields.some(f => f.name === "email" || f.inputType === "email");
   const hasPassword = fields.some(f => f.name === "password" || f.inputType === "password");
   const hasConfirmPassword = fields.some(f => f.name === "confirmPassword");
   const hasName = fields.some(f => ["name", "fullName", "firstName", "username"].includes(f.name));
   
-  const isSignup = hasEmail && hasPassword && (hasConfirmPassword || hasName);
-  const isLogin = hasEmail && hasPassword && !isSignup;
-  const isAuth = isLogin || isSignup || hasOAuth;
+  // Only enable auth logic if master switch is ON
+  const isSignup = !!isAuthEnabled && hasEmail && hasPassword && (hasConfirmPassword || hasName);
+  const isLogin = !!isAuthEnabled && hasEmail && hasPassword && !isSignup;
+  const isAuth = !!isAuthEnabled && (isLogin || isSignup || hasOAuth);
 
   // Add Username hint for plugins
   if (isAuth && !fields.some(f => f.name === 'username') && fields.some(f => f.name === 'fullName')) {
@@ -83,7 +121,14 @@ export function generateFormComponent(config: GenerateFormComponentConfig): stri
     }).join('\n');
 
     componentBody = `
-export function ${componentName}() {
+export interface ${componentName}Props {
+  defaultValues?: Partial<FormValues>;
+  onValuesChange?: (values: FormValues) => void;
+  onSubmit?: (values: FormValues) => Promise<void>;
+  className?: string;
+}
+
+export function ${componentName}({ defaultValues, onValuesChange, onSubmit, className }: ${componentName}Props = {}) {
   const [currentStep, setCurrentStep] = useState(0);
   const steps = ${stepsData};
 
@@ -91,15 +136,25 @@ export function ${componentName}() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       ${defaultValues}
+      ...defaultValues,
     },
     mode: "onChange",
     shouldUnregister: false,
   });
 
   const { isSubmitting } = form.formState;
+  const values = form.watch();
 
-  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+  useEffect(() => {
+    onValuesChange?.(values);
+  }, [values, onValuesChange]);
+
+  const handleSubmit: SubmitHandler<FormValues> = async (data) => {
+    if (onSubmit) {
+      await onSubmit(data);
+    } else {
 ${submitLogic}
+    }
   };
 
   const nextStep = async () => {
@@ -112,10 +167,10 @@ ${submitLogic}
 
   const prevStep = () => {
     setCurrentStep((prev) => Math.max(prev - 1, 0));
-  };
+  };${themeConstant}
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className={cn("w-full max-w-md mx-auto", className)}${styleProp}>
       <CardHeader>
         <CardTitle>${formName}</CardTitle>
         <CardDescription>${formDescription}</CardDescription>
@@ -134,7 +189,7 @@ ${submitLogic}
         </div>
       </CardHeader>
       <CardContent>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
           ${stepsRender}
 
           <div className="flex justify-between pt-4">
@@ -170,28 +225,45 @@ ${submitLogic}
     const loadingText = isLogin ? "Signing in..." : isSignup ? "Creating account..." : "Submitting...";
     
     componentBody = `
-export function ${componentName}() {
+export interface ${componentName}Props {
+  defaultValues?: Partial<FormValues>;
+  onValuesChange?: (values: FormValues) => void;
+  onSubmit?: (values: FormValues) => Promise<void>;
+  className?: string;
+}
+
+export function ${componentName}({ defaultValues, onValuesChange, onSubmit, className }: ${componentName}Props = {}) {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       ${defaultValues}
+      ...defaultValues,
     },
   });
 
   const { isSubmitting } = form.formState;
+  const values = form.watch();
 
-  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+  useEffect(() => {
+    onValuesChange?.(values);
+  }, [values, onValuesChange]);
+
+  const handleSubmit: SubmitHandler<FormValues> = async (data) => {
+    if (onSubmit) {
+      await onSubmit(data);
+    } else {
 ${submitLogic}
-  };
+    }
+  };${themeConstant}
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className={cn("w-full max-w-md mx-auto", className)}${styleProp}>
       <CardHeader>
         <CardTitle>${formName}</CardTitle>
         <CardDescription>${formDescription}</CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
 ${formFields}
 
           <Button type="submit" className="w-full" disabled={isSubmitting}>

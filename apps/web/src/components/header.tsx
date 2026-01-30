@@ -8,6 +8,10 @@ import { Github } from "lucide-react";
 
 export default function Header() {
   const pathname = usePathname();
+  
+  // Don't render header in editor
+  if (pathname?.startsWith('/editor')) return null;
+
   const links = [
     { to: "/", label: "FormsCN" },
     { to: "/templates", label: "Templates" },

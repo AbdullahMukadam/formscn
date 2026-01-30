@@ -5,6 +5,7 @@ import type { FormTemplate, FormField as FormFieldType, FormStep } from "@/lib/f
 import type { OAuthProvider } from "@/lib/oauth-providers-config";
 import type { DatabaseAdapter, Framework, AuthPluginsConfig } from "@/registry/default/lib/form-generator";
 import { toast } from "sonner";
+import type { ThemeConfig } from "@/lib/appearance-config";
 
 interface UseFormEditorProps {
   initialTemplate?: FormTemplate;
@@ -36,6 +37,25 @@ export function useFormEditor({ initialTemplate }: UseFormEditorProps = {}) {
   const [databaseAdapter, _setDatabaseAdapter] = useState<DatabaseAdapter>("drizzle");
   const [framework, _setFramework] = useState<Framework>("next");
   const [authPlugins, setAuthPlugins] = useState<AuthPluginsConfig>(initialTemplate?.authPlugins || {});
+  
+  // Master Switch for Better Auth
+  const [enableBetterAuth, setEnableBetterAuth] = useState(
+    !!initialTemplate?.oauthProviders?.length || 
+    !!Object.keys(initialTemplate?.authPlugins || {}).length ||
+    false
+  );
+
+  // State for theme preview
+  const [themeConfig, setThemeConfig] = useState<ThemeConfig>({
+    color: "zinc",
+    font: "default",
+    radius: "0.5"
+  });
+
+  const updateThemeConfig = (updates: Partial<ThemeConfig>) => {
+    setThemeConfig((prev) => ({ ...prev, ...updates }));
+    setPublishedId(null);
+  };
 
   const setDatabaseAdapter = (adapter: DatabaseAdapter) => {
     _setDatabaseAdapter(adapter);
@@ -269,6 +289,10 @@ export function useFormEditor({ initialTemplate }: UseFormEditorProps = {}) {
     authPlugins,
     setAuthPlugins,
     toggleAuthPlugin,
+    enableBetterAuth,
+    setEnableBetterAuth,
+    themeConfig,
+    updateThemeConfig,
 
     // Actions
     updateField,

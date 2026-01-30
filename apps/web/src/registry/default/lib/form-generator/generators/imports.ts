@@ -33,17 +33,18 @@ export function generateImports(config: GenerateImportsConfig): string {
   // Build React imports
   const reactImports: string[] = [];
   if (hasSteps) reactImports.push("useState");
+  reactImports.push("useEffect");
   
   // Build imports string
   let imports = directive;
   
   // React imports (if any)
   if (reactImports.length > 0) {
-    imports += `import { ${reactImports.join(", ")} } from "react";\n`;
+    imports += `import { ${Array.from(new Set(reactImports)).join(", ")} } from "react";\n`;
   }
   
   // React Hook Form
-  imports += `import { useForm${needsController ? ", Controller" : ""} type SubmitHandler } from "react-hook-form";
+  imports += `import { useForm${needsController ? ", Controller" : ""}, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";`;
 
@@ -53,12 +54,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast } from "sonner";`;
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";`;
 
   // Multi-step specific imports
   if (hasSteps) {
     imports += `
-import { cn } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";`;
   }
 

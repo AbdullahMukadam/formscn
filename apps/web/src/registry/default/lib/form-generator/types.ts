@@ -23,6 +23,8 @@ export interface GenerateSubmitLogicConfig {
   framework?: Framework;
 }
 
+import type { ThemeConfig } from "@/lib/appearance-config";
+
 export interface GenerateFormComponentConfig {
   formName: string;
   formDescription: string;
@@ -30,6 +32,8 @@ export interface GenerateFormComponentConfig {
   oauthProviders: OAuthProvider[];
   framework?: Framework;
   steps?: FormStep[];
+  isAuthEnabled?: boolean;
+  themeConfig?: ThemeConfig;
 }
 
 export interface AuthPluginsConfig {
