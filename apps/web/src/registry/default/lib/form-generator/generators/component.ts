@@ -83,7 +83,14 @@ export function generateFormComponent(config: GenerateFormComponentConfig): stri
     }).join('\n');
 
     componentBody = `
-export function ${componentName}() {
+export interface ${componentName}Props {
+  defaultValues?: Partial<FormValues>;
+  onValuesChange?: (values: FormValues) => void;
+  onSubmit?: (values: FormValues) => Promise<void>;
+  className?: string;
+}
+
+export function ${componentName}({ defaultValues, onValuesChange, onSubmit, className }: ${componentName}Props = {}) {
   const [currentStep, setCurrentStep] = useState(0);
   const steps = ${stepsData};
 
@@ -91,15 +98,25 @@ export function ${componentName}() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       ${defaultValues}
+      ...defaultValues,
     },
     mode: "onChange",
     shouldUnregister: false,
   });
 
   const { isSubmitting } = form.formState;
+  const values = form.watch();
 
-  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+  useEffect(() => {
+    onValuesChange?.(values);
+  }, [values, onValuesChange]);
+
+  const handleSubmit: SubmitHandler<FormValues> = async (data) => {
+    if (onSubmit) {
+      await onSubmit(data);
+    } else {
 ${submitLogic}
+    }
   };
 
   const nextStep = async () => {
@@ -115,7 +132,7 @@ ${submitLogic}
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className={cn("w-full max-w-md mx-auto", className)}>
       <CardHeader>
         <CardTitle>${formName}</CardTitle>
         <CardDescription>${formDescription}</CardDescription>
@@ -134,7 +151,7 @@ ${submitLogic}
         </div>
       </CardHeader>
       <CardContent>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
           ${stepsRender}
 
           <div className="flex justify-between pt-4">
@@ -170,28 +187,45 @@ ${submitLogic}
     const loadingText = isLogin ? "Signing in..." : isSignup ? "Creating account..." : "Submitting...";
     
     componentBody = `
-export function ${componentName}() {
+export interface ${componentName}Props {
+  defaultValues?: Partial<FormValues>;
+  onValuesChange?: (values: FormValues) => void;
+  onSubmit?: (values: FormValues) => Promise<void>;
+  className?: string;
+}
+
+export function ${componentName}({ defaultValues, onValuesChange, onSubmit, className }: ${componentName}Props = {}) {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       ${defaultValues}
+      ...defaultValues,
     },
   });
 
   const { isSubmitting } = form.formState;
+  const values = form.watch();
 
-  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+  useEffect(() => {
+    onValuesChange?.(values);
+  }, [values, onValuesChange]);
+
+  const handleSubmit: SubmitHandler<FormValues> = async (data) => {
+    if (onSubmit) {
+      await onSubmit(data);
+    } else {
 ${submitLogic}
+    }
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className={cn("w-full max-w-md mx-auto", className)}>
       <CardHeader>
         <CardTitle>${formName}</CardTitle>
         <CardDescription>${formDescription}</CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
 ${formFields}
 
           <Button type="submit" className="w-full" disabled={isSubmitting}>
