@@ -148,7 +148,7 @@ export function FormEditor({ initialTemplate }: FormEditorProps) {
                   toggleOAuth={toggleOAuth}
                   authPlugins={authPlugins}
                   toggleAuthPlugin={toggleAuthPlugin}
-                  theme={theme}
+                  themeConfig={themeConfig}
                 />
               </div>
             ) : (

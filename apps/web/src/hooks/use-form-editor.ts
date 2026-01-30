@@ -5,55 +5,25 @@ import type { FormTemplate, FormField as FormFieldType, FormStep } from "@/lib/f
 import type { OAuthProvider } from "@/lib/oauth-providers-config";
 import type { DatabaseAdapter, Framework, AuthPluginsConfig } from "@/registry/default/lib/form-generator";
 import { toast } from "sonner";
-import type { ThemeColor } from "@/lib/themes-config";
+import type { ThemeConfig } from "@/lib/appearance-config";
 
-interface UseFormEditorProps {
-  initialTemplate?: FormTemplate;
-}
-
-export function useFormEditor({ initialTemplate }: UseFormEditorProps = {}) {
-  // State for form metadata
-  const [formName, setFormName] = useState(initialTemplate?.name || "My New Form");
-  const [formDescription, setFormDescription] = useState(initialTemplate?.description || "A custom form created with FormSCN");
-
-  // State for steps and fields
-  const [steps, setSteps] = useState<FormStep[]>(initialTemplate?.steps || []);
-  
-  // Initialize fields: if steps exist, flatten them. Otherwise use fields.
-  const initialFields = initialTemplate?.fields?.length 
-    ? initialTemplate.fields 
-    : (initialTemplate?.steps ? initialTemplate.steps.flatMap(s => s.fields) : []);
-
-  const [fields, setFields] = useState<FormFieldType[]>(initialFields);
-
-  // Helper to determine if we are in multi-step mode
-  const isMultiStep = steps.length > 0;
-  const [activeStepIndex, setActiveStepIndex] = useState(0);
-
-  // State for OAuth
-  const [oauthProviders, setOauthProviders] = useState<OAuthProvider[]>(initialTemplate?.oauthProviders || []);
-
-  // State for database adapter & framework
-  const [databaseAdapter, _setDatabaseAdapter] = useState<DatabaseAdapter>("drizzle");
-  const [framework, _setFramework] = useState<Framework>("next");
-  const [authPlugins, setAuthPlugins] = useState<AuthPluginsConfig>(initialTemplate?.authPlugins || {});
-  
-  // Master Switch for Better Auth
-  const [enableBetterAuth, setEnableBetterAuth] = useState(
-    !!initialTemplate?.oauthProviders?.length || 
-    !!Object.keys(initialTemplate?.authPlugins || {}).length ||
-    false
-  );
-
+// ... inside useFormEditor
   // State for theme preview
-  const [theme, setTheme] = useState<ThemeColor>("zinc");
+  const [themeConfig, setThemeConfig] = useState<ThemeConfig>({
+    color: "zinc",
+    font: "default",
+    radius: "0.5",
+  });
 
-  const setDatabaseAdapter = (adapter: DatabaseAdapter) => {
-    _setDatabaseAdapter(adapter);
-    if (publishedId) {
-       setPublishedId(null);
-       toast.info("Framework/Adapter changed. Please regenerate the CLI command.");
-    }
+  const updateThemeConfig = (updates: Partial<ThemeConfig>) => {
+    setThemeConfig(prev => ({ ...prev, ...updates }));
+  };
+
+  return {
+    // ... other exports
+    themeConfig,
+    updateThemeConfig,
+    // ...
   };
 
   const setFramework = (fw: Framework) => {
@@ -282,8 +252,9 @@ export function useFormEditor({ initialTemplate }: UseFormEditorProps = {}) {
     toggleAuthPlugin,
     enableBetterAuth,
     setEnableBetterAuth,
-    theme,
-    setTheme,
+    // Theme
+    themeConfig,
+    updateThemeConfig,
 
     // Actions
     updateField,

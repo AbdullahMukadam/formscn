@@ -36,7 +36,8 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { ShieldCheck } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import type { ThemeColor } from "@/lib/themes-config";
-import { ThemeSelector } from "./theme-selector";
+import { ThemeConfig } from "@/lib/appearance-config";
+import { AppearanceSelector } from "./appearance-selector";
 
 interface EditorSidebarProps {
   // Form Meta
@@ -45,9 +46,9 @@ interface EditorSidebarProps {
   formDescription: string;
   setFormDescription: (desc: string) => void;
 
-  // Theme
-  theme: ThemeColor;
-  setTheme: (theme: ThemeColor) => void;
+  // Appearance
+  themeConfig: ThemeConfig;
+  updateThemeConfig: (updates: Partial<ThemeConfig>) => void;
 
   // Steps
   isMultiStep: boolean;
@@ -116,8 +117,8 @@ export function EditorSidebar({
   enableBetterAuth,
   setEnableBetterAuth,
   resetForm,
-  theme,
-  setTheme,
+  themeConfig,
+  updateThemeConfig,
 }: EditorSidebarProps) {
 
   const fieldTypes = useMemo(() => ({
@@ -300,13 +301,7 @@ export function EditorSidebar({
           <h3 className="text-sm font-medium flex items-center gap-2">
             <Settings className="h-4 w-4" /> Appearance
           </h3>
-          
-          <div className="space-y-3">
-            <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground">Color Theme</Label>
-              <ThemeSelector currentTheme={theme} onThemeChange={setTheme} />
-            </div>
-          </div>
+          <AppearanceSelector config={themeConfig} onUpdate={updateThemeConfig} />
         </div>
 
         <Separator />
