@@ -35,6 +35,8 @@ import { DropdownMenu } from "../ui/dropdown-menu";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { ShieldCheck } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
+import type { ThemeColor } from "@/lib/themes-config";
+import { ThemeSelector } from "./theme-selector";
 
 interface EditorSidebarProps {
   // Form Meta
@@ -42,6 +44,10 @@ interface EditorSidebarProps {
   setFormName: (name: string) => void;
   formDescription: string;
   setFormDescription: (desc: string) => void;
+
+  // Theme
+  theme: ThemeColor;
+  setTheme: (theme: ThemeColor) => void;
 
   // Steps
   isMultiStep: boolean;
@@ -110,6 +116,8 @@ export function EditorSidebar({
   enableBetterAuth,
   setEnableBetterAuth,
   resetForm,
+  theme,
+  setTheme,
 }: EditorSidebarProps) {
 
   const fieldTypes = useMemo(() => ({
@@ -287,6 +295,26 @@ export function EditorSidebar({
       </div>
 
       <div className="p-4 space-y-6 pb-20 lg:pb-4">
+        {/* Section: Theme */}
+        <div className="space-y-4">
+          <h3 className="text-sm font-medium flex items-center gap-2">
+            <Settings className="h-4 w-4" /> Theme
+          </h3>
+          <ThemeSelector currentTheme={theme} onThemeChange={setTheme} />
+        </div>
+
+        <Separator />
+
+        {/* Section: Form Info */}
+        <div className="space-y-4">
+          <h3 className="text-sm font-medium flex items-center gap-2">
+            <Settings className="h-4 w-4" /> Theme
+          </h3>
+          <ThemeSelector currentTheme={theme} onThemeChange={setTheme} />
+        </div>
+
+        <Separator />
+
         {/* Section: Form Info */}
         <div className="space-y-4">
           <h3 className="text-sm font-medium flex items-center gap-2">

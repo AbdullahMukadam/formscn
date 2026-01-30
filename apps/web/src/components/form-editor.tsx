@@ -30,7 +30,8 @@ export function FormEditor({ initialTemplate }: FormEditorProps) {
     setSelectedFieldIndex, selectedField, activeTab, setActiveTab,
     publishedId, isPublishing, updateField, addField, removeField, moveField,
     toggleOAuth, setIsPublishing, setPublishedId, resetForm,
-    authPlugins, toggleAuthPlugin, enableBetterAuth, setEnableBetterAuth
+    authPlugins, toggleAuthPlugin, enableBetterAuth, setEnableBetterAuth,
+    theme, setTheme
   } = useFormEditor({ initialTemplate });
 
   const isAuthEnabled = enableBetterAuth;
@@ -43,7 +44,8 @@ export function FormEditor({ initialTemplate }: FormEditorProps) {
     databaseAdapter, setDatabaseAdapter, framework, setFramework,
     isAuthEnabled, resetForm,
     authPlugins, toggleAuthPlugin,
-    enableBetterAuth, setEnableBetterAuth
+    enableBetterAuth, setEnableBetterAuth,
+    theme, setTheme
   };
 
   const handlePublish = async () => {
@@ -146,6 +148,7 @@ export function FormEditor({ initialTemplate }: FormEditorProps) {
                   toggleOAuth={toggleOAuth}
                   authPlugins={authPlugins}
                   toggleAuthPlugin={toggleAuthPlugin}
+                  theme={theme}
                 />
               </div>
             ) : (

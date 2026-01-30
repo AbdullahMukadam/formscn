@@ -20,6 +20,8 @@ import { OAUTH_PROVIDERS } from "@/lib/oauth-providers-config";
 import type { FormField as FormFieldType, FormStep } from "@/lib/form-templates";
 import type { OAuthProvider } from "@/lib/oauth-providers-config";
 import type { AuthPluginsConfig } from "@/registry/default/lib/form-generator";
+import type { ThemeColor } from "@/lib/themes-config";
+import { THEMES } from "@/lib/themes-config";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -41,6 +43,7 @@ interface FormPreviewProps {
   toggleOAuth: (provider: OAuthProvider) => void;
   authPlugins: AuthPluginsConfig;
   toggleAuthPlugin: (plugin: keyof AuthPluginsConfig) => void;
+  theme?: ThemeColor;
 }
 
 export function FormPreview({
@@ -56,6 +59,7 @@ export function FormPreview({
   toggleOAuth,
   authPlugins,
   toggleAuthPlugin,
+  theme = "zinc",
 }: FormPreviewProps) {
   const [currentStep, setCurrentStep] = useState<number>(0);
   const hasSteps = !!(steps && steps.length > 0);
@@ -177,8 +181,16 @@ export function FormPreview({
     setCurrentStep((prev) => Math.max(prev - 1, 0));
   };
 
+  const currentThemeConfig = useMemo(() => {
+    return THEMES.find(t => t.name === theme)?.cssVars || THEMES[0].cssVars;
+  }, [theme]);
+
   return (
-    <Card className="w-full max-w-sm h-fit animate-in fade-in-50">
+    <div
+      className="w-full flex justify-center"
+      style={currentThemeConfig.light as React.CSSProperties}
+    >
+      <Card className="w-full max-w-sm h-fit animate-in fade-in-50">
       <CardHeader className=" space-y-2">
         <CardTitle>{formName}</CardTitle>
         <CardDescription>{formDescription}</CardDescription>
@@ -522,5 +534,6 @@ export function FormPreview({
         </form>
       </CardContent>
     </Card>
+    </div>
   );
 }

@@ -5,6 +5,7 @@ import type { FormTemplate, FormField as FormFieldType, FormStep } from "@/lib/f
 import type { OAuthProvider } from "@/lib/oauth-providers-config";
 import type { DatabaseAdapter, Framework, AuthPluginsConfig } from "@/registry/default/lib/form-generator";
 import { toast } from "sonner";
+import type { ThemeColor } from "@/lib/themes-config";
 
 interface UseFormEditorProps {
   initialTemplate?: FormTemplate;
@@ -43,6 +44,9 @@ export function useFormEditor({ initialTemplate }: UseFormEditorProps = {}) {
     !!Object.keys(initialTemplate?.authPlugins || {}).length ||
     false
   );
+
+  // State for theme preview
+  const [theme, setTheme] = useState<ThemeColor>("zinc");
 
   const setDatabaseAdapter = (adapter: DatabaseAdapter) => {
     _setDatabaseAdapter(adapter);
@@ -278,6 +282,8 @@ export function useFormEditor({ initialTemplate }: UseFormEditorProps = {}) {
     toggleAuthPlugin,
     enableBetterAuth,
     setEnableBetterAuth,
+    theme,
+    setTheme,
 
     // Actions
     updateField,
