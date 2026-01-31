@@ -69,6 +69,7 @@ export function CodeViewer({
       steps,
       oauthProviders: isAuthEnabled ? oauthProviders : [],
       framework,
+      isAuthEnabled,
       themeConfig,
     });
   }, [formName, formDescription, fields, steps, oauthProviders, isAuthEnabled, framework, themeConfig]);

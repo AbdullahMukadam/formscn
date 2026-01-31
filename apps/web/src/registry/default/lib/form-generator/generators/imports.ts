@@ -30,9 +30,11 @@ export function generateImports(config: GenerateImportsConfig): string {
   const hasFile = fields.some(f => f.type === "file");
   const needsController = hasSelect || hasCheckbox || hasRadio || hasDate;
 
+  const hasPassword = fields.some(f => f.name === "password" || f.inputType === "password");
+
   // Build React imports
   const reactImports: string[] = [];
-  if (hasSteps) reactImports.push("useState");
+  if (hasSteps || hasPassword || isSignup) reactImports.push("useState");
   reactImports.push("useEffect");
   
   // Build imports string
@@ -51,7 +53,7 @@ import * as z from "zod";`;
   // UI Components
   imports += `
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
@@ -107,7 +109,7 @@ import {
   }
 
   // Auth Imports
-  if (isAuth) {
+  if (isAuth || hasOAuth) {
     const authImports: string[] = [];
     if (isLogin || hasOAuth) authImports.push("signIn");
     if (isSignup) authImports.push("signUp");

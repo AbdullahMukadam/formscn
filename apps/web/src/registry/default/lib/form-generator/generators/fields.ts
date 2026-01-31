@@ -3,7 +3,7 @@ import type { FormField } from "@/registry/default/types";
 /**
  * Generate JSX for form fields with production-ready features
  */
-export function generateFormFields(fields: FormField[]): string {
+export function generateFormFields(fields: FormField[], isSignup? : boolean): string {
   return fields.map((field) => {
     const errorDisplay = `{form.formState.errors.${field.name} && (
             <p className="text-sm text-destructive">{form.formState.errors.${field.name}.message}</p>
@@ -24,7 +24,7 @@ export function generateFormFields(fields: FormField[]): string {
       // Enhanced password field with show/hide toggle
       if (isAnyPasswordField) {
         return `          <div className="space-y-2">
-            ${isPasswordField ? `<div className="flex items-center justify-between">
+            ${isPasswordField && !isSignup ? `<div className="flex items-center justify-between">
               <Label htmlFor="${field.name}">${field.label}</Label>
               <a
                 href="/forgot-password"
@@ -38,7 +38,7 @@ export function generateFormFields(fields: FormField[]): string {
                 id="${field.name}"
                 type={showPassword ? "text" : "password"}
                 placeholder="${field.placeholder || "••••••••"}"
-                autoComplete="${isPasswordField ? "current-password" : "new-password"}"
+                autoComplete="${isPasswordField && !isSignup ? "current-password" : "new-password"}"
                 className="pr-10"
                 {...form.register("${field.name}")}
               />
@@ -87,7 +87,7 @@ export function generateFormFields(fields: FormField[]): string {
                 )}
               </button>
             </div>
-            ${isPasswordField ? `
+            ${isPasswordField && isSignup ? `
             {/* Password strength indicator - only for signup */}
             {showStrengthIndicator && (
               <div className="space-y-1">
@@ -107,7 +107,7 @@ export function generateFormFields(fields: FormField[]): string {
                 </div>
               </div>
             )}` : ''}
-            ${errorDisplay}${isPasswordField ? passwordHint : descriptionDisplay}
+            ${errorDisplay}${isPasswordField && !isSignup ? passwordHint : ''}
           </div>`;
       }
 

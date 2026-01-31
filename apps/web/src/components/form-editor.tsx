@@ -57,6 +57,7 @@ export function FormEditor({ initialTemplate }: FormEditorProps) {
       const code = generateFormComponent({
         formName, formDescription, fields, steps,
         oauthProviders: isAuthEnabled ? oauthProviders : [],
+        isAuthEnabled,
       });
 
       const response = await fetch("/api/publish", {

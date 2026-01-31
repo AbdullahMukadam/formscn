@@ -11,6 +11,7 @@ export function generateSubmitLogic(config: GenerateSubmitLogicConfig): string {
         await signIn.email({
           email: data.email,
           password: data.password,
+          callbackURL: "/dashboard",
           fetchOptions: {
             onRequest: () => {
               toast.loading("Signing in...");
@@ -44,6 +45,7 @@ export function generateSubmitLogic(config: GenerateSubmitLogicConfig): string {
         await signUp.email({
           email: data.email,
           password: data.password,${nameProp}
+          callbackURL: "/dashboard",
           fetchOptions: {
             onRequest: () => {
               toast.loading("Creating your account...");

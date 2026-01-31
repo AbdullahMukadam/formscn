@@ -65,10 +65,16 @@ export function generateFormComponent(config: GenerateFormComponentConfig): stri
   const hasConfirmPassword = fields.some(f => f.name === "confirmPassword");
   const hasName = fields.some(f => ["name", "fullName", "firstName", "username"].includes(f.name));
   
-  // Only enable auth logic if master switch is ON
-  const isSignup = !!isAuthEnabled && hasEmail && hasPassword && (hasConfirmPassword || hasName);
-  const isLogin = !!isAuthEnabled && hasEmail && hasPassword && !isSignup;
-  const isAuth = !!isAuthEnabled && (isLogin || isSignup || hasOAuth);
+  // Only enable auth logic if explicitly enabled
+  const shouldEnableAuth = !!isAuthEnabled;
+
+  const isSignup = shouldEnableAuth && hasEmail && hasPassword && (
+    hasConfirmPassword || 
+    hasName || 
+    /sign\s*up|register|create/i.test(formName)
+  );
+  const isLogin = shouldEnableAuth && hasEmail && hasPassword && !isSignup;
+  const isAuth = shouldEnableAuth && (isLogin || isSignup || hasOAuth);
 
   // Add Username hint for plugins
   if (isAuth && !fields.some(f => f.name === 'username') && fields.some(f => f.name === 'fullName')) {
@@ -91,7 +97,6 @@ export function generateFormComponent(config: GenerateFormComponentConfig): stri
   const oauthButtons = generateOAuthButtons(oauthProviders);
   const submitLogic = generateSubmitLogic({ isLogin, isSignup, fields, framework });
   
-  // Generate utility functions (password strength only for signup, OAuth handlers if needed)
   const utilityFunctions = generateUtilityFunctions(isSignup, hasOAuth);
 
   // Generate component
@@ -115,7 +120,7 @@ export function generateFormComponent(config: GenerateFormComponentConfig): stri
     })), null, 2);
 
     const stepsRender = steps.map((step, index) => {
-      const stepFields = generateFormFields(step.fields);
+      const stepFields = generateFormFields(step.fields, isSignup);
       return `
         {currentStep === ${index} && (
           <div className="space-y-4 animate-in fade-in-50 slide-in-from-right-5">
@@ -228,7 +233,7 @@ ${submitLogic}
 }`;
   } else {
     // SINGLE-STEP LOGIC
-    const formFields = generateFormFields(fields);
+    const formFields = generateFormFields(fields, isSignup);
     const submitButtonText = isLogin ? "Sign In" : isSignup ? "Create Account" : "Submit";
     const loadingText = isLogin ? "Signing in..." : isSignup ? "Creating account..." : "Submitting...";
     
