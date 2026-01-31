@@ -1,10 +1,10 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
 import { cn } from "@/lib/utils";
 import { MobileNav } from "./mobile-nav";
-import { Github } from "lucide-react";
+import { Github, Terminal } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function Header() {
   const pathname = usePathname();
@@ -13,31 +13,28 @@ export default function Header() {
   if (pathname?.startsWith('/editor')) return null;
 
   const links = [
-    { to: "/", label: "FormsCN" },
-    { to: "/templates", label: "Templates" },
     { to: "/docs", label: "Documentation" },
-    { to: "/editor", label: "Visual Editor" },
+    { to: "/registry", label: "Registry" },
+    { to: "/templates", label: "Templates" },
   ] as const;
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/5 bg-black/60 backdrop-blur-xl supports-[backdrop-filter]:bg-black/40 px-2">
-      <div className="container flex h-14 items-center justify-between mx-auto max-w-7xl">
+    <header className="fixed top-0 z-50 w-full border-b border-white/5 bg-[#0C0C0E]/80 backdrop-blur-xl">
+      <div className="container flex h-16 items-center justify-between mx-auto max-w-7xl px-4 md:px-6">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center space-x-2">
-            <span className="font-bold tracking-tighter text-white text-lg">FormsCN</span>
+            <span className="font-bold tracking-tight text-white text-xl">FormsCN</span>
           </Link>
           <nav className="hidden md:flex items-center gap-6">
             {links.map(({ to, label }) => {
-              if (to === "/") return null;
+              const isActive = pathname === to || pathname?.startsWith(to + "/");
               return (
                 <Link
                   key={to}
                   href={to}
                   className={cn(
-                    "transition-colors hover:text-white font-medium text-sm",
-                    pathname === to || pathname?.startsWith(to + "/")
-                      ? "text-white"
-                      : "text-white/60"
+                    "transition-colors text-sm font-medium hover:text-[#00E599]",
+                    isActive ? "text-[#00E599]" : "text-white/70"
                   )}
                 >
                   {label}
@@ -48,17 +45,24 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-4 border-l border-white/10 pl-4">
-            <Link 
-              href="https://github.com/AbdullahMukadam/formscn" 
-              className="text-white/40 hover:text-white transition-colors"
-              target="_blank"
-            >
-              <Github size={18}/>
-            </Link>
-            <div className="md:hidden">
-              <MobileNav />
-            </div>
+          <Link 
+            href="https://github.com/AbdullahMukadam/formscn" 
+            className="hidden md:block text-white/40 hover:text-white transition-colors"
+            target="_blank"
+          >
+            <Github size={20}/>
+          </Link>
+          
+          <Button 
+            className="hidden md:flex bg-[#00E599] text-black hover:bg-[#00E599]/90 rounded-full px-6 font-semibold"
+            size="sm"
+          >
+            <Terminal className="mr-2 h-4 w-4" />
+            Install CLI
+          </Button>
+
+          <div className="md:hidden">
+            <MobileNav />
           </div>
         </div>
       </div>
