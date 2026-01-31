@@ -15,7 +15,7 @@ interface ThemeSelectorProps {
 
 export function ThemeSelector({ currentTheme, onThemeChange }: ThemeSelectorProps) {
   return (
-    <div className="flex items-center gap-1.5 p-1 bg-background/50 border rounded-full shadow-sm backdrop-blur-sm">
+    <div className="flex items-center gap-1.5 p-1 bg-background/50 border rounded-full shadow-sm backdrop-blur-sm w-fit">
         {THEMES.map((theme) => {
           const isActive = currentTheme === theme.name;
           return (

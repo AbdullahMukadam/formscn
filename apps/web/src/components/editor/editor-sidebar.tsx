@@ -128,7 +128,6 @@ export function EditorSidebar({
   themeConfig,
   updateThemeConfig,
 }: EditorSidebarProps) {
-
   const fieldTypes = useMemo(() => ({
     basic: FORM_FIELD_TYPES.filter(f => f.enabled && f.category === "basic"),
     selection: FORM_FIELD_TYPES.filter(f => f.enabled && f.category === "selection"),
@@ -136,12 +135,30 @@ export function EditorSidebar({
   }), []);
 
   // -- Edit Field View --
+
   if (selectedField && selectedFieldIndex !== null) {
     return (
-      <aside className="w-full lg:w-80 border-r bg-background flex flex-col h-full overflow-y-auto">
+      <motion.aside 
+        initial={{ x: 30, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        exit={{ x: 30, opacity: 0 }}
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        className="w-full lg:w-80 border-r bg-background flex flex-col h-full overflow-y-auto"
+      >
         <div className="p-4 border-b flex items-center gap-2 bg-background sticky top-0 z-10">
-          <Button variant="ghost" size="sm" className="-ml-2" onClick={() => setSelectedFieldIndex(null)}>
-            <ArrowLeft className="h-4 w-4 mr-1" /> Back
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="-ml-2 group" 
+            onClick={() => setSelectedFieldIndex(null)}
+          >
+            <motion.div
+              whileHover={{ x: -3 }}
+              transition={{ type: "spring", stiffness: 400 }}
+            >
+                <ArrowLeft className="h-4 w-4 mr-1" />
+            </motion.div>
+             Back
           </Button>
           <span className="font-semibold text-sm ml-auto">Edit Field</span>
         </div>
@@ -237,59 +254,81 @@ export function EditorSidebar({
                   </Button>
                 </div>
                 <div className="space-y-2">
-                  {(selectedField.options || []).map((option, optIdx) => (
-                    <div key={optIdx} className="flex gap-2 items-center">
-                      <div className="grid grid-cols-2 gap-2 flex-1">
-                        <Input
-                          placeholder="Label"
-                          value={option.label}
-                          className="h-8 text-xs"
-                          onChange={(e) => {
-                            const newOptions = [...(selectedField.options || [])];
-                            newOptions[optIdx] = { ...option, label: e.target.value };
-                            updateField(selectedFieldIndex, { options: newOptions });
-                          }}
-                        />
-                        <Input
-                          placeholder="Value"
-                          value={option.value}
-                          className="h-8 text-xs font-mono"
-                          onChange={(e) => {
-                            const newOptions = [...(selectedField.options || [])];
-                            newOptions[optIdx] = { ...option, value: e.target.value };
-                            updateField(selectedFieldIndex, { options: newOptions });
-                          }}
-                        />
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 text-muted-foreground hover:text-destructive shrink-0"
-                        onClick={() => {
-                          const newOptions = [...(selectedField.options || [])];
-                          newOptions.splice(optIdx, 1);
-                          updateField(selectedFieldIndex, { options: newOptions });
-                        }}
+                  <AnimatePresence initial={false} mode="popLayout">
+                    {(selectedField.options || []).map((option, optIdx) => (
+                      <motion.div 
+                        key={`${optIdx}-${option.value}`} // Ideally use a unique ID if available, index fallback
+                        layout
+                        initial={{ opacity: 0, height: 0, y: -10 }}
+                        animate={{ opacity: 1, height: "auto", y: 0 }}
+                        exit={{ opacity: 0, height: 0, scale: 0.9 }}
+                        transition={{ duration: 0.2 }}
+                        className="flex gap-2 items-center overflow-hidden"
                       >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  ))}
+                        <div className="grid grid-cols-2 gap-2 flex-1 pt-1">
+                          <Input
+                            placeholder="Label"
+                            value={option.label}
+                            className="h-8 text-xs"
+                            onChange={(e) => {
+                              const newOptions = [...(selectedField.options || [])];
+                              newOptions[optIdx] = { ...option, label: e.target.value };
+                              updateField(selectedFieldIndex, { options: newOptions });
+                            }}
+                          />
+                          <Input
+                            placeholder="Value"
+                            value={option.value}
+                            className="h-8 text-xs font-mono"
+                            onChange={(e) => {
+                              const newOptions = [...(selectedField.options || [])];
+                              newOptions[optIdx] = { ...option, value: e.target.value };
+                              updateField(selectedFieldIndex, { options: newOptions });
+                            }}
+                          />
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-muted-foreground hover:text-destructive shrink-0 mt-1"
+                          onClick={() => {
+                            const newOptions = [...(selectedField.options || [])];
+                            newOptions.splice(optIdx, 1);
+                            updateField(selectedFieldIndex, { options: newOptions });
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
                   {(selectedField.options || []).length === 0 && (
-                    <p className="text-xs text-muted-foreground text-center py-2">No options added</p>
+                    <motion.p 
+                      initial={{ opacity: 0 }} 
+                      animate={{ opacity: 1 }} 
+                      className="text-xs text-muted-foreground text-center py-2"
+                    >
+                      No options added
+                    </motion.p>
                   )}
                 </div>
               </div>
             )}
           </div>
         </div>
-      </aside>
+      </motion.aside>
     );
   }
 
   // -- Main Editor View --
   return (
-    <aside className="w-full lg:w-80 border-r bg-background flex flex-col h-full">
+    <motion.aside 
+        initial={{ x: -20, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        exit={{ x: -20, opacity: 0 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+        className="w-full lg:w-80 border-r bg-background flex flex-col h-full"
+    >
       {/* Header */}
       <div className="h-14 border-b flex items-center justify-between px-4 bg-background shrink-0">
         <div className="flex items-center gap-2 font-semibold">
@@ -330,7 +369,8 @@ export function EditorSidebar({
               </div>
             </AccordionTrigger>
             <AccordionContent className="px-4 pb-4 pt-1">
-              <div className="space-y-4">
+              <div className="space-y-4"
+              >
                 <div className="space-y-2">
                   <Label className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Basic</Label>
                   <div className="grid grid-cols-2 gap-2">
@@ -347,7 +387,7 @@ export function EditorSidebar({
                 <div className="space-y-2">
                   <Label className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Selection</Label>
                   <div className="grid grid-cols-2 gap-2">
-                     {fieldTypes.selection.map((fieldConfig, idx) => (
+                      {fieldTypes.selection.map((fieldConfig, idx) => (
                       <FieldButton 
                         key={idx} 
                         config={fieldConfig} 
@@ -360,7 +400,7 @@ export function EditorSidebar({
                  <div className="space-y-2">
                   <Label className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Advanced</Label>
                   <div className="grid grid-cols-2 gap-2">
-                     {fieldTypes.advanced.map((fieldConfig, idx) => (
+                      {fieldTypes.advanced.map((fieldConfig, idx) => (
                       <FieldButton 
                         key={idx} 
                         config={fieldConfig} 
@@ -412,52 +452,66 @@ export function EditorSidebar({
                 />
               </div>
 
-              {isMultiStep && (
-                <div className="space-y-3 pt-2">
-                  <div className="flex items-center justify-between">
-                    <Label className="text-xs font-semibold text-muted-foreground uppercase">Steps</Label>
-                    <Button variant="ghost" size="icon" className="h-6 w-6" onClick={addStep}>
-                      <Plus className="h-3 w-3" />
-                    </Button>
-                  </div>
-                  <div className="space-y-2">
-                    {steps.map((step, index) => (
-                      <div
-                        key={step.id}
-                        className={`p-2 rounded-md border text-sm cursor-pointer transition-colors group ${activeStepIndex === index ? "bg-accent border-primary" : "hover:bg-muted/50"
-                          }`}
-                        onClick={() => {
-                          setActiveStepIndex(index);
-                          setSelectedFieldIndex(null);
-                        }}
-                      >
-                        <div className="flex items-center justify-between mb-1.5">
-                          <span className="font-medium text-xs">Step {index + 1}</span>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-5 w-5 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              removeStep(index);
-                            }}
-                            disabled={steps.length <= 1}
-                          >
-                            <Trash2 className="h-3 w-3" />
-                          </Button>
-                        </div>
-                        <Input
-                          value={step.title}
-                          onChange={(e) => updateStep(index, { title: e.target.value })}
-                          className="h-7 text-xs mb-1"
-                          placeholder="Step Title"
-                          onClick={(e) => e.stopPropagation()} // Prevent stepping when editing title
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+              <AnimatePresence>
+                {isMultiStep && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="overflow-hidden space-y-3 pt-2"
+                  >
+                    <div className="flex items-center justify-between">
+                      <Label className="text-xs font-semibold text-muted-foreground uppercase">Steps</Label>
+                      <Button variant="ghost" size="icon" className="h-6 w-6" onClick={addStep}>
+                        <Plus className="h-3 w-3" />
+                      </Button>
+                    </div>
+                    <div className="space-y-2">
+                    <AnimatePresence mode="popLayout" initial={false}>
+                      {steps.map((step, index) => (
+                        <motion.div
+                          key={step.id}
+                          layout
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, x: 20 }}
+                          transition={{ duration: 0.2 }}
+                          className={`p-2 rounded-md border text-sm cursor-pointer transition-colors group ${activeStepIndex === index ? "bg-accent border-primary" : "hover:bg-muted/50"
+                            }`}
+                          onClick={() => {
+                            setActiveStepIndex(index);
+                            setSelectedFieldIndex(null);
+                          }}
+                        >
+                          <div className="flex items-center justify-between mb-1.5">
+                            <span className="font-medium text-xs">Step {index + 1}</span>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-5 w-5 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                removeStep(index);
+                              }}
+                              disabled={steps.length <= 1}
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          </div>
+                          <Input
+                            value={step.title}
+                            onChange={(e) => updateStep(index, { title: e.target.value })}
+                            className="h-7 text-xs mb-1"
+                            placeholder="Step Title"
+                            onClick={(e) => e.stopPropagation()} // Prevent stepping when editing title
+                          />
+                        </motion.div>
+                      ))}
+                      </AnimatePresence>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </AccordionContent>
           </AccordionItem>
 
@@ -505,10 +559,14 @@ export function EditorSidebar({
                     <Separator />
                     
                     <div className="space-y-2">
-                       <Label className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Providers</Label>
-                       <div className="space-y-2">
-                        {OAUTH_PROVIDERS.filter(p => p.enabled).map((provider) => (
-                          <div key={provider.id} className="flex items-center justify-between border rounded-md p-2">
+                        <Label className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Providers</Label>
+                        <div className="space-y-2">
+                         {OAUTH_PROVIDERS.filter(p => p.enabled).map((provider) => (
+                          <motion.div 
+                            key={provider.id} 
+                            whileHover={{ scale: 1.01, backgroundColor: "var(--muted)" }}
+                            className="flex items-center justify-between border rounded-md p-2 transition-colors"
+                          >
                              <div className="flex items-center gap-2">
                                 <span
                                   className="flex h-4 w-4 items-center justify-center [&>svg]:!m-0 [&>svg]:h-full [&>svg]:w-full"
@@ -521,9 +579,9 @@ export function EditorSidebar({
                                 onCheckedChange={() => toggleOAuth(provider.id)}
                                 className="scale-75 origin-right"
                               />
-                          </div>
-                        ))}
-                       </div>
+                          </motion.div>
+                         ))}
+                        </div>
                     </div>
 
                     <div className="space-y-2">
@@ -559,7 +617,7 @@ export function EditorSidebar({
           
         </Accordion>
       </div>
-    </aside>
+    </motion.aside>
   );
 }
 
@@ -572,14 +630,20 @@ function FieldButton({ config, onClick }: { config: any, onClick: (type: any, in
   }
 
   return (
-    <Button
-      variant="outline"
-      size="sm"
-      className="justify-start h-9 px-3"
-      onClick={() => onClick(actualType, config.inputType)}
+    <motion.div
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      className="w-full"
     >
-      <Icon className="mr-2 h-4 w-4 text-muted-foreground" />
-      <span className="truncate">{config.name}</span>
-    </Button>
+      <Button
+        variant="outline"
+        size="sm"
+        className="justify-start h-9 px-3 w-full"
+        onClick={() => onClick(actualType, config.inputType)}
+      >
+        <Icon className="mr-2 h-4 w-4 text-muted-foreground" />
+        <span className="truncate">{config.name}</span>
+      </Button>
+    </motion.div>
   );
 }
