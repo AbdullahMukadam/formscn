@@ -87,13 +87,32 @@ export function generateZodSchema(fields: FormField[]): string {
       default:
         validation = `z.string()`;
         
-        // Email validation
+        // Email validation with better error messages
         if (field.type === "input" && field.inputType === "email") {
-          validation += `.email("Invalid email address")`;
+          if (field.required) {
+            validation += `.min(1, "Email address is required").email("Please enter a valid email address")`;
+          } else {
+            validation += `.email("Please enter a valid email address").optional().or(z.literal(""))`;
+          }
         }
-        
+        // URL validation
+        else if (field.type === "input" && field.inputType === "url") {
+          if (field.required) {
+            validation += `.min(1, "URL is required").url("Please enter a valid URL")`;
+          } else {
+            validation += `.url("Please enter a valid URL").optional().or(z.literal(""))`;
+          }
+        }
+        // Telephone validation
+        else if (field.type === "input" && field.inputType === "tel") {
+          if (field.required) {
+            validation += `.min(1, "Phone number is required").regex(/^[+]?[(]?[0-9]{1,4}[)]?[-\\s\\.]?[(]?[0-9]{1,4}[)]?[-\\s\\.]?[0-9]{1,9}$/, "Please enter a valid phone number")`;
+          } else {
+            validation += `.regex(/^[+]?[(]?[0-9]{1,4}[)]?[-\\s\\.]?[(]?[0-9]{1,4}[)]?[-\\s\\.]?[0-9]{1,9}$/, "Please enter a valid phone number").optional().or(z.literal(""))`;
+          }
+        }
         // Password validation - min 8 chars for auth forms
-        if (field.type === "input" && (field.name === "password" || field.inputType === "password")) {
+        else if (field.type === "input" && (field.name === "password" || field.inputType === "password")) {
           if (isAuth && field.name === "password") {
             validation += `.min(8, "Password must be at least 8 characters")`;
           } else if (field.required) {

@@ -5,6 +5,7 @@ import { generateZodSchema } from "./schema";
 import { generateFormFields } from "./fields";
 import { generateSubmitLogic } from "./submit-logic";
 import { generateOAuthButtons } from "./oauth";
+import { generateUtilityFunctions, generatePasswordStrengthEffect } from "./utils";
 import { THEMES } from "@/lib/themes-config";
 import { FONTS } from "@/lib/appearance-config";
 
@@ -89,6 +90,9 @@ export function generateFormComponent(config: GenerateFormComponentConfig): stri
   const schema = generateZodSchema(fields);
   const oauthButtons = generateOAuthButtons(oauthProviders);
   const submitLogic = generateSubmitLogic({ isLogin, isSignup, fields, framework });
+  
+  // Generate utility functions (password strength only for signup, OAuth handlers if needed)
+  const utilityFunctions = generateUtilityFunctions(isSignup, hasOAuth);
 
   // Generate component
   const componentName = formName.replace(/\s+/g, '') + 'Form';
@@ -129,6 +133,7 @@ export interface ${componentName}Props {
 }
 
 export function ${componentName}({ defaultValues, onValuesChange, onSubmit, className }: ${componentName}Props = {}) {
+  // Form state management
   const [currentStep, setCurrentStep] = useState(0);
   const steps = ${stepsData};
 
@@ -144,6 +149,9 @@ export function ${componentName}({ defaultValues, onValuesChange, onSubmit, clas
 
   const { isSubmitting } = form.formState;
   const values = form.watch();
+
+  // Local state for password field enhancements
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     onValuesChange?.(values);
@@ -233,6 +241,7 @@ export interface ${componentName}Props {
 }
 
 export function ${componentName}({ defaultValues, onValuesChange, onSubmit, className }: ${componentName}Props = {}) {
+  // Form state management
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -243,6 +252,11 @@ export function ${componentName}({ defaultValues, onValuesChange, onSubmit, clas
 
   const { isSubmitting } = form.formState;
   const values = form.watch();
+
+  // Local state for password field enhancements
+  const [showPassword, setShowPassword] = useState(false);${isSignup ? `
+  const [passwordStrength, setPasswordStrength] = useState<PasswordStrength>("weak");
+  const [showStrengthIndicator, setShowStrengthIndicator] = useState(false);${generatePasswordStrengthEffect()}` : ''}
 
   useEffect(() => {
     onValuesChange?.(values);
@@ -291,5 +305,5 @@ ${oauthButtons}
 }`;
   }
 
-  return `${imports}${schema}${componentBody}`;
+  return `${imports}${utilityFunctions}${schema}${componentBody}`;
 }
