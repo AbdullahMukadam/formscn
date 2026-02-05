@@ -878,5 +878,60 @@
       "createdAt": 1769776709267,
       "expiresAt": 1769863109267
     }
+  ],
+  [
+    "0nP7ZoFwuq",
+    {
+      "id": "0nP7ZoFwuq",
+      "name": "Contact Form",
+      "description": "Basic contact form with name, email, and message",
+      "code": "\"use client\";\n\nimport { useEffect } from \"react\";\nimport { useForm, type SubmitHandler } from \"react-hook-form\";\nimport { zodResolver } from \"@hookform/resolvers/zod\";\nimport * as z from \"zod\";\nimport { Button } from \"@/components/ui/button\";\nimport { Card, CardContent, CardDescription, CardHeader, CardTitle } from \"@/components/ui/card\";\nimport { Input } from \"@/components/ui/input\";\nimport { Label } from \"@/components/ui/label\";\nimport { toast } from \"sonner\";\nimport { cn } from \"@/lib/utils\";\nimport { Textarea } from \"@/components/ui/textarea\";\nconst formSchema = z.object({\n  name: z.string().min(1, \"Your Name is required\"),\n  email: z.string().min(1, \"Email address is required\").email(\"Please enter a valid email address\"),\n  subject: z.string().min(1, \"Subject is required\"),\n  message: z.string().min(1, \"Message is required\"),\n});\n\nexport type FormValues = z.infer<typeof formSchema>;\nexport { formSchema };\nexport interface ContactFormFormProps {\n  defaultValues?: Partial<FormValues>;\n  onValuesChange?: (values: FormValues) => void;\n  onSubmit?: (values: FormValues) => Promise<void>;\n  className?: string;\n}\n\nexport function ContactFormForm({ defaultValues, onValuesChange, onSubmit, className }: ContactFormFormProps = {}) {\n  // Form state management\n  const form = useForm<FormValues>({\n    resolver: zodResolver(formSchema),\n    defaultValues: {\n            name: \"\",\n      email: \"\",\n      subject: \"\",\n      message: \"\",\n      ...defaultValues,\n    },\n  });\n\n  const { isSubmitting } = form.formState;\n  const values = form.watch();\n\n  // Local state for password field enhancements\n  const [showPassword, setShowPassword] = useState(false);\n\n  useEffect(() => {\n    onValuesChange?.(values);\n  }, [values, onValuesChange]);\n\n  const handleSubmit: SubmitHandler<FormValues> = async (data) => {\n    if (onSubmit) {\n      await onSubmit(data);\n    } else {\n      try {   \n       //submit logic here\n        toast.success(\"Form submitted successfully!\");\n      } catch (error) {\n        toast.error(error instanceof Error ? error.message : \"Something went wrong\");\n      }\n    }\n  };\n\n  return (\n    <Card className={cn(\"w-full max-w-md mx-auto\", className)}>\n      <CardHeader>\n        <CardTitle>Contact Form</CardTitle>\n        <CardDescription>Basic contact form with name, email, and message</CardDescription>\n      </CardHeader>\n      <CardContent>\n        <form onSubmit={form.handleSubmit(handleSubmit)} className=\"space-y-4\">\n          <div className=\"space-y-2\">\n            <Label htmlFor=\"name\">Your Name</Label>\n            <Input\n              id=\"name\"\n              type=\"text\"\n              placeholder=\"John Doe\"\n              \n              {...form.register(\"name\")}\n            />\n            {form.formState.errors.name && (\n            <p className=\"text-sm text-destructive\">{form.formState.errors.name.message}</p>\n          )}\n          </div>\n\n          <div className=\"space-y-2\">\n            <Label htmlFor=\"email\">Email Address</Label>\n            <Input\n              id=\"email\"\n              type=\"email\"\n              placeholder=\"john@example.com\"\n              autoComplete=\"email\"\n              {...form.register(\"email\")}\n            />\n            {form.formState.errors.email && (\n            <p className=\"text-sm text-destructive\">{form.formState.errors.email.message}</p>\n          )}\n          </div>\n\n          <div className=\"space-y-2\">\n            <Label htmlFor=\"subject\">Subject</Label>\n            <Input\n              id=\"subject\"\n              type=\"text\"\n              placeholder=\"What is this about?\"\n              \n              {...form.register(\"subject\")}\n            />\n            {form.formState.errors.subject && (\n            <p className=\"text-sm text-destructive\">{form.formState.errors.subject.message}</p>\n          )}\n          </div>\n\n          <div className=\"space-y-2\">\n            <Label htmlFor=\"message\">Message</Label>\n            <Textarea\n              id=\"message\"\n              placeholder=\"Tell us more...\"\n              rows={4}\n              {...form.register(\"message\")}\n            />\n            {form.formState.errors.message && (\n            <p className=\"text-sm text-destructive\">{form.formState.errors.message.message}</p>\n          )}\n            <p className=\"text-sm text-muted-foreground\">Minimum 10 characters</p>\n          </div>\n\n          <Button type=\"submit\" className=\"w-full\" disabled={isSubmitting}>\n            {isSubmitting ? \"Submitting...\" : \"Submit\"}\n          </Button>\n        </form>\n      </CardContent>\n    </Card>\n  );\n}",
+      "config": {
+        "fields": [
+          {
+            "type": "input",
+            "name": "name",
+            "label": "Your Name",
+            "placeholder": "John Doe",
+            "required": true,
+            "inputType": "text"
+          },
+          {
+            "type": "input",
+            "name": "email",
+            "label": "Email Address",
+            "placeholder": "john@example.com",
+            "required": true,
+            "inputType": "email"
+          },
+          {
+            "type": "input",
+            "name": "subject",
+            "label": "Subject",
+            "placeholder": "What is this about?",
+            "required": true,
+            "inputType": "text"
+          },
+          {
+            "type": "textarea",
+            "name": "message",
+            "label": "Message",
+            "placeholder": "Tell us more...",
+            "description": "Minimum 10 characters",
+            "required": true
+          }
+        ],
+        "steps": [],
+        "oauthProviders": [],
+        "databaseAdapter": "drizzle",
+        "framework": "next",
+        "plugins": {}
+      },
+      "dependencies": [
+        "http://localhost:3001/r/base-form.json"
+      ],
+      "createdAt": 1770288391186,
+      "expiresAt": 1770374791186
+    }
   ]
 ]

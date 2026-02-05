@@ -58,6 +58,10 @@ interface EditorSidebarProps {
   themeConfig: ThemeConfig;
   updateThemeConfig: (updates: Partial<ThemeConfig>) => void;
 
+  // Form Library
+  formLibrary: "rhf" | "tanstack";
+  setFormLibrary: (library: "rhf" | "tanstack") => void;
+
   // Steps
   isMultiStep: boolean;
   toggleMultiStep: (enabled: boolean) => void;
@@ -127,6 +131,8 @@ export function EditorSidebar({
   resetForm,
   themeConfig,
   updateThemeConfig,
+  formLibrary,
+  setFormLibrary,
 }: EditorSidebarProps) {
   const fieldTypes = useMemo(() => ({
     basic: FORM_FIELD_TYPES.filter(f => f.enabled && f.category === "basic"),
@@ -441,6 +447,24 @@ export function EditorSidebar({
                 </div>
               </div>
 
+              <div className="space-y-1 border-t pt-3">
+                <Label className="text-xs">Form Library</Label>
+                <Select
+                  value={formLibrary}
+                  onValueChange={(value) => setFormLibrary(value as "rhf" | "tanstack")}
+                >
+                  <SelectTrigger className="h-8">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="rhf">React Hook Form</SelectItem>
+                      <SelectItem value="tanstack">TanStack Form</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+
               <div className="flex items-center justify-between border-t pt-3">
                 <div className="space-y-0.5">
                   <Label className="text-sm">Multi-step Form</Label>
@@ -528,19 +552,24 @@ export function EditorSidebar({
             </AccordionContent>
           </AccordionItem>
 
-          {/* Section: Auth */}
+          {/* Section: Advanced (Optional) */}
           <AccordionItem value="auth">
             <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-muted/50">
-              <div className="flex items-center gap-2 text-sm font-semibold">
-                <Shield className="h-4 w-4" />
-                <span>Authentication</span>
+              <div className="flex items-center justify-between w-full pr-3">
+                <div className="flex items-center gap-2 text-sm font-semibold">
+                  <Shield className="h-4 w-4" />
+                  <span>Advanced</span>
+                </div>
+                <span className="text-[9px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
+                  Optional
+                </span>
               </div>
             </AccordionTrigger>
             <AccordionContent className="px-4 pb-4 pt-1 space-y-4">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label className="text-sm">Better Auth</Label>
-                  <p className="text-[10px] text-muted-foreground">Enable auth features</p>
+                  <Label className="text-sm">Add Better Auth</Label>
+                  <p className="text-[10px] text-muted-foreground">Optional authentication integration</p>
                 </div>
                 <Switch
                   checked={enableBetterAuth}

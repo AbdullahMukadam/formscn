@@ -1,25 +1,17 @@
-import { OAUTH_PROVIDERS } from "@/lib/oauth-providers-config";
-import type { GenerateFormComponentConfig, Framework } from "../types";
-import { generateImports } from "./imports";
-import { generateZodSchema } from "./schema";
-import { generateFormFields } from "./fields";
-import { generateSubmitLogic } from "./submit-logic";
-import { generateOAuthButtons } from "./oauth";
-import { generateUtilityFunctions, generatePasswordStrengthEffect } from "./utils";
+import type { GenerateFormComponentConfig, Framework } from "../../types";
+import { generateTanstackImports } from "./imports";
+import { generateZodSchema } from "../schema";
+import { generateTanstackFormFields } from "./fields";
+import { generateSubmitLogic } from "../submit-logic";
+import { generateOAuthButtons } from "../oauth";
+import { generateUtilityFunctions, generatePasswordStrengthEffect } from "../utils";
 import { THEMES } from "@/lib/themes-config";
 import { FONTS } from "@/lib/appearance-config";
-import { generateTanstackFormComponent } from "./tanstack/component";
 
 /**
- * Generate a complete form component with Better Auth integration
+ * Generate a complete TanStack Form component with Better Auth integration
  */
-export function generateFormComponent(config: GenerateFormComponentConfig): string {
-  // If TanStack Form is selected, use the TanStack generator
-  if (config.formLibrary === "tanstack") {
-    return generateTanstackFormComponent(config);
-  }
-
-  // Otherwise, use React Hook Form (default)
+export function generateTanstackFormComponent(config: GenerateFormComponentConfig): string {
   const { formName, formDescription, fields: initialFields, oauthProviders, framework = "next", steps, isAuthEnabled, themeConfig } = config;
   
   // Theme Injection Logic
@@ -83,13 +75,8 @@ export function generateFormComponent(config: GenerateFormComponentConfig): stri
   const isLogin = shouldEnableAuth && hasEmail && hasPassword && !isSignup;
   const isAuth = shouldEnableAuth && (isLogin || isSignup || hasOAuth);
 
-  // Add Username hint for plugins
-  if (isAuth && !fields.some(f => f.name === 'username') && fields.some(f => f.name === 'fullName')) {
-     // Optional: Logic to inject username could go here
-  }
-
   // Generate parts
-  const imports = generateImports({
+  const imports = generateTanstackImports({
     framework,
     fields,
     oauthProviders,
@@ -127,7 +114,7 @@ export function generateFormComponent(config: GenerateFormComponentConfig): stri
     })), null, 2);
 
     const stepsRender = steps.map((step, index) => {
-      const stepFields = generateFormFields(step.fields, isSignup);
+      const stepFields = generateTanstackFormFields(step.fields, isSignup);
       return `
         {currentStep === ${index} && (
           <div className="space-y-4 animate-in fade-in-50 slide-in-from-right-5">
@@ -150,26 +137,27 @@ export function ${componentName}({ defaultValues, onValuesChange, onSubmit, clas
   const steps = ${stepsData};
 
   const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
     defaultValues: {
-      ${defaultValues}
+${defaultValues}
       ...defaultValues,
     },
-    mode: "onChange",
-    shouldUnregister: false,
+    validators: {
+      onSubmit: formSchema,
+    },
+    validatorAdapter: zodValidator,
   });
-
-  const { isSubmitting } = form.formState;
-  const values = form.watch();
 
   // Local state for password field enhancements
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
-    onValuesChange?.(values);
-  }, [values, onValuesChange]);
+    const subscription = form.subscribe((state) => {
+      onValuesChange?.(state.values);
+    });
+    return () => subscription();
+  }, [onValuesChange]);
 
-  const handleSubmit: SubmitHandler<FormValues> = async (data) => {
+  const handleSubmit = async (data: FormValues) => {
     if (onSubmit) {
       await onSubmit(data);
     } else {
@@ -179,8 +167,8 @@ ${submitLogic}
 
   const nextStep = async () => {
     const currentStepFields = steps[currentStep].fields;
-    const isValid = await form.trigger(currentStepFields as any);
-    if (isValid) {
+    const isValid = await form.validateField(currentStepFields[0] as any);
+    if (!isValid) {
       setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
     }
   };
@@ -209,7 +197,13 @@ ${submitLogic}
         </div>
       </CardHeader>
       <CardContent>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+        <form 
+          onSubmit={(e) => {
+            e.preventDefault();
+            form.handleSubmit(handleSubmit)();
+          }} 
+          className="space-y-4"
+        >
           ${stepsRender}
 
           <div className="flex justify-between pt-4">
@@ -217,19 +211,19 @@ ${submitLogic}
               type="button" 
               variant="outline" 
               onClick={prevStep} 
-              disabled={currentStep === 0 || isSubmitting}
+              disabled={currentStep === 0 || form.state.isSubmitting}
               className={cn(currentStep === 0 && "invisible")}
             >
               Back
             </Button>
             
             {currentStep < steps.length - 1 ? (
-              <Button type="button" onClick={nextStep} disabled={isSubmitting}>
+              <Button type="button" onClick={nextStep} disabled={form.state.isSubmitting}>
                 Next
               </Button>
             ) : (
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Submitting..." : "Submit"}
+              <Button type="submit" disabled={form.state.isSubmitting}>
+                {form.state.isSubmitting ? "Submitting..." : "Submit"}
               </Button>
             )}
           </div>
@@ -240,7 +234,7 @@ ${submitLogic}
 }`;
   } else {
     // SINGLE-STEP LOGIC
-    const formFields = generateFormFields(fields, isSignup);
+    const formFields = generateTanstackFormFields(fields, isSignup);
     const submitButtonText = isLogin ? "Sign In" : isSignup ? "Create Account" : "Submit";
     const loadingText = isLogin ? "Signing in..." : isSignup ? "Creating account..." : "Submitting...";
     
@@ -255,15 +249,15 @@ export interface ${componentName}Props {
 export function ${componentName}({ defaultValues, onValuesChange, onSubmit, className }: ${componentName}Props = {}) {
   // Form state management
   const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
     defaultValues: {
-      ${defaultValues}
+${defaultValues}
       ...defaultValues,
     },
+    validators: {
+      onSubmit: formSchema,
+    },
+    validatorAdapter: zodValidator,
   });
-
-  const { isSubmitting } = form.formState;
-  const values = form.watch();
 
   // Local state for password field enhancements
   const [showPassword, setShowPassword] = useState(false);${isSignup ? `
@@ -271,10 +265,13 @@ export function ${componentName}({ defaultValues, onValuesChange, onSubmit, clas
   const [showStrengthIndicator, setShowStrengthIndicator] = useState(false);${generatePasswordStrengthEffect()}` : ''}
 
   useEffect(() => {
-    onValuesChange?.(values);
-  }, [values, onValuesChange]);
+    const subscription = form.subscribe((state) => {
+      onValuesChange?.(state.values);
+    });
+    return () => subscription();
+  }, [onValuesChange]);
 
-  const handleSubmit: SubmitHandler<FormValues> = async (data) => {
+  const handleSubmit = async (data: FormValues) => {
     if (onSubmit) {
       await onSubmit(data);
     } else {
@@ -289,11 +286,17 @@ ${submitLogic}
         <CardDescription>${formDescription}</CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+        <form 
+          onSubmit={(e) => {
+            e.preventDefault();
+            form.handleSubmit(handleSubmit)();
+          }} 
+          className="space-y-4"
+        >
 ${formFields}
 
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? "${loadingText}" : "${submitButtonText}"}
+          <Button type="submit" className="w-full" disabled={form.state.isSubmitting}>
+            {form.state.isSubmitting ? "${loadingText}" : "${submitButtonText}"}
           </Button>
         </form>${hasOAuth ? `
 
@@ -321,7 +324,7 @@ ${oauthButtons}
  * Generated with FormSCN - The shadcn/ui Form Builder
  * https://formscn.com
  * 
- * This form uses shadcn/ui components with ${config.formLibrary === 'tanstack' ? 'TanStack Form' : 'React Hook Form'} and Zod validation.
+ * This form uses shadcn/ui components with TanStack Form and Zod validation.
  */
 
 ${imports}${utilityFunctions}${schema}${componentBody}`;

@@ -4,7 +4,7 @@ import { type FormTemplate } from "@/registry/default/types";
 export const twoFactorSetupTemplate: FormTemplate = {
   id: "two-factor-setup",
   name: "2FA Setup",
-  description: "Configure two-factor authentication for user accounts",
+  description: "Two-factor authentication verification form (Better Auth plugin optional)",
   category: "authentication",
   schema: z.object({
     code: z.string().length(6, "Code must be exactly 6 digits"),
@@ -23,7 +23,5 @@ export const twoFactorSetupTemplate: FormTemplate = {
       inputType: "text",
     },
   ],
-  authPlugins: {
-    twoFactor: true,
-  },
 };
+

@@ -4,6 +4,7 @@ import type { FormTemplate } from "@/lib/form-templates";
 import { useFormEditor } from "@/hooks/use-form-editor";
 import { EditorSidebar } from "@/components/editor/editor-sidebar";
 import { FormPreview } from "@/components/editor/form-preview";
+import { WelcomeModal } from "@/components/editor/welcome-modal";
 import dynamic from "next/dynamic";
 import Loader from "@/components/loader";
 
@@ -16,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Eye, Code, Menu } from "lucide-react";
 import { toast } from "sonner";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { contactFormTemplate } from "@/registry/default/templates";
 
 interface FormEditorProps {
   initialTemplate?: FormTemplate;
@@ -23,7 +25,7 @@ interface FormEditorProps {
 
 export function FormEditor({ initialTemplate }: FormEditorProps) {
   const {
-    formName, setFormName, formDescription, setFormDescription, fields, steps,
+    formName, setFormName, formDescription, setFormDescription, fields, steps, setFields,
     isMultiStep, toggleMultiStep, addStep, removeStep, updateStep, activeStepIndex,
     setActiveStepIndex, oauthProviders, setOauthProviders, databaseAdapter,
     setDatabaseAdapter, framework, setFramework, selectedFieldIndex,
@@ -31,10 +33,26 @@ export function FormEditor({ initialTemplate }: FormEditorProps) {
     publishedId, isPublishing, updateField, addField, removeField, moveField,
     toggleOAuth, setIsPublishing, setPublishedId, resetForm,
     authPlugins, toggleAuthPlugin, enableBetterAuth, setEnableBetterAuth,
-    themeConfig, updateThemeConfig
+    themeConfig, updateThemeConfig, formLibrary, setFormLibrary
   } = useFormEditor({ initialTemplate });
 
   const isAuthEnabled = enableBetterAuth;
+
+  // Welcome modal handlers
+  const handleTryTemplate = () => {
+    // Load the contact form template
+    setFormName(contactFormTemplate.name);
+    setFormDescription(contactFormTemplate.description);
+    setFields(contactFormTemplate.fields || []);
+    setOauthProviders(contactFormTemplate.oauthProviders || []);
+    toast.success("Contact form template loaded!");
+  };
+
+  const handleStartFromScratch = () => {
+    // Reset to empty form
+    resetForm();
+  };
+
 
   const sidebarProps = {
     formName, setFormName, formDescription, setFormDescription, isMultiStep,
@@ -45,7 +63,8 @@ export function FormEditor({ initialTemplate }: FormEditorProps) {
     isAuthEnabled, resetForm,
     authPlugins, toggleAuthPlugin,
     enableBetterAuth, setEnableBetterAuth,
-    themeConfig, updateThemeConfig
+    themeConfig, updateThemeConfig,
+    formLibrary, setFormLibrary
   };
 
   const handlePublish = async () => {
@@ -58,6 +77,7 @@ export function FormEditor({ initialTemplate }: FormEditorProps) {
         formName, formDescription, fields, steps,
         oauthProviders: isAuthEnabled ? oauthProviders : [],
         isAuthEnabled,
+        formLibrary,
       });
 
       const response = await fetch("/api/publish", {
@@ -83,6 +103,12 @@ export function FormEditor({ initialTemplate }: FormEditorProps) {
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">
+      {/* Welcome Modal */}
+      <WelcomeModal 
+        onTryTemplate={handleTryTemplate}
+        onStartFromScratch={handleStartFromScratch}
+      />
+
       {/* Desktop Sidebar */}
       <div className="hidden lg:block">
         <EditorSidebar {...sidebarProps} />
@@ -170,6 +196,7 @@ export function FormEditor({ initialTemplate }: FormEditorProps) {
                    setDatabaseAdapter={setDatabaseAdapter}
                    authPlugins={authPlugins}
                    themeConfig={themeConfig}
+                   formLibrary={formLibrary}
                  />
                </div>
             )}

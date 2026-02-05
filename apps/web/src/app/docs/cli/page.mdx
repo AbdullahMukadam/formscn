@@ -1,3 +1,8 @@
+export const metadata = {
+  title: "CLI Integration - FormSCN Documentation",
+  description: "Install forms via CLI with shadcn/ui integration.",
+};
+
 # CLI Integration
 
 FormSCN leverages the standard `shadcn` CLI to install your custom-built forms.
@@ -6,33 +11,139 @@ FormSCN leverages the standard `shadcn` CLI to install your custom-built forms.
 
 Instead of installing a generic package, you build your form in our **Visual Editor**, publish it, and get a unique installation URL.
 
-### 1. Build & Publish
+### 1. Build Your Form
 
-Create your form in the [Form Builder](/editor). When you're ready, click **Integrate** -> **Publish**.
+Create your form in the [Form Builder](/editor):
+- Choose a template or start from scratch
+- Select your form library (React Hook Form or TanStack Form)
+- Customize fields and validation
+- Add optional features (theme, auth, etc.)
 
-### 2. Install
+### 2. Check Dependencies
 
-Run the command provided by the editor:
+Before installing, check the **Integrate** → **Component** tab to see:
+- Which shadcn/ui components are required
+- The installation command
+
+**Example:**
+```
+Required components: button, input, form, card, select
+
+npx shadcn@latest add button input form card select
+```
+
+### 3. Publish & Get Command
+
+Click **"Generate Unique Command"** to publish your form and get:
 
 ```bash
-npx shadcn@latest add https://formscn.space/api/r/your-form-id
+npx shadcn@latest add https://formscn.com/api/r/YOUR_FORM_ID.json
+```
+
+### 4. Install
+
+Run the command in your project:
+
+```bash
+npx shadcn@latest add https://formscn.com/api/r/YOUR_FORM_ID.json
 ```
 
 This command will:
-1.  **Download** the React component code for your specific form.
-2.  **Install** necessary dependencies (`zod`, `react-hook-form`, `better-auth`, etc.).
-3.  **Configure** your project (if using Auth/DB features).
+1. **Download** the React component code for your specific form
+2. **Install** necessary dependencies:
+   - Form library (React Hook Form or TanStack Form)
+   - Zod validation
+   - Required shadcn/ui components
+   - Better Auth (if enabled)
+3. **Configure** your project (if using Auth features)
 
-## Why this approach?
+### 5. Use the Form
 
-- **No Black Box**: You get the full source code (`.tsx`) in your project.
-- **Customizable**: You can edit the installed component just like any other file.
-- **Framework Agnostic**: Works with Next.js, Vite, Remix, and TanStack Start.
+```tsx
+import { ContactForm } from "@/components/contact-form"
+
+export default function Page() {
+  return (
+    <div className="max-w-md mx-auto py-10">
+      <ContactForm />
+    </div>
+  )
+}
+```
+
+## Form Library Detection
+
+The CLI automatically installs the correct form library based on your choice:
+
+**React Hook Form:**
+```bash
+npm install react-hook-form @hookform/resolvers
+```
+
+**TanStack Form:**
+```bash
+npm install @tanstack/react-form @tanstack/zod-form-adapter
+```
+
+## Optional Auth Installation
+
+If you enabled Better Auth in the builder, the CLI also installs:
+
+```bash
+npm install better-auth
+```
+
+And generates:
+- `lib/auth.ts` - Better Auth configuration
+- `lib/auth-client.ts` - Auth client setup
+- Database schema (Prisma or Drizzle)
+
+**Note**: Auth is completely optional. Most forms don't need it.
+
+## Why This Approach?
+
+- **No Black Box**: You get the full source code (`.tsx`) in your project
+- **Customizable**: Edit the installed component just like any other file
+- **Framework Agnostic**: Works with Next.js, Vite, Remix, and TanStack Start
+- **Dependency Aware**: Automatically installs what you need
+- **Type-Safe**: Full TypeScript support with generated schemas
+
+## Manual Component Installation
+
+If you prefer to install components manually instead of using the CLI:
+
+1. Go to **Integrate** → **Component** tab
+2. Copy the **shadcn Dependencies** list
+3. Install them:
+
+```bash
+npx shadcn@latest add button input form card select checkbox
+```
+
+4. Copy the generated code
+5. Paste into your project
 
 ## Standard Components
 
-If you just want the standard shadcn UI components (Input, Button, etc.) without a pre-built form structure, use the standard shadcn registry:
+For standard shadcn UI components without a pre-built form:
 
 ```bash
-npx shadcn@latest add input button label textarea
+npx shadcn@latest add input button label textarea select checkbox radio-group
 ```
+
+## Troubleshooting
+
+### Command Not Found
+
+Make sure you have `npx` available (comes with Node.js 18+).
+
+### Installation Errors
+
+Check that:
+1. Your shadcn/ui project is properly initialized
+2. You have the correct Node.js version (18+)
+3. Your `tsconfig.json` has proper paths configured
+
+### Missing Dependencies
+
+If you see import errors after installation, you may have missed some shadcn components. Check the **shadcn Dependencies** section in the Form Builder.

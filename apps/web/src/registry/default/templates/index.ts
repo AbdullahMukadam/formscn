@@ -15,6 +15,10 @@ import { detailedApplicationTemplate } from "./detailed-application";
 import { twoFactorSetupTemplate } from "./two-factor-setup-template";
 import { organizationInviteTemplate } from "./organization-invite-template";
 import { passkeyManagementTemplate } from "./passkey-management-template";
+import { profileSettingsTemplate } from "./profile-settings";
+import { passwordResetTemplate } from "./password-reset";
+import { changePasswordTemplate } from "./change-password";
+import { addressFormTemplate } from "./address-form";
 
 export const formTemplates: FormTemplate[] = [
   signupFormTemplate,
@@ -22,8 +26,12 @@ export const formTemplates: FormTemplate[] = [
   twoFactorSetupTemplate,
   organizationInviteTemplate,
   passkeyManagementTemplate,
+  profileSettingsTemplate,
+  passwordResetTemplate,
+  changePasswordTemplate,
   contactFormTemplate,
   newsletterFormTemplate,
+  addressFormTemplate,
   jobApplicationTemplate,
   feedbackFormTemplate,
   eventRegistrationTemplate,
@@ -54,3 +62,8 @@ export * from "./passkey-management-template";
 export * from "./two-factor-setup";
 export * from "./organization-switcher";
 export * from "./passkey-management";
+export * from "./profile-settings";
+export * from "./password-reset";
+export * from "./change-password";
+export * from "./address-form";
+

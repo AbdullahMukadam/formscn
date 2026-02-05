@@ -1,17 +1,17 @@
 export const metadata = {
-  title: "Contributing - FormCN Documentation",
-  description: "Learn how to contribute to FormCN.",
+  title: "Contributing - FormSCN Documentation",
+  description: "Learn how to contribute to FormSCN.",
 };
 
 # Open Source & Contributing
 
-FormCN is community-driven. We'd love your help to make form building easier for everyone.
+FormSCN is community-driven. We'd love your help to make form building easier for everyone.
 
 ## Getting Started
 
 ### 1. Setup the Project
 
-FormCN is a monorepo managed by Turborepo.
+FormSCN is a monorepo managed by Turborepo.
 
 1.  **Fork & Clone**:
     ```bash
@@ -30,20 +30,34 @@ FormCN is a monorepo managed by Turborepo.
 
 ## Project Structure
 
-*   `apps/web`: The main Next.js application containing the visual builder, documentation, and the registry source.
-*   `apps/web/src/registry/default`: The core of the registry.
-    *   `templates/`: Definition files for form templates (e.g., `login.ts`, `onboarding-wizard.ts`).
-    *   `lib/form-generator.ts`: The logic that generates code from templates.
-    *   `ui/`: Reusable UI components used within templates.
+- `apps/web`: The main Next.js application containing the visual builder, documentation, and the registry source.
+- `apps/web/src/registry/default`: The core of the registry.
+  - `templates/`: Definition files for form templates (e.g., `login.ts`, `onboarding-wizard.ts`)
+  - `lib/form-generator/`: Code generation logic for React Hook Form and TanStack Form
+  - `ui/`: Reusable UI components used within templates
+
+## Current Features
+
+FormSCN now supports:
+- **React Hook Form** and **TanStack Form** code generation
+- **shadcn Dependencies Detection** - auto-detect required components
+- **Optional Better Auth** - auth features are completely optional
+- **Form Library Selector** - toggle between RHF and TanStack in the editor
+- **Welcome Modal** - onboarding for first-time users
+- **20+ Templates** - categorized by use case
 
 ## Roadmap & Areas for Contribution
 
 We are actively looking for help with:
 
-*   **Conditional Logic**: Adding `if/then` branching to the visual builder and schema generator.
-*   **Drag-and-Drop Step Reordering**: Improving the UX for multi-step form management.
-*   **AI Integration**: Generating form schemas from text prompts.
-*   **New Templates**: Adding more complex real-world forms (e.g., KYC, Medical Intake).
+- **Conditional Logic**: Adding `if/then` branching to the visual builder and schema generator
+- **Drag-and-Drop Step Reordering**: Improving the UX for multi-step form management
+- **AI Integration**: Generating form schemas from text prompts
+- **New Templates**: Adding more complex real-world forms (e.g., KYC, Medical Intake, Survey Forms)
+- **New Field Types**: File upload improvements, rich text editor, phone input with country codes
+- **Validation Enhancements**: Cross-field validation, custom validation rules
+- **Theme System**: More theme presets and customization options
+- **Framework Support**: SolidStart, SvelteKit generators
 
 ## Common Tasks
 
@@ -68,10 +82,14 @@ The easiest way to contribute a new template is to build it visually first.
     export const medicalIntake: FormTemplate = {
       id: "medical-intake",
       name: "Medical Intake",
-      description: "Patient registration and medical history.",
+      description: "Patient registration and medical history form.",
+      category: "healthcare", // authentication | contact | ecommerce | profile
       fields: [
          // ... your fields here
       ],
+      // Auth is optional - only add if your template needs it
+      // oauthProviders: [],
+      // authPlugins: {},
     };
     ```
 
@@ -83,16 +101,42 @@ The easiest way to contribute a new template is to build it visually first.
 
 ### Improving the Generator
 
-If you want to improve the code generation logic (e.g., better validation support, new UI frameworks):
+If you want to improve the code generation logic:
 
-1.  Edit `apps/web/src/registry/default/lib/form-generator.ts`.
-2.  Test your changes by running the visual builder and checking the "Code" tab.
-3.  Run `pnpm --filter web registry:build` to update the generator artifacts.
+**For React Hook Form:**
+1. Edit files in `apps/web/src/registry/default/lib/form-generator/generators/`
+2. Test your changes by running the visual builder and checking the "Code" tab
+3. Run `pnpm --filter web registry:build` to update the generator artifacts
+
+**For TanStack Form:**
+1. Edit files in `apps/web/src/registry/default/lib/form-generator/generators/tanstack/`
+2. Both generators should produce equivalent functionality
+
+### Adding a New Field Type
+
+1. Add the field configuration to `apps/web/src/lib/form-fields-config.ts`
+2. Update the generator to handle the new field type
+3. Add the field to the form builder sidebar
+4. Test in both RHF and TanStack Form modes
+
+## Code Style
+
+- **TypeScript**: All code must be type-safe
+- **shadcn/ui**: Use standard shadcn components
+- **Accessibility**: Ensure keyboard navigation and screen reader support
+- **Comments**: Add JSDoc for public APIs
 
 ## Submitting Changes
 
-1.  Create a branch for your feature (`git checkout -b feature/amazing-form`).
-2.  Commit your changes.
-3.  Push to your fork and submit a Pull Request.
+1. Create a branch for your feature (`git checkout -b feature/amazing-form`)
+2. Commit your changes with clear messages
+3. Push to your fork and submit a Pull Request
+4. Include screenshots/videos for UI changes
+
+## Community
+
+- GitHub Issues: Bug reports and feature requests
+- Pull Requests: Code contributions
+- Discussions: Questions and ideas
 
 We appreciate all contributions!

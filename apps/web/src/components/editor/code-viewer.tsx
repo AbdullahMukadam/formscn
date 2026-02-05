@@ -23,6 +23,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import type { ThemeConfig } from "@/lib/appearance-config";
+import { ShadcnDependencies } from "./shadcn-dependencies";
 
 interface CodeViewerProps {
   formName: string;
@@ -40,6 +41,7 @@ interface CodeViewerProps {
   setDatabaseAdapter: (adapter: DatabaseAdapter) => void;
   authPlugins: AuthPluginsConfig;
   themeConfig?: ThemeConfig;
+  formLibrary: "rhf" | "tanstack";
 }
 
 export function CodeViewer({
@@ -58,6 +60,7 @@ export function CodeViewer({
   setDatabaseAdapter,
   authPlugins,
   themeConfig,
+  formLibrary,
 }: CodeViewerProps) {
   const [packageManager, setPackageManager] = useState<'pnpm' | 'npm' | 'yarn' | 'bun'>('pnpm');
 
@@ -71,8 +74,9 @@ export function CodeViewer({
       framework,
       isAuthEnabled,
       themeConfig,
+      formLibrary,
     });
-  }, [formName, formDescription, fields, steps, oauthProviders, isAuthEnabled, framework, themeConfig]);
+  }, [formName, formDescription, fields, steps, oauthProviders, isAuthEnabled, framework, themeConfig, formLibrary]);
 
   const authConfigCode = useMemo(() => {
     if (!isAuthEnabled) return "";
@@ -266,10 +270,14 @@ export function CodeViewer({
                   </TabsTrigger>
                   {isAuthEnabled && (
                      <>
-                        <TabsTrigger value="auth" className="data-[state=active]:bg-muted/50 data-[state=active]:shadow-none rounded-none border-b-2 border-transparent data-[state=active]:border-primary h-full px-4 gap-2 text-xs">
-                           <Database className="h-3.5 w-3.5" /> Auth & DB
+                        <TabsTrigger value="auth" className="data-[state=active]:bg-muted/50 data-[state=active]:shadow-none rounded-none border-b-2 border-transparent data-[state=active]:border-primary h-full px-4 gap-2 text-xs text-muted-foreground data-[state=active]:text-foreground">
+                           <Database className="h-3.5 w-3.5" /> 
+                           <span className="flex items-center gap-1.5">
+                             Auth & DB
+                             <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-muted">Optional</span>
+                           </span>
                         </TabsTrigger>
-                        <TabsTrigger value="checklist" className="data-[state=active]:bg-muted/50 data-[state=active]:shadow-none rounded-none border-b-2 border-transparent data-[state=active]:border-primary h-full px-4 gap-2 text-xs">
+                        <TabsTrigger value="checklist" className="data-[state=active]:bg-muted/50 data-[state=active]:shadow-none rounded-none border-b-2 border-transparent data-[state=active]:border-primary h-full px-4 gap-2 text-xs text-muted-foreground data-[state=active]:text-foreground">
                            <CheckCircle2 className="h-3.5 w-3.5" /> Setup Guide
                         </TabsTrigger>
                      </>
@@ -293,6 +301,9 @@ export function CodeViewer({
             </div>
 
             <TabsContent value="component" className="flex-1 overflow-auto m-0 data-[state=active]:flex data-[state=active]:flex-col">
+               <div className="p-4 space-y-4">
+                  <ShadcnDependencies code={generatedCode} />
+               </div>
                <CodeBlock code={generatedCode} language="tsx" className="font-mono text-sm h-full" />
             </TabsContent>
 

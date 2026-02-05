@@ -52,6 +52,9 @@ export function useFormEditor({ initialTemplate }: UseFormEditorProps = {}) {
     radius: "0.5"
   });
 
+  // State for form library selection
+  const [formLibrary, setFormLibrary] = useState<"rhf" | "tanstack">("rhf");
+
   const updateThemeConfig = (updates: Partial<ThemeConfig>) => {
     setThemeConfig((prev) => ({ ...prev, ...updates }));
     setPublishedId(null);
@@ -293,6 +296,8 @@ export function useFormEditor({ initialTemplate }: UseFormEditorProps = {}) {
     setEnableBetterAuth,
     themeConfig,
     updateThemeConfig,
+    formLibrary,
+    setFormLibrary,
 
     // Actions
     updateField,

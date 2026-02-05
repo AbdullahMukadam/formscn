@@ -4,7 +4,7 @@ import { type FormTemplate } from "@/registry/default/types";
 export const passkeyManagementTemplate: FormTemplate = {
   id: "passkey-management",
   name: "Passkey Management",
-  description: "Register and manage secure passkeys",
+  description: "Register and manage secure passkeys (Better Auth plugin optional)",
   category: "authentication",
   schema: z.object({
     name: z.string().min(1, "Name is required"),
@@ -23,7 +23,5 @@ export const passkeyManagementTemplate: FormTemplate = {
       inputType: "text",
     },
   ],
-  authPlugins: {
-    passkey: true,
-  },
 };
+

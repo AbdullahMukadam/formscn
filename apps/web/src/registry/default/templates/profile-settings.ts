@@ -1,0 +1,76 @@
+import * as z from "zod";
+import { type FormTemplate } from "@/registry/default/types";
+
+export const profileSettingsTemplate: FormTemplate = {
+  id: "profile-settings",
+  name: "Profile Settings",
+  description: "User profile update form with name, email, bio, and avatar",
+  category: "profile",
+  schema: z.object({
+    name: z.string().min(2, "Name must be at least 2 characters"),
+    email: z.string().email("Invalid email address"),
+    username: z.string().min(3, "Username must be at least 3 characters").regex(/^[a-zA-Z0-9_-]+$/, "Username can only contain letters, numbers, underscores, and hyphens"),
+    bio: z.string().max(160, "Bio must be 160 characters or less").optional(),
+    website: z.string().url("Invalid URL").optional().or(z.literal("")),
+    location: z.string().optional(),
+  }),
+  defaultValues: {
+    name: "",
+    email: "",
+    username: "",
+    bio: "",
+    website: "",
+    location: "",
+  },
+  fields: [
+    {
+      type: "input",
+      name: "name",
+      label: "Full Name",
+      placeholder: "John Doe",
+      required: true,
+      inputType: "text",
+    },
+    {
+      type: "input",
+      name: "username",
+      label: "Username",
+      placeholder: "johndoe",
+      description: "This will be your public username",
+      required: true,
+      inputType: "text",
+    },
+    {
+      type: "input",
+      name: "email",
+      label: "Email Address",
+      placeholder: "john@example.com",
+      required: true,
+      inputType: "email",
+    },
+    {
+      type: "textarea",
+      name: "bio",
+      label: "Bio",
+      placeholder: "Tell us a little about yourself...",
+      description: "Maximum 160 characters",
+      required: false,
+    },
+    {
+      type: "input",
+      name: "website",
+      label: "Website",
+      placeholder: "https://yourwebsite.com",
+      required: false,
+      inputType: "url",
+    },
+    {
+      type: "input",
+      name: "location",
+      label: "Location",
+      placeholder: "San Francisco, CA",
+      required: false,
+      inputType: "text",
+    },
+  ],
+};

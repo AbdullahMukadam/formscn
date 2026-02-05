@@ -31,6 +31,7 @@ import { format } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { ShieldCheck } from "lucide-react";
+import { FormDataPreview } from "./form-data-preview";
 
 interface FormPreviewProps {
   formName: string;
@@ -64,6 +65,8 @@ export function FormPreview({
   themeConfig = { color: "zinc", font: "default", radius: "0.5" },
 }: FormPreviewProps) {
   const [currentStep, setCurrentStep] = useState<number>(0);
+  const [previewData, setPreviewData] = useState<Record<string, any> | null>(null);
+  const [showPreview, setShowPreview] = useState(false);
   const hasSteps = !!(steps && steps.length > 0);
 
   // Reset current step if it becomes invalid (e.g. step removed)
@@ -161,13 +164,30 @@ export function FormPreview({
 
   const form = useForm({
     resolver: formSchema ? zodResolver(formSchema) : undefined,
-    mode: "onChange",
+    mode: "onTouched",
+    reValidateMode: "onChange",
     shouldUnregister: false,
+    shouldFocusError: true,
   });
 
   const onSubmit = (data: any) => {
     console.log("Form submitted:", data);
-    toast.success("Form submitted successfully! (Check console)");
+    setPreviewData(data);
+    setShowPreview(true);
+  };
+
+  const handleFormSubmit = async () => {
+    // Trigger validation for all fields
+    const isValid = await form.trigger();
+    
+    if (!isValid) {
+      toast.error("Please fill all the feilds");
+      return;
+    }
+    
+    // If valid, get the data and show preview
+    const data = form.getValues();
+    onSubmit(data);
   };
 
   const nextStep = async () => {
@@ -219,7 +239,7 @@ export function FormPreview({
         )}
       </CardHeader>
       <CardContent>
-        <form className="grid gap-2" onSubmit={form.handleSubmit(onSubmit)}>
+        <form className="grid gap-2" onSubmit={(e) => { e.preventDefault(); handleFormSubmit(); }}>
           {visibleFields.length === 0 && !hasSteps && (
             <div className="text-center py-10 border-2 border-dashed rounded-lg text-muted-foreground">
               <p>No fields added yet.</p>
@@ -490,11 +510,11 @@ export function FormPreview({
                   Next
                 </Button>
               ) : (
-                <Button type="button" onClick={form.handleSubmit(onSubmit)}>Submit</Button>
+                <Button type="button" onClick={handleFormSubmit}>Submit</Button>
               )}
             </div>
           ) : (
-            <Button type="button" className="w-full mt-4">Submit</Button>
+            <Button type="submit" className="w-full mt-4">Submit</Button>
           )}
 
           {/* OAuth Preview */}
@@ -543,6 +563,15 @@ export function FormPreview({
         </form>
       </CardContent>
     </Card>
+
+    {/* Form Data Preview Dialog */}
+    {previewData && (
+      <FormDataPreview
+        open={showPreview}
+        onOpenChange={setShowPreview}
+        data={previewData}
+      />
+    )}
     </div>
   );
 }

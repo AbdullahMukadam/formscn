@@ -4,7 +4,7 @@ import { type FormTemplate } from "@/registry/default/types";
 export const onboardingWizardTemplate: FormTemplate = {
   id: "onboarding-wizard",
   name: "Onboarding Wizard",
-  description: "Multi-step user onboarding process",
+  description: "Multi-step user onboarding with account creation (auth optional)",
   category: "profile",
   schema: z.object({
     // Account

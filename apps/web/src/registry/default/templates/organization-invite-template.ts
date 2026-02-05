@@ -4,7 +4,7 @@ import { type FormTemplate } from "@/registry/default/types";
 export const organizationInviteTemplate: FormTemplate = {
   id: "organization-invite",
   name: "Org Invitation",
-  description: "Invite new members to your organization",
+  description: "Invite members to your organization (Better Auth plugin optional)",
   category: "authentication",
   schema: z.object({
     email: z.string().email("Invalid email address"),
@@ -34,7 +34,5 @@ export const organizationInviteTemplate: FormTemplate = {
       ],
     },
   ],
-  authPlugins: {
-    organization: true,
-  },
 };
+

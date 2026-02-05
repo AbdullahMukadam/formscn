@@ -4,7 +4,7 @@ import { type FormTemplate } from "@/registry/default/types";
 export const loginFormTemplate: FormTemplate = {
   id: "login-form",
   name: "Login Form",
-  description: "Simple email and password login",
+  description: "Simple email and password login form (auth optional)",
   category: "authentication",
   schema: z.object({
     email: z.string().email("Invalid email address"),
@@ -39,5 +39,4 @@ export const loginFormTemplate: FormTemplate = {
       label: "Remember me",
     },
   ],
-  oauthProviders: ["google", "github"],
 };

@@ -34,6 +34,7 @@ export interface GenerateFormComponentConfig {
   steps?: FormStep[];
   isAuthEnabled?: boolean;
   themeConfig?: ThemeConfig;
+  formLibrary?: "rhf" | "tanstack";
 }
 
 export interface AuthPluginsConfig {

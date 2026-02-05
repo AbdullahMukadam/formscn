@@ -14,47 +14,104 @@ Before you begin, make sure you have:
 - Node.js 18+ installed
 - A React or Next.js project
 - pnpm, npm, or yarn package manager
-- **Better Auth CLI** (Optional, recommended for auth features)
+- shadcn/ui initialized in your project
 
-## Install Dependencies
+## Quick Installation (Recommended)
 
-The easiest way to get started is using the **Form Builder** to generate a custom installation command. 
+The easiest way to get started is using the **Form Builder**:
 
-If you are adding **Better Auth** features, the CLI will automatically add `better-auth` and your chosen database adapter (`@prisma/client` or `drizzle-orm`) to your project dependencies.
-
-## Post-Installation (Auth Features)
-
-If you enabled authentication features (2FA, Orgs, etc.), you must sync your database schema after adding the component:
+1. Go to [Form Builder](/editor)
+2. Choose or create a form
+3. Click **"Generate Unique Command"**
+4. Run the command in your terminal:
 
 ```bash
-# For Prisma
-npx @better-auth/cli generate
-
-# For Drizzle
-npx @better-auth/cli migrate
+npx shadcn@latest add https://formscn.com/api/r/YOUR_FORM_ID.json
 ```
 
-Check the **Setup Guide** in the Form Builder's **Integrate** tab for a personalized checklist.
+This installs:
+- The form component
+- All required shadcn/ui components
+- Form library (React Hook Form or TanStack Form)
+- Zod validation library
 
-## Install shadcn/ui
+## Manual Installation
 
-FormSCN forms are built on top of shadcn/ui. If you haven't already, initialize it:
+### Step 1: Initialize shadcn/ui
+
+If you haven't already:
 
 ```bash
 npx shadcn@latest init
 ```
 
-## Add Base Components
+### Step 2: Check Dependencies
 
-Our generated forms typically rely on these standard components. You can install them ahead of time:
+Use the Form Builder to generate your form, then check the **Integrate** → **Component** tab to see which shadcn components you need.
+
+Install them:
 
 ```bash
-npx shadcn@latest add form input button label textarea card select checkbox radio-group
+npx shadcn@latest add button input form card label textarea select checkbox radio-group
+```
+
+Install only what your form actually uses.
+
+### Step 3: Install Form Libraries
+
+**For React Hook Form:**
+```bash
+npm install react-hook-form @hookform/resolvers zod
+```
+
+**For TanStack Form:**
+```bash
+npm install @tanstack/react-form zod @tanstack/zod-form-adapter
+```
+
+### Step 4: Copy the Code
+
+Copy the generated form code from the **Integrate** → **Component** tab and paste it into your project (e.g., `components/my-form.tsx`).
+
+## Optional: Add Better Auth
+
+Authentication is **completely optional**. Only add it if your form needs auth features.
+
+### Install Better Auth
+
+```bash
+npm install better-auth
+```
+
+### Configure Auth
+
+Enable Better Auth in the Form Builder:
+
+1. Go to **Advanced** section in the sidebar
+2. Toggle **"Add Better Auth"**
+3. Configure OAuth providers and plugins
+4. Go to **Integrate** → **Auth & DB** tab
+5. Copy the generated config files
+6. Follow the **Setup Guide** for integration steps
+
+### Database Setup
+
+If using Better Auth, sync your database schema:
+
+**For Prisma:**
+```bash
+npx @better-auth/cli generate
+npx prisma migrate dev
+```
+
+**For Drizzle:**
+```bash
+npx @better-auth/cli migrate
 ```
 
 ## TypeScript Configuration
 
-Ensure your `tsconfig.json` has the following settings (standard for shadcn projects):
+Ensure your `tsconfig.json` has the following settings:
 
 ```json
 {
@@ -69,6 +126,63 @@ Ensure your `tsconfig.json` has the following settings (standard for shadcn proj
 }
 ```
 
+## Project Structure
+
+After installation, your project will look like:
+
+```
+my-app/
+├── components/
+│   ├── ui/              # shadcn/ui components
+│   │   ├── button.tsx
+│   │   ├── input.tsx
+│   │   └── ...
+│   └── contact-form.tsx # Your generated form
+├── lib/
+│   └── utils.ts         # shadcn utils
+└── ...
+```
+
+If you enabled Better Auth, you'll also have:
+
+```
+my-app/
+├── lib/
+│   ├── auth.ts          # Better Auth config
+│   └── auth-client.ts   # Auth client setup
+├── prisma/
+│   └── schema.prisma    # If using Prisma
+└── ...
+```
+
 ## Next Steps
 
-Now that you have FormSCN installed, check out the [Quick Start](/docs/quick-start) guide to build your first form.
+Now that FormSCN is installed:
+
+- Check out the [Quick Start](/docs/quick-start) guide
+- Learn about the [Form Builder](/docs/components/form-builder)
+- Browse [Form Templates](/templates)
+
+## Troubleshooting
+
+### Missing Components
+
+If you see import errors, you likely missed some shadcn components. Check the **shadcn Dependencies** section in the Form Builder and install missing components.
+
+### Type Errors
+
+Make sure you have `strict: true` in your `tsconfig.json` and all dependencies are installed.
+
+### Form Not Working
+
+Ensure you:
+1. Installed all required shadcn components
+2. Installed the correct form library (RHF or TanStack)
+3. Installed Zod validation library
+4. Copied the code correctly
+
+## Getting Help
+
+- Check the [Form Builder](/editor) for live examples
+- Browse [Templates](/templates) for inspiration
+- Join our community for support

@@ -5,43 +5,86 @@ export const metadata = {
 
 # Introduction
 
-Welcome to FormSCN documentation. FormSCN is a powerful **Open Source** form building library that helps you create beautiful, accessible forms with minimal effort.
+Welcome to FormSCN documentation. FormSCN is the **visual form builder for shadcn/ui**—helping you create beautiful, accessible forms with drag-and-drop simplicity.
 
-## Features
+## What is FormSCN?
 
-- **Pre-built Components**: Ready-to-use form components built with shadcn/ui
-- **CLI Integration**: Install components directly with `shadcn add`
-- **Better Auth Integrated**: Full authentication support (OAuth, Email/Password, 2FA, Magic Links, Passkeys, Organizations) out of the box
-- **Framework Agnostic**: Generate code for Next.js, Vite, TanStack Start, and Remix
-- **Multi-Step Support**: Build complex onboarding flows and wizards with built-in state management and animations
-- **Type-Safe**: Full TypeScript support with React Hook Form and Zod
-- **Visual Editor**: Customize forms visually and get a unique CLI install command
-- **Interactive Setup Guide**: Step-by-step checklist for backend integration (secret generation, schema migrations, etc.)
-- **Every Form is Editable**: You own the code. No vendor lock-in.
-- **Accessible**: Built with accessibility in mind using Base UI primitives
-- **Open Source**: MIT Licensed and community-driven
+FormSCN is an open-source tool that lets you:
+- **Design forms visually** with a drag-and-drop editor
+- **Generate production-ready code** using shadcn/ui components
+- **Choose your form library**: React Hook Form or TanStack Form
+- **Add auth optionally** via Better Auth (OAuth, 2FA, Magic Links, etc.)
+- **Export or install** via CLI with one command
+
+## Core Features
+
+### Visual Form Builder
+Build forms visually without writing code. See live preview as you design.
+
+### shadcn/ui Components
+Every form uses your existing shadcn/ui components (Button, Input, Select, etc.). No learning curve.
+
+### Choose Your Form Library
+Toggle between:
+- **React Hook Form** (industry standard)
+- **TanStack Form** (modern, headless)
+
+Same visual builder, different output—you own the code.
+
+### shadcn Dependencies Detection
+Automatically detects which shadcn components your form needs and provides the installation command.
+
+### Optional Better Auth
+Add authentication features when you need them:
+- OAuth providers (Google, GitHub, etc.)
+- Email/Password authentication
+- Two-Factor Authentication (2FA)
+- Magic Links
+- Passkeys
+- Organizations
+
+**Auth is completely optional**—use it only when you need it.
+
+### Framework Support
+Generate code for:
+- **Next.js** (App Router & Pages Router)
+- **Vite/React**
+- **TanStack Start**
+- **Remix**
+
+### Type-Safe by Default
+Full TypeScript support with auto-generated Zod schemas.
+
+### CLI Integration
+Install forms directly with:
+```bash
+npx shadcn@latest add https://formscn.com/api/r/YOUR_FORM_ID.json
+```
 
 ## Available Templates
 
-FormSCN comes with a variety of pre-built templates to get you started quickly:
+FormSCN comes with **20+ pre-built templates** organized by category:
 
-- **Authentication**: Login, Signup, 2FA Setup, and Passkey Management
-- **Organization**: Multi-tenant invitation forms and member management
-- **Multi-Step Wizards**: Onboarding flows and Detailed Applications with step navigation
-- **E-commerce**: Checkout forms with payment method selection
-- **Contact & Support**: Contact forms, Support Tickets, and Booking Requests
-- **Surveys**: Feedback and Event Registration forms
+- **Authentication**: Login, Signup, Password Reset, Change Password (all auth-optional)
+- **Organization**: Invitations, Team Management
+- **Multi-Step Wizards**: Onboarding, Detailed Applications
+- **E-commerce**: Checkout forms
+- **Contact & Support**: Contact forms, Support Tickets, Booking Requests
+- **Profile**: Settings, Address forms
+- **Marketing**: Waitlist, Newsletter, Event Registration
 
 ## Getting Started
 
-The most powerful way to use FormSCN is via the **Visual Builder**:
+The fastest way to use FormSCN is the **Visual Builder**:
 
-1.  Go to the [Form Builder](/editor).
-2.  Customize your form (add fields, auth, validation).
-3.  Publish and get your unique `shadcn add` command.
+1. Go to the [Form Builder](/editor)
+2. Choose a template or start from scratch
+3. Customize your form (add fields, validation, optional auth)
+4. Select your preferred form library (RHF or TanStack)
+5. Publish and get your unique `shadcn add` command
+6. Install and use!
 
-
-Or check out the [Installation](/docs/installation) guide for manual setup.
+Or check out the [Quick Start](/docs/quick-start) guide for step-by-step instructions.
 
 ## Quick Example
 
@@ -67,6 +110,13 @@ export default function LoginForm() {
   );
 }
 ```
+
+## Why FormSCN?
+
+- **Built for shadcn/ui**: Designed specifically for the shadcn/ui ecosystem
+- **No Vendor Lock-in**: You own the generated code
+- **Open Source**: MIT Licensed and community-driven
+- **Accessibility**: Built with accessibility in mind
 
 ## Community
 

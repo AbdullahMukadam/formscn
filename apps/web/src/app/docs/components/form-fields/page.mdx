@@ -1,18 +1,29 @@
 export const metadata = {
-  title: "Form Fields - FormCN Documentation",
-  description: "Comprehensive guide to all form field components available in FormCN.",
+  title: "Form Fields - FormSCN Documentation",
+  description: "Comprehensive guide to all form field components available in FormSCN.",
 };
 
 # Form Fields
 
-FormCN provides a comprehensive set of form field components built on top of shadcn/ui.
+FormSCN provides a comprehensive set of form field components built on top of **shadcn/ui**.
+
+## Overview
+
+All form fields in FormSCN use standard shadcn/ui components, giving you:
+- **Full customization**: Style with Tailwind CSS
+- **Accessibility**: ARIA labels, keyboard navigation, screen reader support
+- **Consistency**: Matches your existing shadcn/ui design system
+- **Type safety**: Full TypeScript support
+
+The Form Builder automatically detects which shadcn components your form needs and provides the installation command.
 
 ## Available Fields
 
 ### Text Input
 
-Basic text input field for single-line text.
+Basic text input field for single-line text. Supports various input types.
 
+**React Hook Form:**
 ```tsx
 <Input
   type="text"
@@ -21,10 +32,27 @@ Basic text input field for single-line text.
 />
 ```
 
+**TanStack Form:**
+```tsx
+<form.Field name="name">
+  {(field) => (
+    <Input
+      type="text"
+      placeholder="Enter your name"
+      value={field.state.value}
+      onChange={(e) => field.handleChange(e.target.value)}
+    />
+  )}
+</form.Field>
+```
+
 **Props:**
-- `type`: Input type (text, email, password, etc.)
+- `type`: Input type (text, email, password, number, url, tel)
 - `placeholder`: Placeholder text
 - `disabled`: Disable the input
+- `required`: Make field required
+
+**shadcn component:** `input`
 
 ### Textarea
 
@@ -43,9 +71,11 @@ Multi-line text input for longer content.
 - `placeholder`: Placeholder text
 - `disabled`: Disable the textarea
 
+**shadcn component:** `textarea`
+
 ### Select
 
-Dropdown select field.
+Dropdown select field with customizable options.
 
 ```tsx
 <Select onValueChange={(value) => setValue("country", value)}>
@@ -59,6 +89,13 @@ Dropdown select field.
   </SelectContent>
 </Select>
 ```
+
+**Props:**
+- `options`: Array of `\{ label: string, value: string \}` objects
+- `placeholder`: Placeholder text
+- `disabled`: Disable the select
+
+**shadcn components:** `select`, `select-trigger`, `select-content`, `select-item`
 
 ### Checkbox
 
@@ -75,6 +112,13 @@ Boolean checkbox field.
   </label>
 </div>
 ```
+
+**Props:**
+- `checked`: Controlled checked state
+- `onCheckedChange`: Change handler
+- `disabled`: Disable the checkbox
+
+**shadcn component:** `checkbox`
 
 ### Radio Group
 
@@ -93,6 +137,13 @@ Single selection from multiple options.
 </RadioGroup>
 ```
 
+**Props:**
+- `options`: Array of `\{ label: string, value: string \}` objects
+- `defaultValue`: Default selected value
+- `disabled`: Disable the radio group
+
+**shadcn component:** `radio-group`
+
 ### Switch
 
 Toggle switch for boolean values.
@@ -109,9 +160,16 @@ Toggle switch for boolean values.
 </div>
 ```
 
+**Props:**
+- `checked`: Controlled checked state
+- `onCheckedChange`: Change handler
+- `disabled`: Disable the switch
+
+**shadcn component:** `switch`
+
 ### Date Picker
 
-Date selection field.
+Date selection field with calendar popup.
 
 ```tsx
 <Popover>
@@ -130,22 +188,43 @@ Date selection field.
 </Popover>
 ```
 
+**Props:**
+- `mode`: "single" | "range" | "multiple"
+- `selected`: Selected date(s)
+- `onSelect`: Selection handler
+- `disabled`: Disable dates
+
+**shadcn components:** `popover`, `calendar`, `button`
+
 ## Field Validation
 
-All fields support validation through Zod schemas:
+All fields support validation through Zod schemas. FormSCN auto-generates the schema based on your field configuration.
 
+**Example schema:**
 ```tsx
 const schema = z.object({
   email: z.string().email("Invalid email"),
   age: z.number().min(18, "Must be 18 or older"),
   website: z.string().url().optional(),
+  terms: z.boolean().refine((val) => val === true, {
+    message: "You must accept the terms",
+  }),
 });
 ```
 
+**Validation rules supported:**
+- Required fields
+- Email format
+- URL format
+- Minimum/maximum length
+- Pattern matching (regex)
+- Custom validation messages
+
 ## Error Handling
 
-Display validation errors below fields:
+Display validation errors below fields automatically.
 
+**React Hook Form:**
 ```tsx
 {errors.email && (
   <p className="text-sm text-destructive">
@@ -154,17 +233,37 @@ Display validation errors below fields:
 )}
 ```
 
+**TanStack Form:**
+```tsx
+<form.Field name="email">
+  {(field) => (
+    <>
+      <Input
+        value={field.state.value}
+        onChange={(e) => field.handleChange(e.target.value)}
+      />
+      {field.state.meta.errors.length > 0 && (
+        <p className="text-sm text-destructive">
+          {field.state.meta.errors[0]}
+        </p>
+      )}
+    </>
+  )}
+</form.Field>
+```
+
 ## Accessibility
 
 All field components are built with accessibility in mind:
-- Proper ARIA labels
-- Keyboard navigation
-- Screen reader support
-- Focus management
+- **ARIA labels**: Proper labeling for screen readers
+- **Keyboard navigation**: Tab through fields, space/enter for toggles
+- **Screen reader support**: Descriptions and error announcements
+- **Focus management**: Visible focus states and logical tab order
+- **Error announcements**: Errors are announced to assistive technology
 
 ## Styling
 
-Customize fields with Tailwind CSS classes:
+Customize fields with Tailwind CSS classes. All components use shadcn/ui's design system.
 
 ```tsx
 <Input
@@ -172,3 +271,61 @@ Customize fields with Tailwind CSS classes:
   {...register("name")}
 />
 ```
+
+### Common styling patterns:
+
+**Field sizing:**
+```tsx
+<Input className="h-12 text-lg" /> {/* Large */}
+<Input className="h-8 text-sm" />   {/* Small */}
+```
+
+**Validation states:**
+```tsx
+<Input 
+  className={errors.email ? "border-destructive" : ""}
+/>
+```
+
+**Layout:**
+```tsx
+<div className="grid grid-cols-2 gap-4">
+  <Input {...register("firstName")} />
+  <Input {...register("lastName")} />
+</div>
+```
+
+## shadcn Dependencies
+
+Each field type requires specific shadcn components:
+
+| Field Type | shadcn Components |
+|------------|-------------------|
+| Text Input | `input`, `form` |
+| Textarea | `textarea`, `form` |
+| Select | `select`, `form` |
+| Checkbox | `checkbox`, `form` |
+| Radio Group | `radio-group`, `form` |
+| Switch | `switch`, `form` |
+| Date Picker | `popover`, `calendar`, `button`, `form` |
+
+The Form Builder automatically detects which components you need and provides the installation command:
+
+```bash
+npx shadcn@latest add input textarea select checkbox radio-group switch popover calendar button form
+```
+
+## Form Library Support
+
+All fields work with both form libraries:
+
+- **React Hook Form**: `useForm`, `register`, `Controller`
+- **TanStack Form**: `useForm`, `form.Field`, field state management
+
+The Form Builder generates the correct code based on your selected library.
+
+## Next Steps
+
+- Learn about the [Form Builder](/docs/components/form-builder)
+- Explore [Form Templates](/templates) with pre-built field combinations
+- Check out [Installation](/docs/installation) to get started

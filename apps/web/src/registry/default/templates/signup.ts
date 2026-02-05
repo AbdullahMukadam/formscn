@@ -4,7 +4,7 @@ import { type FormTemplate } from "@/registry/default/types";
 export const signupFormTemplate: FormTemplate = {
   id: "signup-form",
   name: "Signup Form",
-  description: "User registration with email and password",
+  description: "User registration form with email and password (auth optional)",
   category: "authentication",
   schema: z.object({
     fullName: z.string().min(2, "Name must be at least 2 characters"),

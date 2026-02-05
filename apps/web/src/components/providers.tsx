@@ -5,7 +5,7 @@ import { Toaster } from "./ui/sonner";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <ThemeProvider attribute="class" disableTransitionOnChange>
+    <ThemeProvider defaultTheme="dark" attribute="class" disableTransitionOnChange>
       {children}
       <Toaster />
     </ThemeProvider>

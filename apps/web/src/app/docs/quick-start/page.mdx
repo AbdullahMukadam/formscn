@@ -5,23 +5,58 @@ export const metadata = {
 
 # Quick Start
 
-Get up and running with FormsCN in seconds.
+Get up and running with FormSCN in seconds.
 
 ## 1. Choose a Template
 
-Browse our [Templates Gallery](/templates) or start from scratch in the [Visual Editor](/editor).
+Browse our [Templates Gallery](/templates) with 20+ pre-built forms, or start from scratch in the [Visual Editor](/editor).
 
-## 2. Install via CLI
+**All templates are auth-optional**—use them with or without authentication.
 
-Run the installation command in your terminal. This will install the form component and all necessary dependencies (Zod, React Hook Form, UI components) directly into your project.
+## 2. Choose Your Form Library
+
+In the editor sidebar, select your preferred form library:
+
+- **React Hook Form** (default): Battle-tested, industry standard
+- **TanStack Form**: Modern, headless, framework-agnostic
+
+You can switch anytime—the visual builder adapts automatically.
+
+## 3. Customize Your Form
+
+Use the visual editor to:
+- Add/remove form fields
+- Configure validation rules
+- Adjust styling and layout
+- Add optional features (theme, multi-step)
+
+## 4. Check Dependencies
+
+Go to the **Integrate** tab → **Component** section.
+
+FormSCN automatically detects which shadcn/ui components your form needs and provides the installation command:
 
 ```bash
-npx shadcn@latest add https://formscn.space/r/contact-form.json
+npx shadcn@latest add button input form card
 ```
 
-## 3. Use the Component
+## 5. Get Your Form
 
-Import and use the form in your page.
+### Option A: CLI Installation (Recommended)
+
+Click **"Generate Unique Command"** to publish your form, then run:
+
+```bash
+npx shadcn@latest add https://formscn.com/api/r/YOUR_FORM_ID.json
+```
+
+### Option B: Copy Code
+
+Copy the generated TypeScript code directly from the **Integrate** tab.
+
+## 6. Use the Component
+
+Import and use the form in your page:
 
 ```tsx
 import { ContactForm } from "@/components/contact-form"
@@ -35,12 +70,25 @@ export default function Page() {
 }
 ```
 
+## 7. Optional: Add Authentication
+
+Need auth? Enable it anytime:
+
+1. Go to **Advanced** section in the editor sidebar
+2. Toggle **"Add Better Auth"**
+3. Configure OAuth providers (Google, GitHub, etc.)
+4. Select plugins (2FA, Magic Links, etc.)
+5. Follow the Setup Guide in the Integrate tab
+
 ## Customizing
 
-All forms are fully type-safe and owned by you. You can modify the Zod schema or UI components directly in `components/contact-form.tsx`.
+All forms are fully type-safe and owned by you. You can modify:
+- The Zod schema in `schema.ts`
+- UI components directly in the form file
+- Form logic and handlers
 
 ## Next Steps
 
-- Explore [Form Builder](/editor) to create custom forms
-- Learn about [Auth Integration](/docs/components/auth)
-
+- Explore the [Form Builder](/editor) to create custom forms
+- Learn about [shadcn Dependencies Detection](/docs/components/form-builder#shadcn-dependencies)
+- Check out [Form Templates](/templates) for inspiration

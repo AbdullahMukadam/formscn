@@ -5,94 +5,298 @@ export const metadata = {
 
 # Form Builder
 
-The Form Builder is a visual tool that lets you create forms using a drag-and-drop interface.
+The Form Builder is a visual tool that lets you create forms using a drag-and-drop interface. Generate production-ready code using shadcn/ui components.
 
 ## Features
 
-- **Visual Editor**: Build forms visually without writing code
-- **Auth & DB Ready**: One-click integration with Better Auth, Prisma, and Drizzle
-- **Multi-Framework**: Generate code for Next.js, Vite/React, TanStack Start, and Remix
-- **Publish to CLI**: Generate a unique `npx shadcn add` command for your custom form
+- **Visual Editor**: Build forms without writing code
+- **Form Library Choice**: React Hook Form or TanStack Form
+- **shadcn Dependencies Detection**: Auto-detect required components
+- **Multi-Framework**: Generate code for Next.js, Vite, TanStack Start, and Remix
+- **Optional Auth**: Add Better Auth only when you need it
+- **Publish to CLI**: Generate unique `npx shadcn add` commands
 - **Live Preview**: See your form in real-time as you build
-- **Code Export**: Export clean, production-ready code or install via CLI
+- **20+ Templates**: Pre-built forms to get started quickly
 
 ## Getting Started
 
-Access the form builder at `/editor` in your application.
+Access the form builder at `/editor`.
 
-## Using the Editor
+### Welcome Modal
 
-1. **Choose a Template**: Start with a pre-built template or create from scratch
-2. **Add Fields**: Drag and drop fields from the component palette
-3. **Configure Auth**: Enable OAuth providers (Google, GitHub) and choose your DB adapter
-4. **Select Framework**: Choose your target framework (Next.js, Vite, etc.) for correct environment variables
-5. **Publish**: Click "Integrate" -> "Publish" to get your unique installation command
-6. **Install**: Run the generated command in your project
+First-time visitors see a welcome modal with three options:
+- **Try a Template**: Start with the Contact Form template
+- **Start from Scratch**: Build from an empty form
+- **Watch Demo**: See FormSCN in action
+
+You can skip this and it won't appear again.
+
+## Editor Layout
+
+### Left Sidebar
+
+The sidebar contains form configuration sections:
+
+#### Form Fields (Default Open)
+Add and configure form fields organized by category:
+- **Basic**: Text, Email, Password, Number, Textarea
+- **Selection**: Select, Checkbox, Radio, Switch
+- **Advanced**: Date, File Upload
+
+Click a field to add it to your form, then configure:
+- Field type and input type
+- Label and placeholder text
+- Validation rules (required, min/max length, etc.)
+- Description/help text
+
+#### Steps (Multi-Step Forms)
+Enable multi-step mode to create wizards:
+- Add/remove steps
+- Configure step titles and descriptions
+- Organize fields across steps
+- Built-in progress indicator
+
+#### Appearance
+Customize the visual theme:
+- Color scheme
+- Font family
+- Border radius
+- Live preview updates automatically
+
+#### Form Library
+Choose your form state management:
+
+**React Hook Form (Default)**
+- Industry standard
+- Excellent performance
+- Large ecosystem
+
+**TanStack Form**
+- Modern and headless
+- Framework-agnostic
+- Type-safe by design
+
+Toggle between them anytime—the builder regenerates code automatically.
+
+#### Advanced (Optional)
+Add Better Auth features when needed:
+
+**Note**: This section is collapsed by default and clearly marked as "Optional"
+
+Enable:
+- **OAuth Providers**: Google, GitHub, Discord, etc.
+- **Auth Plugins**: 2FA, Magic Links, Passkeys, Username Auth, Organizations
+- **Database Adapter**: Prisma or Drizzle (for auth schema generation)
+
+**Important**: Auth is completely optional. All templates work perfectly without it.
+
+### Main Workspace
+
+#### Preview Tab
+See your form rendered in real-time:
+- Fully interactive
+- Validation works on submit
+- Shows form data on successful submission
+- Responsive preview
+
+#### Integrate Tab
+Get your production code:
+
+##### Component Tab (Default)
+Shows the generated form component code with:
+- **shadcn Dependencies**: Badge showing which shadcn components are needed
+- **Installation Command**: `npx shadcn add` command to install dependencies
+- **Generated Code**: Full TypeScript component ready to use
+
+The code includes:
+```typescript
+/**
+ * Generated with FormSCN - The shadcn/ui Form Builder
+ * https://formscn.com
+ * 
+ * This form uses shadcn/ui components with React Hook Form and Zod validation.
+ */
+```
+
+##### Auth & DB Tab (Optional)
+Only appears if you enabled Better Auth. Shows:
+- Better Auth configuration (`lib/auth.ts`)
+- Auth client setup (`lib/auth-client.ts`)
+- Database schema (Prisma or Drizzle)
+- Environment variables template
+
+##### Setup Guide Tab (Optional)
+Only appears if you enabled Better Auth. Provides:
+- Step-by-step integration checklist
+- Required environment variables
+- Database migration commands
+- OAuth app setup instructions
 
 ## Example Workflow
 
 ### Step 1: Select a Template
 
-Choose from templates like:
-- Login Form
-- Waitlist Form
-- Support Ticket
-- Contact Form
-- Registration Form
-- Survey Form
+Choose from 20+ templates:
+- **Authentication**: Login, Signup, Password Reset (all auth-optional)
+- **Contact**: Contact Form, Support Ticket, Booking Request
+- **Marketing**: Waitlist, Newsletter, Event Registration
+- **E-commerce**: Checkout forms
+- **Profile**: Settings, Address forms
+- **Wizards**: Onboarding, Detailed Applications
 
 ### Step 2: Customize Fields
 
-Click on any field to configure:
-- Field type (text, email, number, etc.)
-- Label and placeholder
-- Validation rules
-- Default values
-- Field styling
+Click any field to configure:
+- Change field type (text → email → password)
+- Update labels and placeholders
+- Add validation rules
+- Set default values
+- Add descriptions
 
-### Step 3: Add Authentication & Features
+Drag fields to reorder them.
 
-Enable **Better Auth** features in the sidebar:
-- **Auth Features**: Toggle advanced capabilities like **Two-Factor (2FA)**, **Magic Links**, **Passkeys**, **Username Auth**, and **Organizations**.
-- **OAuth Providers**: One-click integration for Google, GitHub, etc.
-- **Database Adapter**: Select **Prisma** or **Drizzle** to generate compatible schemas.
-- **Framework**: Choose your target stack (**Next.js**, **Vite/React**, **TanStack Start**, **Remix**) for tailored environment variables and client hooks.
+### Step 3: Choose Form Library
 
-The builder automatically validates your configuration (e.g., ensuring an Email field exists if Magic Link is enabled) and generates the full backend boilerplate.
+In the sidebar, select:
+- **React Hook Form** for battle-tested reliability
+- **TanStack Form** for modern architecture
 
-### Step 4: Setup & Install
+The builder adapts code generation automatically.
 
-1. Go to the **Integrate** tab.
-2. Click **Publish & Get CLI Command**.
-3. **Follow the Setup Guide**: Use the interactive checklist to finalize your integration:
-   - Generate your `BETTER_AUTH_SECRET`.
-   - Sync your database schema (The guide provides the exact `migrate` or `generate` command).
-   - Configure environment variables.
-4. Run the unique install command provided:
+### Step 4: Check Dependencies
 
+Go to **Integrate** → **Component**. You'll see:
+
+**shadcn Components Needed:**
+- button
+- input
+- form
+- card
+- checkbox
+
+**Installation Command:**
 ```bash
-npx shadcn@latest add https://formscn.space/api/r/YOUR_UNIQUE_FORM_ID.json
+npx shadcn@latest add button input form card checkbox
 ```
 
-Or copy the raw code if you prefer manual integration.
+Install these components in your project before using the form.
+
+### Step 5: Publish & Install
+
+1. Click **"Generate Unique Command"**
+2. Copy the command:
+   ```bash
+   npx shadcn@latest add https://formscn.com/api/r/YOUR_FORM_ID.json
+   ```
+3. Run it in your project
+4. The form component and all dependencies are installed automatically
+
+### Step 6: Use the Form
+
+```tsx
+import { ContactForm } from "@/components/contact-form"
+
+export default function Page() {
+  return (
+    <div className="max-w-md mx-auto py-10">
+      <ContactForm 
+        onSubmit={async (data) => {
+          // Handle form submission
+          console.log(data)
+        }}
+      />
+    </div>
+  )
+}
+```
+
+## shadcn Dependencies Detection
+
+FormSCN automatically analyzes your form and tells you exactly which shadcn/ui components you need.
+
+### How it works:
+- Parses generated code for component imports
+- Maps component names to shadcn registry names
+- Provides copy-to-clipboard installation command
+
+### Example:
+A form with text inputs, selects, and checkboxes shows:
+```
+Required shadcn components: button, card, form, input, select, checkbox
+
+npx shadcn@latest add button card form input select checkbox
+```
+
+This ensures you only install what you need.
+
+## Optional Authentication
+
+Better Auth integration is **completely optional**.
+
+### When to use it:
+- User login/signup flows
+- Protected routes
+- Organization/team features
+- Multi-factor authentication
+
+### When you don't need it:
+- Contact forms
+- Waitlist signups
+- Newsletter subscriptions
+- Any form that just collects data
+
+### Enabling Auth:
+
+1. Go to **Advanced** section in sidebar (collapsed by default)
+2. Toggle **"Add Better Auth"**
+3. Configure:
+   - **OAuth Providers**: Click to enable Google, GitHub, etc.
+   - **Auth Plugins**: Enable 2FA, Magic Links, etc.
+   - **Database**: Choose Prisma or Drizzle
+4. Go to **Integrate** → **Auth & DB** for generated config
+5. Follow **Setup Guide** for integration steps
+
+The builder validates your config (e.g., warns if Magic Link is enabled without an Email field).
 
 ## Advanced Features
 
-### Custom Components
+### Multi-Step Forms
 
-Add your own custom components to the builder palette.
+Enable "Multi-Step" mode to create wizards:
+- Organize fields into steps
+- Add step titles and descriptions
+- Built-in navigation (Next/Previous)
+- Progress indicator
+- Validation per step
 
 ### Theme Customization
 
-Customize the appearance with Tailwind CSS classes.
+Customize appearance without touching code:
+- Color scheme (matches shadcn themes)
+- Font family (sans, serif, mono)
+- Border radius (0.0 to 1.0)
 
-### Conditional Fields
+### Form Submission
 
-Show/hide fields based on other field values.
+In Preview mode:
+- Fill out the form
+- Click Submit
+- See validation errors if any
+- View submitted data in a drawer
+
+This helps you test the form before exporting.
+
+## Keyboard Shortcuts
+
+- `Esc`: Deselect field
+- `Delete`: Remove selected field
+- `↑/↓`: Navigate between fields
 
 ## Tips
 
-- Use keyboard shortcuts for faster editing
-- Save your work regularly
-- Test forms thoroughly before exporting
-- Use TypeScript for better type safety
+- **Start with templates**: They're fully functional and customizable
+- **Test in preview**: Use the Preview tab to test validation
+- **Check dependencies**: Always install required shadcn components
+- **Auth is optional**: Only enable Better Auth if you need it
+- **You own the code**: Modify generated code however you want
+- **Type-safe**: All forms use Zod schemas with TypeScript inference

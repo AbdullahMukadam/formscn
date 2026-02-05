@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { formTemplates } from "@/lib/form-templates";
 import { Footer } from "@/components/footer";
-import { Github, Zap, Shield, Layout, Cpu, Box, Code2, ArrowUpRight, Wand2, Layers, Database, Sparkles, Binary, ChevronRight, Plus, ShieldCheck } from "lucide-react";
+import { Github, Zap, Shield, Layout, Cpu, Box, Code2, ArrowUpRight, Wand2, Layers, Database, Sparkles, Binary, ChevronRight, Plus, ShieldCheck, FormInput } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function Home() {
@@ -41,7 +41,7 @@ export default function Home() {
             className="inline-flex items-center rounded-lg bg-white/5 border border-white/10 px-3 py-1 text-xs font-medium text-white/80 mb-8 backdrop-blur-xl"
           >
             <span className="flex h-2 w-2 rounded-full bg-primary mr-2 animate-pulse"></span>
-            v1.0 Now Public • Shadcn/UI Compatible
+            Open Source • Built for shadcn/ui
           </motion.div>
 
           <motion.h1 
@@ -50,8 +50,8 @@ export default function Home() {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="text-4xl sm:text-6xl lg:text-7xl font-bold text-white tracking-tighter leading-[1.1] md:leading-[1.0] mb-6 md:mb-8"
           >
-            The Visual Registry for <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40 italic">Technical Forms.</span>
+            Visual Form Builder <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40 italic">for shadcn</span>
           </motion.h1>
 
           <motion.p 
@@ -60,11 +60,12 @@ export default function Home() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="text-sm md:text-lg text-white/60 max-w-2xl mb-8 md:mb-10 leading-relaxed font-normal px-0"
           >
-            FormsCN bridges the gap between visual builders and code ownership. 
-            Architect complex <strong>multi-step wizards</strong>, full authentication flows (2FA, Passkeys, Magic Links), and data schemas visually. 
+            Stop copying form code. Design <strong>shadcn/ui forms visually</strong> with drag-and-drop, 
+            see live preview, and export production-ready TypeScript. 
             <br /><br />
-            Then, install production-ready, type-safe code directly into your project via CLI—
-            fully integrated with <strong>Better Auth</strong>, <strong>Zod</strong>, and <strong>Shadcn/UI</strong>.
+            Choose <strong>React Hook Form</strong> or <strong>TanStack Form</strong>. 
+            Add <strong>Better Auth</strong> with one click. 
+            Works with Next.js, Remix, and Vite.
           </motion.p>
 
           <motion.div 
@@ -75,12 +76,12 @@ export default function Home() {
           >
             <Link href="/editor" className="w-full sm:w-auto">
               <Button size="lg" className="h-12 px-8 rounded-xl bg-white text-black hover:bg-white/90 font-bold text-sm transition-all hover:scale-[1.02] active:scale-[0.98] w-full sm:w-auto">
-                Open Visual Editor
+                Build Your First Form
               </Button>
             </Link>
-            <Link href="/docs" className="w-full sm:w-auto">
+            <Link href="/templates" className="w-full sm:w-auto">
               <div className="h-12 px-6 rounded-xl flex items-center justify-center gap-2 font-medium text-sm text-white/60 hover:text-white border border-white/10 hover:border-white/20 transition-all cursor-pointer w-full sm:w-auto bg-white/[0.02]">
-                Read Documentation
+                Browse Templates
               </div>
             </Link>
           </motion.div>
@@ -93,7 +94,7 @@ export default function Home() {
           >
              <div className="flex items-center gap-2">
                 <div className="w-1.5 h-1.5 rounded-full bg-white/20"></div>
-                npx shadcn@latest add ...
+                Uses shadcn/ui components
              </div>
              <div className="flex items-center gap-2">
                 <div className="w-1.5 h-1.5 rounded-full bg-white/20"></div>
@@ -108,6 +109,7 @@ export default function Home() {
             <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-8 opacity-30 grayscale contrast-200">
               {[
                 { name: "Next.js", icon: <Cpu className="w-4 h-4" /> },
+                { name: "TanStack Form", icon: <FormInput className="w-4 h-4" /> },
                 { name: "Better Auth", icon: <ShieldCheck className="w-4 h-4" /> },
                 { name: "Shadcn UI", icon: <Layout className="w-4 h-4" /> },
                 { name: "Drizzle", icon: <Database className="w-4 h-4" /> },
@@ -141,67 +143,27 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3">
             
             <div className="p-8 md:p-16 border-b border-white/[0.05] space-y-6 hover:bg-white/[0.01] transition-colors group">
-              <Cpu className="w-4 h-4 text-white opacity-40 group-hover:opacity-100 transition-opacity" />
-              <div className="space-y-4">
-                <h3 className="text-xl font-bold text-white leading-tight">
-                  Framework Agnostic <br className="hidden md:block" />
-                  <span className="text-white/30">exporting.</span>
-                </h3>
-                <p className="text-sm leading-relaxed text-[#888]">
-                  Export optimized code for Next.js, Remix, TanStack Start, and Vite. We handle the routing and server action patterns for you.
-                </p>
-              </div>
-            </div>
-
-            <div className="p-8 md:p-16 border-b border-white/[0.05] md:border-l md:border-l-white/[0.05] space-y-6 hover:bg-white/[0.01] transition-colors group">
-              <Shield className="w-4 h-4 text-white opacity-40 group-hover:opacity-100 transition-opacity" />
-              <div className="space-y-4">
-                <h3 className="text-xl font-bold text-white leading-tight">
-                  Type-Safe Zod <br className="hidden md:block" />
-                  <span className="text-white/30">Validation.</span>
-                </h3>
-                <p className="text-sm leading-relaxed text-[#888]">
-                   Every form generates a corresponding Zod schema. Full TypeScript support with inferred types for your form data.
-                </p>
-              </div>
-            </div>
-
-            <div className="p-8 md:p-16 border-b border-white/[0.05] md:border-l md:border-l-white/[0.05] space-y-6 hover:bg-white/[0.01] transition-colors group">
-              <Layers className="w-4 h-4 text-white opacity-40 group-hover:opacity-100 transition-opacity" />
-              <div className="space-y-4">
-                <h3 className="text-xl font-bold text-white leading-tight">
-                  Multi-Step Wizard <br className="hidden md:block" />
-                  <span className="text-white/30">architecture.</span>
-                </h3>
-                <p className="text-sm leading-relaxed text-[#888]">
-                  Create complex multi-page forms with ease. State management and per-step validation are handled out of the box.
-                </p>
-              </div>
-            </div>
-
-            <div className="p-8 md:p-16 border-b border-white/[0.05] space-y-6 hover:bg-white/[0.01] transition-colors group relative">
-              <Plus className="absolute -top-3 -right-3 w-6 h-6 text-white/10 z-20 hidden md:block" />
               <Layout className="w-4 h-4 text-white opacity-40 group-hover:opacity-100 transition-opacity" />
               <div className="space-y-4">
                 <h3 className="text-xl font-bold text-white leading-tight">
-                   Visual Drag & Drop <br className="hidden md:block" />
-                  <span className="text-white/30">Editor.</span>
+                  shadcn/ui <br className="hidden md:block" />
+                  <span className="text-white/30">Components.</span>
                 </h3>
                 <p className="text-sm leading-relaxed text-[#888]">
-                  A powerful visual lab where you can build forms, configure fields, and see your code update in real-time.
+                  Built exclusively for shadcn/ui. Every form uses your existing components—Button, Input, Select, and more. No learning curve.
                 </p>
               </div>
             </div>
 
-            <div className="p-8 md:p-16 border-b border-white/[0.05] md:border-l md:border-l-white/[0.05] space-y-6 hover:bg-white/[0.01] transition-colors group relative">
-               <Plus className="absolute -top-3 -right-3 w-6 h-6 text-white/10 z-20 hidden md:block" />
-               <ShieldCheck className="w-4 h-4 text-white opacity-40 group-hover:opacity-100 transition-opacity" />
-               <div className="space-y-4">
+            <div className="p-8 md:p-16 border-b border-white/[0.05] md:border-l md:border-l-white/[0.05] space-y-6 hover:bg-white/[0.01] transition-colors group">
+              <Wand2 className="w-4 h-4 text-white opacity-40 group-hover:opacity-100 transition-opacity" />
+              <div className="space-y-4">
                 <h3 className="text-xl font-bold text-white leading-tight">
-                  Advanced Auth <br className="hidden md:block" /> <span className="text-white/30">Features.</span>
+                  Visual Drag & Drop <br className="hidden md:block" />
+                  <span className="text-white/30">Editor.</span>
                 </h3>
                 <p className="text-sm leading-relaxed text-[#888]">
-                   One-click support for 2FA, Magic Links, Passkeys, and Organizations. We generate both the complex logic and the polished UI components.
+                  Build forms visually, see live preview, and watch your code update in real-time. No more copy-pasting examples.
                 </p>
               </div>
             </div>
@@ -210,11 +172,51 @@ export default function Home() {
               <Code2 className="w-4 h-4 text-white opacity-40 group-hover:opacity-100 transition-opacity" />
               <div className="space-y-4">
                 <h3 className="text-xl font-bold text-white leading-tight">
-                  Interactive Setup <br className="hidden md:block" />
-                  <span className="text-white/30">Checklist.</span>
+                  Choose Your <br className="hidden md:block" />
+                  <span className="text-white/30">Form Library.</span>
                 </h3>
                 <p className="text-sm leading-relaxed text-[#888]">
-                  Don&apos;t guess the integration steps. Get a dynamic checklist for secret generation, database migrations, and environment setup.
+                   Toggle between React Hook Form and TanStack Form. Same visual builder, different output—you own the code.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-8 md:p-16 border-b border-white/[0.05] space-y-6 hover:bg-white/[0.01] transition-colors group relative">
+              <Plus className="absolute -top-3 -right-3 w-6 h-6 text-white/10 z-20 hidden md:block" />
+              <Shield className="w-4 h-4 text-white opacity-40 group-hover:opacity-100 transition-opacity" />
+              <div className="space-y-4">
+                <h3 className="text-xl font-bold text-white leading-tight">
+                  Type-Safe Zod <br className="hidden md:block" />
+                  <span className="text-white/30">Validation.</span>
+                </h3>
+                <p className="text-sm leading-relaxed text-[#888]">
+                   Every form auto-generates a Zod schema. Full TypeScript support with inferred types for your form data.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-8 md:p-16 border-b border-white/[0.05] md:border-l md:border-l-white/[0.05] space-y-6 hover:bg-white/[0.01] transition-colors group relative">
+               <Plus className="absolute -top-3 -right-3 w-6 h-6 text-white/10 z-20 hidden md:block" />
+               <Layers className="w-4 h-4 text-white opacity-40 group-hover:opacity-100 transition-opacity" />
+               <div className="space-y-4">
+                <h3 className="text-xl font-bold text-white leading-tight">
+                  Multi-Step Wizard <br className="hidden md:block" />
+                  <span className="text-white/30">Support.</span>
+                </h3>
+                <p className="text-sm leading-relaxed text-[#888]">
+                  Build complex onboarding flows and checkouts. State management and per-step validation handled automatically.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-8 md:p-16 border-b border-white/[0.05] md:border-l md:border-l-white/[0.05] space-y-6 hover:bg-white/[0.01] transition-colors group">
+              <ShieldCheck className="w-4 h-4 text-white opacity-40 group-hover:opacity-100 transition-opacity" />
+              <div className="space-y-4">
+                <h3 className="text-xl font-bold text-white leading-tight">
+                  Better Auth <br className="hidden md:block" /> <span className="text-white/30">Integration.</span>
+                </h3>
+                <p className="text-sm leading-relaxed text-[#888]">
+                   Optional one-click auth. Add 2FA, Passkeys, Magic Links, and OAuth providers to your shadcn forms instantly.
                 </p>
               </div>
             </div>
@@ -226,10 +228,9 @@ export default function Home() {
         <div className="container mx-auto max-w-6xl px-4 md:px-6">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 md:mb-16 gap-6 md:gap-10">
             <div className="space-y-3">
-               <h2 className="text-3xl font-bold text-white tracking-tighter italic">The Form Registry</h2>
+               <h2 className="text-3xl font-bold text-white tracking-tighter italic">shadcn/ui Form Templates</h2>
                <p className="text-sm text-white/30 max-w-md leading-relaxed">
-                 A curated inventory of form architectures. Ready to be
-                 initialized and deployed into production.
+                 Production-ready templates for authentication, e-commerce, contact forms, and more. Click to customize and export.
                </p>
             </div>
             <Link href="/templates" className="w-full sm:w-auto">
@@ -303,18 +304,18 @@ export default function Home() {
                   <Sparkles className="w-3 h-3" /> Ready to build?
                 </motion.div>
                 <h2 className="text-4xl md:text-7xl font-bold text-white tracking-tighter leading-[0.9] italic">
-                  Architect your next <br className="hidden sm:block" /> production form.
+                  Build your next <br className="hidden sm:block" /> shadcn/ui form.
                 </h2>
                 <p className="text-sm md:text-lg text-white/40 max-w-xl mx-auto leading-relaxed font-medium">
-                  Stop wiring boilerplate and manual validation. <br className="hidden md:block" /> 
-                  Generate production-grade, type-safe architectures in seconds.
+                  Stop copy-pasting code examples. <br className="hidden md:block" /> 
+                  Design visually, export production-ready TypeScript in seconds.
                 </p>
               </div>
 
               <div className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-4">
                 <Link href="/editor" className="w-full sm:w-auto">
                   <Button size="lg" className="h-14 px-10 rounded-2xl bg-white text-black hover:bg-white/90 font-bold text-sm transition-all hover:scale-[1.05] active:scale-[0.95] w-full sm:w-auto shadow-[0_0_40px_rgba(255,255,255,0.1)] group">
-                    Launch The Lab
+                    Start Building
                     <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
