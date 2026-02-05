@@ -320,12 +320,5 @@ ${oauthButtons}
 }`;
   }
 
-  return `/**
- * Generated with FormSCN - The shadcn/ui Form Builder
- * https://formscn.com
- * 
- * This form uses shadcn/ui components with TanStack Form and Zod validation.
- */
-
-${imports}${utilityFunctions}${schema}${componentBody}`;
+  return `${imports}${utilityFunctions}${schema}${componentBody}`;
 }
