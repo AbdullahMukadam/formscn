@@ -45,7 +45,7 @@ export function HeroSection() {
         <div className="absolute inset-0 z-0 w-full h-full">
           <Dither
             waveColor={[0.5019607843137255, 0.5019607843137255, 0.5019607843137255]}
-            disableAnimation={false}
+            disableAnimation={true}
             enableMouseInteraction
             mouseRadius={0.5}
             colorNum={5}
