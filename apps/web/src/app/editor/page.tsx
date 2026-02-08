@@ -3,7 +3,7 @@
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { formTemplates } from "@/lib/form-templates";
-import { FormEditor } from "@/components/form-editor";
+import { FormEditor } from "@/components/editor/form-editor";
 
 function EditorContent() {
   const searchParams = useSearchParams();

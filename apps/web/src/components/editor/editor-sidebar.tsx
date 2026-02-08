@@ -40,100 +40,51 @@ import {
 import { FORM_FIELD_TYPES } from "@/lib/form-fields-config";
 import { OAUTH_PROVIDERS } from "@/lib/oauth-providers-config";
 import type { FormStep, FormField as FormFieldType } from "@/lib/form-templates";
-import type { OAuthProvider } from "@/lib/oauth-providers-config";
-import type { DatabaseAdapter, Framework, AuthPluginsConfig } from "@/registry/default/lib/form-generator";
+import type { AuthPluginsConfig } from "@/registry/default/lib/form-generator";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { AnimatePresence, motion } from "framer-motion";
-import type { ThemeConfig } from "@/lib/appearance-config";
 import { AppearanceSelector } from "./appearance-selector";
+import type { FormEditorInstance } from "@/types/editor";
 
 interface EditorSidebarProps {
-  // Form Meta
-  formName: string;
-  setFormName: (name: string) => void;
-  formDescription: string;
-  setFormDescription: (desc: string) => void;
-
-  // Appearance
-  themeConfig: ThemeConfig;
-  updateThemeConfig: (updates: Partial<ThemeConfig>) => void;
-
-  // Form Library
-  formLibrary: "rhf" | "tanstack";
-  setFormLibrary: (library: "rhf" | "tanstack") => void;
-
-  // Steps
-  isMultiStep: boolean;
-  toggleMultiStep: (enabled: boolean) => void;
-  steps: FormStep[];
-  activeStepIndex: number;
-  setActiveStepIndex: (index: number) => void;
-  addStep: () => void;
-  removeStep: (index: number) => void;
-  updateStep: (index: number, updates: Partial<FormStep>) => void;
-
-  // Fields
-  fields: FormFieldType[];
-  selectedField: FormFieldType | null;
-  selectedFieldIndex: number | null;
-  setSelectedFieldIndex: (index: number | null) => void;
-  updateField: (index: number, updates: Partial<FormFieldType>) => void;
-  addField: (type: FormFieldType["type"], inputType?: string) => void;
-
-  // OAuth
-  oauthProviders: OAuthProvider[];
-  toggleOAuth: (provider: OAuthProvider) => void;
-  databaseAdapter: DatabaseAdapter;
-  setDatabaseAdapter: (adapter: DatabaseAdapter) => void;
-  framework: Framework;
-  setFramework: (framework: Framework) => void;
-
-  // Auth Plugins
-  authPlugins: AuthPluginsConfig;
-  toggleAuthPlugin: (plugin: keyof AuthPluginsConfig) => void;
-
-  // Helpers
-  isAuthEnabled: boolean;
-  enableBetterAuth: boolean;
-  setEnableBetterAuth: (enabled: boolean) => void;
-  resetForm: () => void;
+  editor: FormEditorInstance;
+  className?: string;
 }
 
-export function EditorSidebar({
-  formName,
-  setFormName,
-  formDescription,
-  setFormDescription,
-  isMultiStep,
-  toggleMultiStep,
-  steps,
-  activeStepIndex,
-  setActiveStepIndex,
-  addStep,
-  removeStep,
-  updateStep,
-  selectedField,
-  selectedFieldIndex,
-  setSelectedFieldIndex,
-  updateField,
-  addField,
-  oauthProviders,
-  toggleOAuth,
-  databaseAdapter,
-  setDatabaseAdapter,
-  framework,
-  setFramework,
-  authPlugins,
-  toggleAuthPlugin,
-  isAuthEnabled,
-  enableBetterAuth,
-  setEnableBetterAuth,
-  resetForm,
-  themeConfig,
-  updateThemeConfig,
-  formLibrary,
-  setFormLibrary,
-}: EditorSidebarProps) {
+export function EditorSidebar({ editor, className }: EditorSidebarProps) {
+  // Destructure commonly used values for cleaner code
+  const {
+    formName,
+    setFormName,
+    formDescription,
+    setFormDescription,
+    themeConfig,
+    updateThemeConfig,
+    formLibrary,
+    setFormLibrary,
+    isMultiStep,
+    toggleMultiStep,
+    steps,
+    activeStepIndex,
+    setActiveStepIndex,
+    addStep,
+    removeStep,
+    updateStep,
+    fields,
+    selectedField,
+    selectedFieldIndex,
+    selectField,
+    updateField,
+    addField,
+    oauthProviders,
+    toggleOAuth,
+    authPlugins,
+    toggleAuthPlugin,
+    enableBetterAuth,
+    setEnableBetterAuth,
+    resetForm,
+  } = editor;
+
   const fieldTypes = useMemo(() => ({
     basic: FORM_FIELD_TYPES.filter(f => f.enabled && f.category === "basic"),
     selection: FORM_FIELD_TYPES.filter(f => f.enabled && f.category === "selection"),
@@ -156,7 +107,7 @@ export function EditorSidebar({
             variant="ghost" 
             size="sm" 
             className="-ml-2 group" 
-            onClick={() => setSelectedFieldIndex(null)}
+            onClick={() => selectField(null)}
           >
             <motion.div
               whileHover={{ x: -3 }}
@@ -221,7 +172,29 @@ export function EditorSidebar({
                 <Label>Input Type</Label>
                 <Select
                   value={selectedField.inputType}
-                  onValueChange={(e) => updateField(selectedFieldIndex, { inputType: e as any })}
+                  onValueChange={(e) => {
+                    const inputType = e as any;
+                    // Determine uiType based on inputType
+                    let uiType: string | undefined;
+                    let uiConfig: { country: "US" } | undefined;
+                    
+                    if (inputType === "tel") {
+                      uiType = "phone";
+                      uiConfig = { country: "US" };
+                    } else if (inputType === "email") {
+                      uiType = "email";
+                    } else if (inputType === "url") {
+                      uiType = "url";
+                    } else if (inputType === "password") {
+                      uiType = "password";
+                    }
+                    
+                    updateField(selectedFieldIndex, { 
+                      inputType,
+                      uiType,
+                      uiConfig
+                    });
+                  }}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select type" />
@@ -502,9 +475,9 @@ export function EditorSidebar({
                           transition={{ duration: 0.2 }}
                           className={`p-2 rounded-md border text-sm cursor-pointer transition-colors group ${activeStepIndex === index ? "bg-accent border-primary" : "hover:bg-muted/50"
                             }`}
-                          onClick={() => {
+onClick={() => {
                             setActiveStepIndex(index);
-                            setSelectedFieldIndex(null);
+                            selectField(null);
                           }}
                         >
                           <div className="flex items-center justify-between mb-1.5">

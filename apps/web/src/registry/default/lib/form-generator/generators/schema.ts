@@ -103,12 +103,12 @@ export function generateZodSchema(fields: FormField[]): string {
             validation += `.url("Please enter a valid URL").optional().or(z.literal(""))`;
           }
         }
-        // Telephone validation
-        else if (field.type === "input" && field.inputType === "tel") {
+        // Telephone validation - use libphonenumber-js for international phone validation
+        else if (field.type === "input" && (field.inputType === "tel" || field.uiType === "phone")) {
           if (field.required) {
-            validation += `.min(1, "Phone number is required").regex(/^[+]?[(]?[0-9]{1,4}[)]?[-\\s\\.]?[(]?[0-9]{1,4}[)]?[-\\s\\.]?[0-9]{1,9}$/, "Please enter a valid phone number")`;
+            validation += `.min(1, "Phone number is required").refine((val) => isValidPhoneNumber(val), "Please enter a valid phone number")`;
           } else {
-            validation += `.regex(/^[+]?[(]?[0-9]{1,4}[)]?[-\\s\\.]?[(]?[0-9]{1,4}[)]?[-\\s\\.]?[0-9]{1,9}$/, "Please enter a valid phone number").optional().or(z.literal(""))`;
+            validation += `.refine((val) => !val || isValidPhoneNumber(val), "Please enter a valid phone number").optional().or(z.literal(""))`;
           }
         }
         // Password validation - min 8 chars for auth forms

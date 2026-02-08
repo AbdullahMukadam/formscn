@@ -1,314 +1,81 @@
 "use client";
 
-import { useState } from "react";
-import type { FormTemplate, FormField as FormFieldType, FormStep } from "@/lib/form-templates";
-import type { OAuthProvider } from "@/lib/oauth-providers-config";
-import type { DatabaseAdapter, Framework, AuthPluginsConfig } from "@/registry/default/lib/form-generator";
-import { toast } from "sonner";
-import type { ThemeConfig } from "@/lib/appearance-config";
+import { useSyncExternalStore, useCallback, useMemo } from "react";
+import { FormEditor } from "@/lib/form-editor/form-editor";
+import type { FormEditorOptions, FormEditorInstance } from "@/types/editor";
 
-interface UseFormEditorProps {
-  initialTemplate?: FormTemplate;
-}
 
-export function useFormEditor({ initialTemplate }: UseFormEditorProps = {}) {
-  // State for form metadata
-  const [formName, setFormName] = useState(initialTemplate?.name || "My New Form");
-  const [formDescription, setFormDescription] = useState(initialTemplate?.description || "A custom form created with FormSCN");
-
-  // State for steps and fields
-  const [steps, setSteps] = useState<FormStep[]>(initialTemplate?.steps || []);
-  
-  // Initialize fields: if steps exist, flatten them. Otherwise use fields.
-  const initialFields = initialTemplate?.fields?.length 
-    ? initialTemplate.fields 
-    : (initialTemplate?.steps ? initialTemplate.steps.flatMap(s => s.fields) : []);
-
-  const [fields, setFields] = useState<FormFieldType[]>(initialFields);
-
-  // Helper to determine if we are in multi-step mode
-  const isMultiStep = steps.length > 0;
-  const [activeStepIndex, setActiveStepIndex] = useState(0);
-
-  // State for OAuth
-  const [oauthProviders, setOauthProviders] = useState<OAuthProvider[]>(initialTemplate?.oauthProviders || []);
-
-  // State for database adapter & framework
-  const [databaseAdapter, _setDatabaseAdapter] = useState<DatabaseAdapter>("drizzle");
-  const [framework, _setFramework] = useState<Framework>("next");
-  const [authPlugins, setAuthPlugins] = useState<AuthPluginsConfig>(initialTemplate?.authPlugins || {});
-  
-  // Master Switch for Better Auth
-  const [enableBetterAuth, setEnableBetterAuth] = useState(
-    !!initialTemplate?.oauthProviders?.length || 
-    !!Object.keys(initialTemplate?.authPlugins || {}).length ||
-    false
+export function useFormEditor(options: FormEditorOptions = {}): FormEditorInstance {
+  const editor = useMemo(() => new FormEditor(options), []);
+  const state = useSyncExternalStore(
+    useCallback((callback) => editor.subscribe(callback), [editor]),
+    useCallback(() => editor.getState(), [editor]),
+    useCallback(() => editor.getState(), [editor])
   );
 
-  // State for theme preview
-  const [themeConfig, setThemeConfig] = useState<ThemeConfig>({
-    color: "zinc",
-    font: "default",
-    radius: "0.5"
-  });
+  // Get computed getters
+  const getters = useMemo(() => editor.getGetters(), [state, editor]);
+  const actions = useMemo(() => ({
+    // Metadata
+    setFormName: editor.setFormName.bind(editor),
+    setFormDescription: editor.setFormDescription.bind(editor),
+    resetForm: editor.resetForm.bind(editor),
 
-  // State for form library selection
-  const [formLibrary, setFormLibrary] = useState<"rhf" | "tanstack">("rhf");
+    // Fields
+    addField: editor.addField.bind(editor),
+    removeField: editor.removeField.bind(editor),
+    updateField: editor.updateField.bind(editor),
+    moveField: editor.moveField.bind(editor),
+    selectField: editor.selectField.bind(editor),
+    setSelectedFieldIndex: editor.selectField.bind(editor),
 
-  const updateThemeConfig = (updates: Partial<ThemeConfig>) => {
-    setThemeConfig((prev) => ({ ...prev, ...updates }));
-    setPublishedId(null);
-  };
+    // Steps
+    toggleMultiStep: editor.toggleMultiStep.bind(editor),
+    addStep: editor.addStep.bind(editor),
+    removeStep: editor.removeStep.bind(editor),
+    updateStep: editor.updateStep.bind(editor),
+    setActiveStepIndex: editor.setActiveStep.bind(editor),
 
-  const setDatabaseAdapter = (adapter: DatabaseAdapter) => {
-    _setDatabaseAdapter(adapter);
-    if (publishedId) {
-       setPublishedId(null);
-       toast.info("Framework/Adapter changed. Please regenerate the CLI command.");
-    }
-  };
+    // Auth
+    toggleOAuth: editor.toggleOAuth.bind(editor),
+    toggleAuthPlugin: editor.toggleAuthPlugin.bind(editor),
+    setEnableBetterAuth: editor.setEnableBetterAuth.bind(editor),
 
-  const setFramework = (fw: Framework) => {
-    _setFramework(fw);
-    if (publishedId) {
-       setPublishedId(null);
-       toast.info("Framework/Adapter changed. Please regenerate the CLI command.");
-    }
-  };
+    // Config
+    setThemeConfig: editor.setThemeConfig.bind(editor),
+    updateThemeConfig: editor.updateThemeConfig.bind(editor),
+    setFormLibrary: editor.setFormLibrary.bind(editor),
 
+    // Publish
+    setPublishedId: editor.setPublishedId.bind(editor),
+    setIsPublishing: editor.setIsPublishing.bind(editor),
+    clearPublishedState: editor.clearPublishedState.bind(editor),
 
-  // State for UI
-  const [selectedFieldIndex, setSelectedFieldIndex] = useState<number | null>(null);
-  const [activeTab, setActiveTab] = useState("preview");
-  const [publishedId, setPublishedId] = useState<string | null>(null);
-  const [isPublishing, setIsPublishing] = useState(false);
+    // UI
+    setActiveTab: editor.setActiveTab.bind(editor),
 
-  const selectedField = selectedFieldIndex !== null 
-    ? (isMultiStep ? steps[activeStepIndex]?.fields[selectedFieldIndex] : fields[selectedFieldIndex]) 
-    : null;
+    // Direct setters for compatibility
+    setFields: (fields: typeof state.fields) => {
+      editor["setState"]({ fields });
+    },
+    setSteps: (steps: typeof state.steps) => {
+      editor["setState"]({ steps });
+    },
+    setOauthProviders: (oauthProviders: typeof state.oauthProviders) => {
+      editor["setState"]({ oauthProviders });
+    },
+    setAuthPlugins: (authPlugins: typeof state.authPlugins) => {
+      editor["setState"]({ authPlugins });
+    },
+  }), [editor]);
 
-  // Actions
-  const toggleMultiStep = (enabled: boolean) => {
-    if (enabled) {
-      // Switch to multi-step: Move all fields to Step 1
-      const firstStep: FormStep = {
-        id: "step_1",
-        title: "Step 1",
-        description: "First step of the form",
-        fields: [...fields]
-      };
-      setSteps([firstStep]);
-      setFields([]); // Clear flat fields as we now use steps
-    } else {
-      // Switch to single-step: Flatten all steps fields
-      const allFields = steps.flatMap(s => s.fields);
-      setFields(allFields);
-      setSteps([]);
-    }
-    setPublishedId(null);
-  };
-
-  const addStep = () => {
-    const newStep: FormStep = {
-      id: `step_${steps.length + 1}`,
-      title: `Step ${steps.length + 1}`,
-      description: "",
-      fields: []
-    };
-    setSteps([...steps, newStep]);
-    setActiveStepIndex(steps.length);
-  };
-
-  const removeStep = (index: number) => {
-    if (steps.length <= 1) return; // Don't remove the last step if in multi-step mode
-    const newSteps = [...steps];
-    
-    const fieldsToMove = newSteps[index].fields;
-    if (index > 0) {
-      newSteps[index - 1].fields.push(...fieldsToMove);
-    } else if (newSteps.length > 1) {
-      newSteps[1].fields.unshift(...fieldsToMove);
-    }
-
-    newSteps.splice(index, 1);
-    setSteps(newSteps);
-    if (activeStepIndex >= index && activeStepIndex > 0) {
-      setActiveStepIndex(activeStepIndex - 1);
-    }
-  };
-
-  const updateStep = (index: number, updates: Partial<FormStep>) => {
-    const newSteps = [...steps];
-    newSteps[index] = { ...newSteps[index], ...updates };
-    setSteps(newSteps);
-  };
-
-  const updateField = (index: number, updates: Partial<FormFieldType>) => {
-    if (isMultiStep) {
-      const newSteps = [...steps];
-      const step = newSteps[activeStepIndex];
-      if (step && step.fields[index]) {
-        step.fields[index] = { ...step.fields[index], ...updates };
-        setSteps(newSteps);
-      }
-    } else {
-      const newFields = [...fields];
-      newFields[index] = { ...newFields[index], ...updates };
-      setFields(newFields);
-    }
-    setPublishedId(null);
-  };
-
-  const addField = (type: FormFieldType["type"], inputType?: string) => {
-    const baseName = `field_${Date.now()}`;
-    const newField: FormFieldType = {
-      type,
-      name: baseName,
-      label: `New ${type.charAt(0).toUpperCase() + type.slice(1)}`,
-      placeholder: "Enter value...",
-      required: false,
-      inputType: type === "input" ? (inputType as any || "text") : undefined,
-      options: (type === "select" || type === "radio") ? [
-        { label: "Option 1", value: "option1" },
-        { label: "Option 2", value: "option2" },
-      ] : undefined,
-    };
-
-    if (isMultiStep) {
-      const newSteps = [...steps];
-      if (!newSteps[activeStepIndex]) return;
-      newSteps[activeStepIndex].fields.push(newField);
-      setSteps(newSteps);
-      setSelectedFieldIndex(newSteps[activeStepIndex].fields.length - 1);
-    } else {
-      setFields([...fields, newField]);
-      setSelectedFieldIndex(fields.length);
-    }
-    setPublishedId(null);
-    toast.success(`Added ${type} field`);
-  };
-
-  const removeField = (index: number) => {
-    if (isMultiStep) {
-      const newSteps = [...steps];
-      if (!newSteps[activeStepIndex]) return;
-      newSteps[activeStepIndex].fields.splice(index, 1);
-      setSteps(newSteps);
-      if (selectedFieldIndex === index) setSelectedFieldIndex(null);
-      if (selectedFieldIndex !== null && selectedFieldIndex > index) setSelectedFieldIndex(selectedFieldIndex - 1);
-    } else {
-      const newFields = [...fields];
-      newFields.splice(index, 1);
-      setFields(newFields);
-      if (selectedFieldIndex === index) setSelectedFieldIndex(null);
-      if (selectedFieldIndex !== null && selectedFieldIndex > index) setSelectedFieldIndex(selectedFieldIndex - 1);
-    }
-    setPublishedId(null);
-    toast.success("Field removed");
-  };
-
-  const moveField = (index: number, direction: "up" | "down") => {
-    if (isMultiStep) {
-      const newSteps = [...steps];
-      const currentFields = newSteps[activeStepIndex].fields;
-      if (
-        (direction === "up" && index === 0) ||
-        (direction === "down" && index === currentFields.length - 1)
-      ) return;
-
-      const targetIndex = direction === "up" ? index - 1 : index + 1;
-      [currentFields[index], currentFields[targetIndex]] = [currentFields[targetIndex], currentFields[index]];
-      setSteps(newSteps);
-    } else {
-      if (
-        (direction === "up" && index === 0) ||
-        (direction === "down" && index === fields.length - 1)
-      ) return;
-  
-      const newFields = [...fields];
-      const targetIndex = direction === "up" ? index - 1 : index + 1;
-      [newFields[index], newFields[targetIndex]] = [newFields[targetIndex], newFields[index]];
-      setFields(newFields);
-    }
-    setPublishedId(null);
-  };
-
-  const toggleOAuth = (provider: OAuthProvider) => {
-    setOauthProviders((prev) =>
-      prev.includes(provider)
-        ? prev.filter((p) => p !== provider)
-        : [...prev, provider]
-    );
-    setPublishedId(null);
-  };
-
-  const toggleAuthPlugin = (plugin: keyof AuthPluginsConfig) => {
-    setAuthPlugins((prev) => ({
-      ...prev,
-      [plugin]: !prev[plugin]
-    }));
-    setPublishedId(null);
-  };
-
-  const resetForm = () => {
-    setFormName("My New Form");
-    setFormDescription("A custom form created with FormSCN");
-    setFields([]);
-    setOauthProviders([]);
-    setPublishedId(null);
-    setSelectedFieldIndex(null);
-    toast.success("New form created");
-  };
-
-  return {
-    // State
-    formName,
-    setFormName,
-    formDescription,
-    setFormDescription,
-    fields,
-    setFields,
-    steps,
-    setSteps,
-    isMultiStep,
-    activeStepIndex,
-    setActiveStepIndex,
-    oauthProviders,
-    setOauthProviders,
-    databaseAdapter,
-    setDatabaseAdapter,
-    framework,
-    setFramework,
-    selectedFieldIndex,
-    setSelectedFieldIndex,
-    selectedField,
-    activeTab,
-    setActiveTab,
-    publishedId,
-    setPublishedId,
-    isPublishing,
-    setIsPublishing,
-
-    authPlugins,
-    setAuthPlugins,
-    toggleAuthPlugin,
-    enableBetterAuth,
-    setEnableBetterAuth,
-    themeConfig,
-    updateThemeConfig,
-    formLibrary,
-    setFormLibrary,
-
-    // Actions
-    updateField,
-    addField,
-    removeField,
-    moveField,
-    toggleOAuth,
-    resetForm,
-    toggleMultiStep,
-    addStep,
-    removeStep,
-    updateStep,
-  };
+  // Combine everything into the instance interface
+  return useMemo(() => ({
+    ...state,
+    ...getters,
+    ...actions,
+  }), [state, getters, actions]);
 }
+
+export { FormEditor } from "@/lib/form-editor/form-editor";
+export type * from "@/types/editor";

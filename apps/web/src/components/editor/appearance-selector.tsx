@@ -1,5 +1,4 @@
 import { type ThemeConfig, FONTS, RADII } from "@/lib/appearance-config";
-import { type ThemeColor, THEMES } from "@/lib/themes-config";
 import { ThemeSelector } from "./theme-selector";
 import {
   Select,
@@ -10,7 +9,7 @@ import {
 } from "@/components/ui/select";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Label } from "@/components/ui/label";
-import { Type, Square, Circle } from "lucide-react";
+import { Type, Square } from "lucide-react";
 
 interface AppearanceSelectorProps {
   config: ThemeConfig;
