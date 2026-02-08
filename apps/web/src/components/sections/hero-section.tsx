@@ -8,7 +8,7 @@ import dynamic from "next/dynamic";
 import { Separator } from "../ui/seperator";
 
 // Dynamically import Dither to reduce initial bundle size
-const Dither = dynamic(() => import("@/components/Dither"), {
+const LightRays = dynamic(() => import("@/components/LightRays"), {
   ssr: false,
   loading: () => <div className="absolute inset-0 bg-black/50" />,
 });
@@ -43,16 +43,19 @@ export function HeroSection() {
         />
         {/* Background Layer: Dither */}
         <div className="absolute inset-0 z-0 w-full h-full">
-          <Dither
-            waveColor={[0.5019607843137255, 0.5019607843137255, 0.5019607843137255]}
-            disableAnimation={true}
-            enableMouseInteraction
-            mouseRadius={0.5}
-            colorNum={5}
-            pixelSize={2}
-            waveAmplitude={0.35}
-            waveFrequency={3.5}
-            waveSpeed={0.05}
+          <LightRays
+            raysOrigin="top-center"
+            raysColor="#ffffff"
+            raysSpeed={1}
+            lightSpread={1}
+            rayLength={2}
+            pulsating={false}
+            fadeDistance={1}
+            saturation={1}
+            followMouse
+            mouseInfluence={0.1}
+            noiseAmount={0}
+            distortion={0}
           />
         </div>
 
