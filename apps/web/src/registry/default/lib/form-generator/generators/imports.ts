@@ -28,7 +28,8 @@ export function generateImports(config: GenerateImportsConfig): string {
   const hasRadio = fields.some(f => f.type === "radio");
   const hasDate = fields.some(f => f.type === "date");
   const hasFile = fields.some(f => f.type === "file");
-  const needsController = hasSelect || hasCheckbox || hasRadio || hasDate;
+  const hasPhone = fields.some(f => f.uiType === "phone");
+  const needsController = hasSelect || hasCheckbox || hasRadio || hasDate || hasPhone;
 
   const hasPassword = fields.some(f => f.name === "password" || f.inputType === "password");
 
@@ -104,8 +105,17 @@ import {
 } from "@/components/ui/popover";`;
     // Add cn if not already added by hasSteps
     if (!hasSteps) {
-      imports += `\nimport { cn } from "@/lib/utils";`;
+      imports += `
+import { cn } from "@/lib/utils";`;
     }
+  }
+  
+  // Phone input
+  if (hasPhone) {
+    imports += `
+import PhoneInput from "react-phone-number-input";
+import { isValidPhoneNumber } from "libphonenumber-js";
+import "react-phone-number-input/style.css";`;
   }
 
   // Auth Imports

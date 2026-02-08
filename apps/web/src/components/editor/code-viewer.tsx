@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { CodeBlock } from "@/components/code-block";
-import { Share2, Terminal, Code as CodeIcon, FileJson, Database, CheckCircle2, Copy, AlertCircle, Sparkles } from "lucide-react";
+import { Terminal, Code as CodeIcon, FileJson, Database, CheckCircle2, Copy, AlertCircle, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import {
   generateFormComponent,
@@ -15,53 +15,39 @@ import {
   generatePrismaClient,
   generateDrizzleClient,
 } from "@/registry/default/lib/form-generator";
-import type { FormField as FormFieldType, FormStep } from "@/lib/form-templates";
-import type { OAuthProvider } from "@/lib/oauth-providers-config";
-import type { DatabaseAdapter, Framework, AuthPluginsConfig } from "@/registry/default/lib/form-generator";
 import { getAuthChecklist } from "@/lib/auth-checklist-config";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
-import { Separator } from "@/components/ui/separator";
-import type { ThemeConfig } from "@/lib/appearance-config";
 import { ShadcnDependencies } from "./shadcn-dependencies";
+import type { FormEditorInstance } from "@/types/editor";
+
 
 interface CodeViewerProps {
-  formName: string;
-  formDescription: string;
-  fields: FormFieldType[];
-  steps?: FormStep[];
-  oauthProviders: OAuthProvider[];
-  databaseAdapter: DatabaseAdapter;
-  framework: Framework;
-  isAuthEnabled: boolean;
-  publishedId: string | null;
-  isPublishing: boolean;
-  handlePublish: () => void;
-  setFramework: (framework: Framework) => void;
-  setDatabaseAdapter: (adapter: DatabaseAdapter) => void;
-  authPlugins: AuthPluginsConfig;
-  themeConfig?: ThemeConfig;
-  formLibrary: "rhf" | "tanstack";
+  editor: FormEditorInstance;
+  onPublish: () => void;
 }
 
 export function CodeViewer({
-  formName,
-  formDescription,
-  fields,
-  steps,
-  oauthProviders,
-  databaseAdapter,
-  framework,
-  isAuthEnabled,
-  publishedId,
-  isPublishing,
-  handlePublish,
-  setFramework,
-  setDatabaseAdapter,
-  authPlugins,
-  themeConfig,
-  formLibrary,
+   editor,
+   onPublish
 }: CodeViewerProps) {
+  const {
+    formName,
+    formDescription,
+    fields,
+    steps,
+    oauthProviders,
+    enableBetterAuth: isAuthEnabled,
+    publishedId,
+    isPublishing,
+    authPlugins,
+    themeConfig,
+    formLibrary,
+  } = editor;
+  
+  // Local state for framework and database adapter selection
+  const [framework, setFramework] = useState<"next" | "react" | "tanstack" | "remix">("next");
+  const [databaseAdapter, setDatabaseAdapter] = useState<"drizzle" | "prisma">("drizzle");
   const [packageManager, setPackageManager] = useState<'pnpm' | 'npm' | 'yarn' | 'bun'>('pnpm');
 
   const generatedCode = useMemo(() => {
@@ -218,7 +204,7 @@ export function CodeViewer({
                  Quick Install with shadcn/ui
                </h4>
                {!publishedId && (
-                  <Button onClick={handlePublish} disabled={isPublishing} size="sm" className="h-7 text-xs">
+                  <Button onClick={onPublish} disabled={isPublishing} size="sm" className="h-7 text-xs">
                      {isPublishing ? "Publishing..." : "Generate Unique Command"}
                   </Button>
                )}

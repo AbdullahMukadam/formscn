@@ -32,6 +32,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { ShieldCheck } from "lucide-react";
 import { FormDataPreview } from "./form-data-preview";
+import { PhoneInputField } from "@/components/ui/phone-input";
 
 interface FormPreviewProps {
   formName: string;
@@ -327,9 +328,29 @@ export function FormPreview({
                       </TooltipProvider>
                     </div>
                   </motion.div>
+                  {field.uiType === "phone" && (
+                    <div className="space-y-2">
+                      <Controller
+                        control={form.control}
+                        name={field.name}
+                        render={({ field: f }) => (
+                          <PhoneInputField
+                            value={f.value as string}
+                            onChange={f.onChange}
+                            label={field.label}
+                            placeholder={field.placeholder || "+1 (555) 000-0000"}
+                            defaultCountry={(field.uiConfig?.country || "US")}
+                            required={field.required}
+                            error={form.formState.errors[field.name]?.message as string}
+                            description={field.description}
+                          />
+                        )}
+                      />
+                    </div>
+                  )}
 
-                  {/* Field Rendering */}
-                  {field.type === "input" && (
+                  {/* Regular Input */}
+                  {field.type === "input" && field.uiType !== "phone" && (
                     <div className="space-y-2">
                       <Label>{field.label}{field.required && " *"}</Label>
                       <Input
