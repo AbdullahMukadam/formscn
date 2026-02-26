@@ -1,0 +1,49 @@
+{
+  "name": "@formscn/form-registry",
+  "version": "0.1.0",
+  "description": "Runtime form registry for rendering forms from Zod schemas",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "lint": "eslint src/",
+    "check-types": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0",
+    "zod": "^4.0.0"
+  },
+  "dependencies": {
+    "@formscn/ui": "workspace:*",
+    "@hookform/resolvers": "^3.10.0",
+    "date-fns": "^4.0.0",
+    "libphonenumber-js": "^1.10.0",
+    "lucide-react": "^0.471.0",
+    "react-hook-form": "^7.71.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.2.0 || ^19.0.0",
+    "@types/react-dom": "^18.2.0 || ^19.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0"
+  },
+  "keywords": [
+    "react",
+    "forms",
+    "zod",
+    "shadcn",
+    "typescript"
+  ],
+  "license": "MIT"
+}

@@ -933,5 +933,86 @@
       "createdAt": 1770288391186,
       "expiresAt": 1770374791186
     }
+  ],
+  [
+    "-pfXhU5do4",
+    {
+      "id": "-pfXhU5do4",
+      "name": "My New Form",
+      "description": "A custom form created with FormSCN",
+      "code": "\"use client\";\n\nimport { useEffect } from \"react\";\nimport { useForm, Controller, type SubmitHandler } from \"react-hook-form\";\nimport { zodResolver } from \"@hookform/resolvers/zod\";\nimport * as z from \"zod\";\nimport { Button } from \"@/components/ui/button\";\nimport { Card, CardContent, CardDescription, CardHeader, CardTitle } from \"@/components/ui/card\";\nimport { Input } from \"@/components/ui/input\";\nimport { Label } from \"@/components/ui/label\";\nimport { toast } from \"sonner\";\nimport { cn } from \"@/lib/utils\";\nimport { Textarea } from \"@/components/ui/textarea\";\nimport {\n  Select,\n  SelectContent,\n  SelectItem,\n  SelectTrigger,\n  SelectValue,\n} from \"@/components/ui/select\";\nimport PhoneInput from \"react-phone-number-input\";\nimport { isValidPhoneNumber } from \"libphonenumber-js\";\nimport \"react-phone-number-input/style.css\";\nconst formSchema = z.object({\n  email: z.string().min(1, \"Email address is required\").email(\"Please enter a valid email address\"),\n  phone: z.string().min(1, \"Phone number is required\").refine((val) => isValidPhoneNumber(val), \"Please enter a valid phone number\"),\n  message: z.string().min(1, \"Message is required\"),\n  priority: z.enum([\"low\", \"medium\", \"high\"]),\n});\n\nexport type FormValues = z.infer<typeof formSchema>;\nexport { formSchema };\nexport interface MyNewFormFormProps {\n  defaultValues?: Partial<FormValues>;\n  onValuesChange?: (values: FormValues) => void;\n  onSubmit?: (values: FormValues) => Promise<void>;\n  className?: string;\n}\n\nexport function MyNewFormForm({ defaultValues, onValuesChange, onSubmit, className }: MyNewFormFormProps = {}) {\n  // Form state management\n  const form = useForm<FormValues>({\n    resolver: zodResolver(formSchema),\n    defaultValues: {\n            email: \"\",\n      phone: \"\",\n      message: \"\",\n      priority: \"\",\n      ...defaultValues,\n    },\n  });\n\n  const { isSubmitting } = form.formState;\n  const values = form.watch();\n\n  // Local state for password field enhancements\n  const [showPassword, setShowPassword] = useState(false);\n\n  useEffect(() => {\n    onValuesChange?.(values);\n  }, [values, onValuesChange]);\n\n  const handleSubmit: SubmitHandler<FormValues> = async (data) => {\n    if (onSubmit) {\n      await onSubmit(data);\n    } else {\n      try {   \n       //submit logic here\n        toast.success(\"Form submitted successfully!\");\n      } catch (error) {\n        toast.error(error instanceof Error ? error.message : \"Something went wrong\");\n      }\n    }\n  };\n\n  return (\n    <Card className={cn(\"w-full max-w-md mx-auto\", className)}>\n      <CardHeader>\n        <CardTitle>My New Form</CardTitle>\n        <CardDescription>A custom form created with FormSCN</CardDescription>\n      </CardHeader>\n      <CardContent>\n        <form onSubmit={form.handleSubmit(handleSubmit)} className=\"space-y-4\">\n          <div className=\"space-y-2\">\n            <Label htmlFor=\"email\">Email</Label>\n            <Input\n              id=\"email\"\n              type=\"email\"\n              placeholder=\"you@example.com\"\n              autoComplete=\"email\"\n              {...form.register(\"email\")}\n            />\n            {form.formState.errors.email && (\n            <p className=\"text-sm text-destructive\">{form.formState.errors.email.message}</p>\n          )}\n          </div>\n\n          <div className=\"space-y-2\">\n            <Label htmlFor=\"phone\">Phone</Label>\n            <Controller\n              control={form.control}\n              name=\"phone\"\n              render={({ field: { onChange, value } }) => (\n                <PhoneInput\n                  international\n                  countryCallingCodeEditable={false}\n                  defaultCountry=\"US\"\n                  value={value}\n                  onChange={onChange}\n                  placeholder=\"+1 (555) 000-0000\"\n                  className=\"flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50\"\n                />\n              )}\n            />\n            {form.formState.errors.phone && (\n            <p className=\"text-sm text-destructive\">{form.formState.errors.phone.message}</p>\n          )}\n            <p className=\"text-sm text-muted-foreground\">Min 1 chars</p>\n          </div>\n\n          <div className=\"space-y-2\">\n            <Label htmlFor=\"message\">Message</Label>\n            <Textarea\n              id=\"message\"\n              placeholder=\"Enter your message...\"\n              rows={4}\n              {...form.register(\"message\")}\n            />\n            {form.formState.errors.message && (\n            <p className=\"text-sm text-destructive\">{form.formState.errors.message.message}</p>\n          )}\n            <p className=\"text-sm text-muted-foreground\">Min 10 chars</p>\n          </div>\n\n          <div className=\"space-y-2\">\n            <Label htmlFor=\"priority\">Priority</Label>\n            <Controller\n              control={form.control}\n              name=\"priority\"\n              render={({ field }) => (\n                <Select onValueChange={field.onChange} defaultValue={field.value}>\n                  <SelectTrigger id=\"priority\">\n                    <SelectValue placeholder=\"Enter priority...\" />\n                  </SelectTrigger>\n                  <SelectContent>\n                    <SelectItem value=\"low\">Low</SelectItem>\n                    <SelectItem value=\"medium\">Medium</SelectItem>\n                    <SelectItem value=\"high\">High</SelectItem>\n                  </SelectContent>\n                </Select>\n              )}\n            />\n            {form.formState.errors.priority && (\n            <p className=\"text-sm text-destructive\">{form.formState.errors.priority.message}</p>\n          )}\n          </div>\n\n          <Button type=\"submit\" className=\"w-full\" disabled={isSubmitting}>\n            {isSubmitting ? \"Submitting...\" : \"Submit\"}\n          </Button>\n        </form>\n      </CardContent>\n    </Card>\n  );\n}",
+      "config": {
+        "fields": [
+          {
+            "type": "input",
+            "name": "email",
+            "label": "Email",
+            "required": true,
+            "inputType": "email",
+            "uiType": "email",
+            "uiConfig": {},
+            "placeholder": "you@example.com"
+          },
+          {
+            "type": "input",
+            "name": "phone",
+            "label": "Phone",
+            "required": true,
+            "inputType": "tel",
+            "uiType": "phone",
+            "uiConfig": {
+              "country": "US"
+            },
+            "placeholder": "+1 (555) 000-0000",
+            "description": "Min 1 chars"
+          },
+          {
+            "type": "textarea",
+            "name": "message",
+            "label": "Message",
+            "required": true,
+            "uiType": "textarea",
+            "uiConfig": {
+              "rows": 4
+            },
+            "placeholder": "Enter your message...",
+            "description": "Min 10 chars"
+          },
+          {
+            "type": "select",
+            "name": "priority",
+            "label": "Priority",
+            "required": true,
+            "uiType": "select",
+            "uiConfig": {},
+            "placeholder": "Enter priority...",
+            "options": [
+              {
+                "label": "Low",
+                "value": "low"
+              },
+              {
+                "label": "Medium",
+                "value": "medium"
+              },
+              {
+                "label": "High",
+                "value": "high"
+              }
+            ]
+          }
+        ],
+        "steps": [],
+        "oauthProviders": [],
+        "databaseAdapter": "drizzle",
+        "framework": "next",
+        "plugins": {}
+      },
+      "dependencies": [
+        "http://localhost:3001/r/base-form.json"
+      ],
+      "createdAt": 1770903656383,
+      "expiresAt": 1770990056383
+    }
   ]
 ]
