@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@formscn/ui";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "formscn-ui";
 import type { CardFeildProps } from "../../types";
 
 export function CardFeild({

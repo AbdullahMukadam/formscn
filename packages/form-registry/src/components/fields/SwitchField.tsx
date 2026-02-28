@@ -1,4 +1,4 @@
-import { Switch, Label } from "@formscn/ui";
+import { Switch, Label } from "formscn-ui";
 import type { FieldComponentProps } from "../../types";
 
 export function SwitchField({

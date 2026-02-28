@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Form } from "@formscn/form-registry";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
+import {Form} from "form-registry"
 import {
   Card,
   CardContent,
@@ -263,13 +263,13 @@ export default function FormRegistryDemo() {
             </p>
             <div className="flex items-center gap-2 bg-muted rounded-lg p-2.5 border">
               <code className="text-xs flex-1 text-muted-foreground font-mono">
-                npm i @formscn/form-registry
+                npm i form-registry
               </code>
               <Button
                 variant="ghost"
                 size="icon"
                 className="h-7 w-7 shrink-0"
-                onClick={() => copyToClipboard("npm install @formscn/form-registry")}
+                onClick={() => copyToClipboard("npm install form-registry")}
               >
                 {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
               </Button>

@@ -1,4 +1,4 @@
-import { Input, Label } from "@formscn/ui";
+import { Input, Label } from "formscn-ui";
 import type { FieldComponentProps } from "../../types";
 
 export function InputField({

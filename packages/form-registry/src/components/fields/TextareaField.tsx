@@ -1,4 +1,4 @@
-import { Label, Textarea } from "@formscn/ui";
+import { Label, Textarea } from "formscn-ui";
 import type { FieldComponentProps } from "../../types";
 
 export function TextareaField({

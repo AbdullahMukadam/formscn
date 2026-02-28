@@ -5,7 +5,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@formscn/ui";
+} from "formscn-ui";
 import type { FieldComponentProps } from "../../types";
 
 export function SelectField({
