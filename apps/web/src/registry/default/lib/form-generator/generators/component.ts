@@ -163,7 +163,7 @@ export function ${componentName}({ defaultValues, onValuesChange, onSubmit, clas
   const values = form.watch();
 
   // Local state for password field enhancements
-  const [showPassword, setShowPassword] = useState(false);
+ ${`const [showPassword, setShowPassword] = useState(false);`}
 
   useEffect(() => {
     onValuesChange?.(values);

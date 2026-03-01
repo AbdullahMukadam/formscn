@@ -33,6 +33,7 @@ export function MobileNav() {
     { to: "/", label: "formscn" },
     { to: "/templates", label: "templates" },
     { to: "/docs", label: "docs" },
+    { to: "/demo/form-registry", label: "demo" },
     { to: "/editor", label: "editor" },
   ] as const;
 
