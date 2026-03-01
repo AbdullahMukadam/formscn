@@ -3,25 +3,20 @@
 import { useState } from "react";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import {Form} from "form-registry"
+import { Form } from "form-registry";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Eye,
   Code,
-  ChevronRight,
-  Play,
-  Package,
   FileText,
   User,
   Calendar,
@@ -36,6 +31,7 @@ import {
   AlertCircle,
   Layers,
   Sparkles,
+  Package,
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -185,20 +181,22 @@ export default function FormRegistryDemo() {
 
   return (
     <div className="flex h-[calc(100vh-3.5rem)] overflow-hidden bg-background">
-      {/* Left Sidebar */}
-      <aside className="w-80 border-r bg-muted/30 flex flex-col shrink-0">
+      {/* CLEAN LEFT SIDEBAR */}
+      <aside className="w-64 border-r bg-background flex flex-col shrink-0">
         {/* Header */}
-        <div className="h-16 border-b flex items-center px-4 bg-background shrink-0 gap-3">
-          <div>
-            <p className="text-xs text-muted-foreground">Demo Playground</p>
-          </div>
+        <div className="h-16 flex items-center px-6 border-b shrink-0">
+          <h2 className="font-semibold text-sm flex items-center gap-2">
+            <Package className="w-4 h-4" />
+            Form Registry
+          </h2>
         </div>
 
-        {/* Examples */}
-        <div className="flex-1 overflow-y-auto">
-          <div className="p-4">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-              Example Forms
+        {/* Navigation */}
+        <div className="flex-1 overflow-y-auto py-6 px-3 space-y-8">
+          {/* Examples Menu */}
+          <div>
+            <p className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+              Examples
             </p>
             <div className="space-y-1">
               {examples.map((example) => {
@@ -210,95 +208,62 @@ export default function FormRegistryDemo() {
                     key={example.id}
                     onClick={() => setSelectedExample(example)}
                     className={cn(
-                      "w-full flex items-start gap-3 px-3 py-3 rounded-lg text-left transition-all group",
+                      "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
                       isSelected
-                        ? "bg-primary/5 border border-primary/20"
-                        : "hover:bg-muted border border-transparent"
+                        ? "bg-muted text-foreground font-medium"
+                        : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
                     )}
                   >
-
-                    <div className="flex-1 min-w-0">
-                      <p className={cn(
-                        "font-medium text-sm truncate",
-                        isSelected && "text-primary"
-                      )}>
-                        {example.name}
-                      </p>
-                      <p className="text-xs text-muted-foreground truncate mt-0.5">
-                        {example.description}
-                      </p>
-                    </div>
-                    {isSelected && (
-                      <ChevronRight className="w-4 h-4 text-primary shrink-0 mt-1.5" />
-                    )}
+                    <Icon className="w-4 h-4 shrink-0" />
+                    <span className="truncate">{example.name}</span>
                   </button>
                 );
               })}
             </div>
           </div>
 
-          <Separator className="mx-4" />
-
-          {/* Features */}
-          <div className="p-4">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-              Features Demo'd
-            </p>
-            <div className="space-y-1.5">
-              {selectedExample.features.map((feature, i) => (
-                <div key={i} className="flex items-center gap-2 text-xs">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-                  <span className="text-muted-foreground">{feature}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <Separator className="mx-4" />
-
-          {/* Install */}
-          <div className="p-4">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-              Quick Install
-            </p>
-            <div className="flex items-center gap-2 bg-muted rounded-lg p-2.5 border">
-              <code className="text-xs flex-1 text-muted-foreground font-mono">
-                npm i form-registry
-              </code>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-7 w-7 shrink-0"
-                onClick={() => copyToClipboard("npm install form-registry")}
-              >
-                {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
-              </Button>
-            </div>
-          </div>
-
-          <Separator className="mx-4" />
-
-          {/* Links */}
-          <div className="p-4">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+          {/* Resources Menu */}
+          <div>
+            <p className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
               Resources
             </p>
             <div className="space-y-1">
               <Link
                 href="/docs"
-                className="flex items-center gap-2 px-2 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-muted"
+                className="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors"
               >
-                <ExternalLink className="w-3.5 h-3.5" />
+                <ExternalLink className="w-4 h-4 shrink-0" />
                 Documentation
               </Link>
               <Link
                 href="/editor"
-                className="flex items-center gap-2 px-2 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-muted"
+                className="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors"
               >
-                <Layers className="w-3.5 h-3.5" />
+                <Layers className="w-4 h-4 shrink-0" />
                 Visual Editor
               </Link>
             </div>
+          </div>
+        </div>
+
+        {/* Pinned Bottom Action / Install */}
+        <div className="p-4 border-t bg-muted/20">
+          <div className="flex items-center justify-between bg-background rounded-md p-2 border shadow-sm">
+            <code className="text-xs text-muted-foreground font-mono pl-1 truncate">
+              npm i form-registry
+            </code>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6 shrink-0 hover:bg-muted"
+              onClick={() => copyToClipboard("npm install form-registry")}
+            >
+              {copied ? (
+                <Check className="w-3.5 h-3.5 text-emerald-500" />
+              ) : (
+                <Copy className="w-3.5 h-3.5 text-muted-foreground" />
+              )}
+            </Button>
           </div>
         </div>
       </aside>
@@ -336,40 +301,46 @@ export default function FormRegistryDemo() {
         <div className="flex-1 overflow-auto bg-muted/20">
           <AnimatePresence mode="wait">
             {/* Preview */}
+            {/* Preview */}
             {activeTab === "preview" && (
               <motion.div
                 key="preview"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="p-8"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+                className="p-6 md:p-8"
               >
-                <div className="max-w-xl mx-auto">
-                  <Form
-                    key={selectedExample.id}
-                    schema={selectedExample.schema}
-                    onSubmit={handleSubmit}
-                    defaultValues={selectedExample.defaultValues}
-                    className="space-y-4"
-                    title={selectedExample.name}
-                    description="Fill out this form to test validation. Errors appear automatically"
-                  >
-                    <Button type="submit" className="w-full h-10">
-                      Submit Form
-                    </Button>
-                  </Form>
+                <div className="max-w-md mx-auto mt-4">
+                  {/* Form Container */}
+                  <div className="">
+                    <Form
+                      key={selectedExample.id}
+                      schema={selectedExample.schema}
+                      onSubmit={handleSubmit}
+                      defaultValues={selectedExample.defaultValues}
+                      className="space-y-5"
+                      title={selectedExample.name}
+                      description="Fill out the fields below to test validation."
+                    >
+                      <div className="pt-2">
+                        <Button type="submit" className="w-full">
+                          Submit Form
+                        </Button>
+                      </div>
+                    </Form>
+                  </div>
 
-                  {/* Field Types */}
-                  <div className="mt-6 grid grid-cols-3 gap-3">
+                  {/* Minimalist Feature Indicators */}
+                  <div className="mt-8 flex items-center justify-center gap-6 text-muted-foreground">
                     {[
-                      { icon: AlertCircle, label: "Auto Validation", desc: "On blur & submit" },
-                      { icon: Zap, label: "Instant Feedback", desc: "Real-time errors" },
-                      { icon: CheckCircle2, label: "Type Safe", desc: "Full TypeScript" },
+                      { icon: AlertCircle, label: "Auto Validation" },
+                      { icon: Zap, label: "Instant Feedback" },
+                      { icon: CheckCircle2, label: "Type Safe" },
                     ].map((item, i) => (
-                      <div key={i} className="p-3 rounded-lg bg-muted/50 border text-center">
-                        <item.icon className="w-4 h-4 mx-auto text-muted-foreground mb-1.5" />
-                        <p className="text-xs font-medium">{item.label}</p>
-                        <p className="text-[11px] text-muted-foreground">{item.desc}</p>
+                      <div key={i} className="flex items-center gap-1.5 text-xs font-medium transition-colors hover:text-foreground cursor-default">
+                        <item.icon className="w-3.5 h-3.5" />
+                        <span>{item.label}</span>
                       </div>
                     ))}
                   </div>
@@ -421,7 +392,7 @@ export default function FormRegistryDemo() {
                       <span className="text-sm font-medium">Component Usage</span>
                     </div>
                     <pre className="p-4 overflow-x-auto text-sm leading-relaxed">
-                      <code className="text-muted-foreground">{`import { Form } from "@formscn/form-registry";
+                      <code className="text-muted-foreground">{`import { Form } from "form-registry";
 import { Button } from "@/components/ui/button";
 
 export default function Page() {

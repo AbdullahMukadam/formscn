@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useForm, Controller, type DefaultValues } from "react-hook-form";
+import { useForm, Controller, type DefaultValues, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { zodSchemaToFields } from "../resolvers/zod";
@@ -25,25 +25,25 @@ const fieldRegistry: Record<FormField["type"], FieldComponent> = {
   file: InputField,
 };
 
-interface FormProps<T extends z.ZodTypeAny> {
-  schema: T;
-  onSubmit: (values: any) => void | Promise<void>;
-  defaultValues?: DefaultValues<any>;
+interface FormProps<TSchema extends z.ZodType<any, any, any>> {
+  schema: TSchema;
+  onSubmit: (values: z.infer<TSchema>) => void | Promise<void>;
+  defaultValues?: DefaultValues<z.infer<TSchema>>;
   className?: string;
   children?: React.ReactNode;
   title: string;
   description?: string;
 }
 
-export function Form<T extends z.ZodTypeAny>({
+export function Form<TSchema extends z.ZodType<any, any, any>>({
   schema,
   onSubmit,
   defaultValues,
   className,
   children,
   title,
-  description
-}: FormProps<T>) {
+  description,
+}: FormProps<TSchema>) {
   const fields = useMemo(() => zodSchemaToFields(schema as any), [schema]);
 
   const {
@@ -51,8 +51,8 @@ export function Form<T extends z.ZodTypeAny>({
     handleSubmit,
     formState: { errors },
     setError,
-  } = useForm({
-    resolver: zodResolver(schema),
+  } = useForm<z.output<TSchema>, any, z.output<TSchema>>({
+    resolver: zodResolver(schema) as Resolver<z.output<TSchema>>,
     defaultValues,
     mode: "onBlur",
     reValidateMode: "onChange",
@@ -111,9 +111,8 @@ export function Form<T extends z.ZodTypeAny>({
             );
           })}
         </div>
+        {children}
       </CardFeild>
-
-      {children}
     </form>
   );
 }
