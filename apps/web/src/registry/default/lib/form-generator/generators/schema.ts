@@ -44,10 +44,10 @@ export function generateZodSchema(fields: FormField[]): string {
         if (field.required) {
           validation += `.refine((val) => val === true, { message: "You must agree to ${field.label.toLowerCase()}" })`;
         } else {
-          validation += `.default(false)`;
+          validation += `.optional()`;
         }
         break;
-      
+
       case "select":
       case "radio":
         const enumValues = (field.options || []).map(opt => `"${opt.value}"`).join(', ');
@@ -71,7 +71,7 @@ export function generateZodSchema(fields: FormField[]): string {
         } else {
           validation += `.optional()`;
         }
-        
+
         // Add detailed validation (Max 5MB, Images only)
         validation += `
     .refine((files) => {
@@ -86,7 +86,7 @@ export function generateZodSchema(fields: FormField[]): string {
       case "textarea":
       default:
         validation = `z.string()`;
-        
+
         // Email validation with better error messages
         if (field.type === "input" && field.inputType === "email") {
           if (field.required) {

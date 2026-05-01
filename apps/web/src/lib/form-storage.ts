@@ -114,7 +114,9 @@ export async function saveForm(form: Omit<PublishedForm, "createdAt" | "expiresA
       const forms = new Map(data);
       forms.set(form.id, fullForm);
       fs.writeFileSync(STORAGE_FILE, JSON.stringify(Array.from(forms.entries()), null, 2));
-    } catch (e) {}
+    } catch (e) {
+      console.error("unable to store the file")
+    }
   }
 
   memoryCache.set(form.id, fullForm);
@@ -196,7 +198,7 @@ export async function cleanupExpiredForms() {
   try {
     const now = new Date();
     const expired = await db.select().from(publishedForms).where(lt(publishedForms.expiresAt, now));
-    
+
     for (const form of expired) {
       if (form.blobUrl && process.env.BLOB_READ_WRITE_TOKEN) {
         try {

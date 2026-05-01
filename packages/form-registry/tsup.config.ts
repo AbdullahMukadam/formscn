@@ -6,7 +6,7 @@ export default defineConfig({
   dts: true,
   sourcemap: true,
   clean: true,
-  external: [
+external: [
     "react",
     "react-dom",
     "zod",
@@ -14,7 +14,6 @@ export default defineConfig({
     "@hookform/resolvers",
     "lucide-react",
     "date-fns",
-    "libphonenumber-js",
     "formscn-ui"
   ]
 });
