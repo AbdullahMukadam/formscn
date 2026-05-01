@@ -244,18 +244,12 @@ importers:
       formscn-ui:
         specifier: ^0.1.1
         version: 0.1.1(@types/react@19.2.8)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      libphonenumber-js:
-        specifier: ^1.10.0
-        version: 1.12.36
       lucide-react:
         specifier: ^0.471.0
         version: 0.471.2(react@19.2.3)
       react-hook-form:
         specifier: ^7
         version: 7.71.1(react@19.2.3)
-      react-phone-number-input:
-        specifier: ^3.4.14
-        version: 3.4.14(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       zod:
         specifier: ^4
         version: 4.3.5
