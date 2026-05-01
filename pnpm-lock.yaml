@@ -106,8 +106,8 @@ importers:
         specifier: ^0.45.1
         version: 0.45.1(@neondatabase/serverless@1.0.2)(@types/pg@8.16.0)(@upstash/redis@1.36.1)(kysely@0.28.10)
       form-registry:
-        specifier: 0.1.7
-        version: 0.1.7(@types/react@19.2.8)(react-dom@19.2.3(react@19.2.3))(react-hook-form@7.71.1(react@19.2.3))(react@19.2.3)(zod@4.3.5)
+        specifier: 0.1.8
+        version: 0.1.8(@types/react@19.2.8)(react-dom@19.2.3(react@19.2.3))(react-hook-form@7.71.1(react@19.2.3))(react@19.2.3)(zod@4.3.5)
       formscn-ui:
         specifier: workspace:*
         version: link:../../packages/ui
@@ -2803,8 +2803,8 @@ packages:
   fix-dts-default-cjs-exports@1.0.1:
     resolution: {integrity: sha512-pVIECanWFC61Hzl2+oOCtoJ3F17kglZC/6N94eRWycFgBH35hHx0Li604ZIzhseh97mf2p0cv7vVrOZGoqhlEg==}
 
-  form-registry@0.1.7:
-    resolution: {integrity: sha512-WXOSlHJVvYSSKpu2/Q+Bjdn59XRsTox4EBCmAMjgyIibgdGqQB17ptwlGRc0WgtgW9ti4tAwHqJzqkpUIIPggw==}
+  form-registry@0.1.8:
+    resolution: {integrity: sha512-OVh5w6L7uAZTG3LBfDGyC7a5CUUWqds+n+nYvTn1MNqR70uBA1vqxdPt9aPWFoV2Qm2keDhXoTkZy6Z7V5lO4A==}
     peerDependencies:
       react: ^18 || ^19
       react-dom: ^18 || ^19
@@ -6817,12 +6817,11 @@ snapshots:
       mlly: 1.8.0
       rollup: 4.57.1
 
-  form-registry@0.1.7(@types/react@19.2.8)(react-dom@19.2.3(react@19.2.3))(react-hook-form@7.71.1(react@19.2.3))(react@19.2.3)(zod@4.3.5):
+  form-registry@0.1.8(@types/react@19.2.8)(react-dom@19.2.3(react@19.2.3))(react-hook-form@7.71.1(react@19.2.3))(react@19.2.3)(zod@4.3.5):
     dependencies:
       '@hookform/resolvers': 3.10.0(react-hook-form@7.71.1(react@19.2.3))
       date-fns: 4.1.0
       formscn-ui: 0.1.1(@types/react@19.2.8)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      libphonenumber-js: 1.12.36
       lucide-react: 0.471.2(react@19.2.3)
       react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)

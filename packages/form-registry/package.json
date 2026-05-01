@@ -1,6 +1,6 @@
 {
   "name": "form-registry",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Runtime form registry for rendering forms from Zod schemas",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
