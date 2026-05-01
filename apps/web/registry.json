@@ -124,6 +124,24 @@
       "dependencies": ["@radix-ui/react-radio-group"]
     },
     {
+      "name": "phone-input",
+      "type": "registry:ui",
+      "description": "Phone input component with country selection",
+      "files": [
+        {
+          "path": "src/components/ui/phone-input.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "dependencies": [
+        "react-phone-number-input",
+        "libphonenumber-js"
+      ],
+      "registryDependencies": [
+        "https://formscn.space/r/label.json"
+      ]
+    },
+    {
       "name": "auth-client",
       "type": "registry:lib",
       "description": "Better Auth React client utilities",

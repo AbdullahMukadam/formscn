@@ -68,9 +68,7 @@ export function Form<TSchema extends z.ZodType<any, any, any>>({
     } catch (err) {
       console.error("Form submission error:", err);
       if (err instanceof z.ZodError) {
-        // Handle ZodError manually
-        const zodError = err as z.ZodError;
-        zodError.issues.forEach((issue: z.ZodIssue) => {
+        err.issues.forEach((issue) => {
           const fieldName = issue.path[0] as string;
           setError(fieldName as any, {
             type: "manual",

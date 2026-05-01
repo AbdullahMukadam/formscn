@@ -31,7 +31,7 @@ export async function GET(
   const effectiveFramework = (queryFramework as any) || form.config?.framework || "next";
 
 
-  // Determine dependencies based on the form's complexity
+// Determine dependencies based on the form's complexity
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3001";
   const registryDependencies = [`${baseUrl}/r/base-form.json`];
   const dependencies = [
@@ -40,6 +40,22 @@ export async function GET(
     "zod", 
     "sonner"
   ];
+
+  // Detect field types and add appropriate dependencies
+  const fields = form.config?.fields || [];
+  
+  // Phone input - add phone-input registry and npm packages
+  const hasPhone = fields.some((f: any) => f.uiType === "phone" || f.inputType === "tel");
+  if (hasPhone) {
+    registryDependencies.push(`${baseUrl}/r/phone-input.json`);
+    dependencies.push("react-phone-number-input", "libphonenumber-js");
+  }
+
+  // Date field - add date-fns for date formatting
+  const hasDate = fields.some((f: any) => f.type === "date");
+  if (hasDate) {
+    dependencies.push("date-fns");
+  }
 
   // Add framework-specific router dependencies for auth forms
   const isAuthForm = form.config?.fields?.some(
