@@ -8,7 +8,7 @@ import { Github } from "lucide-react";
 
 export default function Header() {
   const pathname = usePathname();
-  
+
   // Don't render header in editor
   if (pathname?.startsWith('/editor')) return null;
 
@@ -16,7 +16,6 @@ export default function Header() {
     { to: "/", label: "FormsCN" },
     { to: "/templates", label: "Templates" },
     { to: "/docs", label: "Documentation" },
-    { to: "/demo/form-registry", label: "Form Registry" },
     { to: "/editor", label: "Visual Editor" },
   ] as const;
 
@@ -50,8 +49,8 @@ export default function Header() {
 
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-4 border-l border-white/10 pl-4">
-            <Link 
-              href="https://github.com/AbdullahMukadam/formscn" 
+            <Link
+              href="https://github.com/AbdullahMukadam/formscn"
               className="text-white/40 hover:text-white transition-colors"
               target="_blank"
             >
