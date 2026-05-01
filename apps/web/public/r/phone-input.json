@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "phone-input",
+  "description": "Phone input component with country selection",
+  "dependencies": [
+    "react-phone-number-input",
+    "libphonenumber-js"
+  ],
+  "registryDependencies": [
+    "https://formscn.space/r/label.json"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/phone-input.tsx",
+      "content": "\"use client\";\r\n\r\nimport * as React from \"react\";\r\nimport PhoneInput, { type Country } from \"react-phone-number-input\";\r\nimport { isValidPhoneNumber } from \"libphonenumber-js\";\r\nimport { cn } from \"@/lib/utils\";\r\nimport { Label } from \"./label\";\r\n\r\nimport \"react-phone-number-input/style.css\";\r\n\r\nexport interface PhoneInputFieldProps {\r\n  value?: string;\r\n  onChange?: (value: string | undefined) => void;\r\n  label?: string;\r\n  placeholder?: string;\r\n  error?: string;\r\n  description?: string;\r\n  disabled?: boolean;\r\n  required?: boolean;\r\n  defaultCountry?: Country;\r\n  className?: string;\r\n}\r\n\r\nexport function PhoneInputField({\r\n  value,\r\n  onChange,\r\n  label,\r\n  placeholder = \"Enter phone number\",\r\n  error,\r\n  description,\r\n  disabled = false,\r\n  required = false,\r\n  defaultCountry = \"US\",\r\n  className,\r\n}: PhoneInputFieldProps) {\r\n  const [isFocused, setIsFocused] = React.useState(false);\r\n\r\n  return (\r\n    <div className={cn(\"space-y-2\", className)}>\r\n      {label && (\r\n        <Label className={cn(error && \"text-destructive\")}>\r\n          {label}\r\n          {required && <span className=\"text-destructive ml-1\">*</span>}\r\n        </Label>\r\n      )}\r\n      \r\n      <div className=\"relative\">\r\n        <PhoneInput\r\n          international\r\n          countryCallingCodeEditable={false}\r\n          defaultCountry={defaultCountry}\r\n          value={value}\r\n          onChange={(value) => onChange?.(value as string | undefined)}\r\n          placeholder={placeholder}\r\n          disabled={disabled}\r\n          onFocus={() => setIsFocused(true)}\r\n          onBlur={() => setIsFocused(false)}\r\n          className={cn(\r\n            \"flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-sm transition-colors\",\r\n            \"border-input focus-visible:border-ring focus-visible:ring-ring/50\",\r\n            \"file:border-0 file:bg-transparent file:text-sm file:font-medium\",\r\n            \"placeholder:text-muted-foreground\",\r\n            \"focus-visible:outline-none focus-visible:ring-1\",\r\n            \"disabled:cursor-not-allowed disabled:opacity-50\",\r\n            \"aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40\",\r\n            \"aria-invalid:border-destructive\",\r\n            error && \"border-destructive\",\r\n            isFocused && !error && \"ring-1 ring-ring\",\r\n            \"[&_.PhoneInputCountry]:bg-transparent\",\r\n            \"[&_.PhoneInputCountrySelect]:h-9\",\r\n            \"[&_.PhoneInputCountrySelect]:px-2\",\r\n            \"[&_.PhoneInputCountrySelect]:border-r\",\r\n            \"[&_.PhoneInputCountrySelect]:border-input\",\r\n            \"[&_.PhoneInputInput]:flex-1\",\r\n            \"[&_.PhoneInputInput]:bg-transparent\",\r\n            \"[&_.PhoneInputInput]:outline-none\",\r\n            \"[&_.PhoneInputInput]:placeholder:text-muted-foreground\",\r\n          )}\r\n        />\r\n      </div>\r\n\r\n      {description && !error && (\r\n        <p className=\"text-xs text-muted-foreground\">{description}</p>\r\n      )}\r\n      \r\n      {error && (\r\n        <p className=\"text-xs text-destructive\">{error}</p>\r\n      )}\r\n    </div>\r\n  );\r\n}\r\n\r\n// Import z for the schema helper\r\nimport * as z from \"zod\";\r\n\r\n/**\r\n * Zod validation helper for phone numbers\r\n */\r\nexport const phoneSchema = (message = \"Invalid phone number\") =>\r\n  z.string().refine(\r\n    (value) => !value || isValidPhoneNumber(value),\r\n    message\r\n  );",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}
