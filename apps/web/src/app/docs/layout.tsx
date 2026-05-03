@@ -1,4 +1,3 @@
-
 import { DocsSidebar } from "@/components/docs-sidebar";
 import { DocsPager } from "@/components/docs-pager";
 import { DocsBreadcrumb } from "@/components/docs-breadcrumb";
@@ -21,26 +20,32 @@ export default function DocsLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="border-b bg-background">
-      <div className="container flex-1 items-start md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10">
-        <DocsSidebar />
-        <main className="relative py-6 lg:gap-10 lg:py-8 xl:grid xl:grid-cols-[1fr_300px]">
-          <div className="mx-auto w-full min-w-0 px-4 md:px-0">
-            <DocsBreadcrumb />
-            <div className="prose prose-slate dark:prose-invert max-w-none prose-sm sm:prose-base lg:prose-lg prose-pre:max-w-[calc(100vw-2rem)] md:prose-pre:max-w-none overflow-x-hidden">
-              {children}
-            </div>
-            <DocsPager />
+    <div className="container flex flex-1 flex-col items-start md:flex-row md:gap-6 lg:gap-10">
+      <aside className="fixed top-14 z-30 -ml-2 hidden h-[calc(100vh-3.5rem)] shrink-0 border-r border-border md:sticky md:block md:w-[220px] lg:w-[250px]">
+        <ScrollArea className="h-full py-6 pr-6 lg:py-8">
+          <DocsSidebar />
+        </ScrollArea>
+      </aside>
+
+      <main className="relative flex w-full flex-1 flex-col xl:flex-row xl:gap-10">
+        <div className="mx-auto flex w-[600px] min-w-0 flex-1 flex-col px-4 py-6 sm:px-6 lg:py-8">
+          <DocsBreadcrumb />
+
+          <div className="prose prose-slate dark:prose-invert max-w-none prose-sm sm:prose-base lg:prose-lg py-8 prose-pre:max-w-[calc(100vw-2rem)] md:prose-pre:max-w-none break-words">
+            {children}
           </div>
-          <div className="hidden text-sm xl:block">
-            <div className="sticky top-16 -mt-10 h-[calc(100vh-3.5rem)] overflow-hidden pt-6">
-              <ScrollArea className="h-full pb-10">
-                <DocsTOC />
-              </ScrollArea>
-            </div>
+
+          <DocsPager />
+        </div>
+        <div className="hidden shrink-0 text-sm xl:block xl:w-[250px]">
+          <div className="sticky top-16 -mt-10 h-[calc(100vh-3.5rem)] pt-4">
+            <ScrollArea className="h-full pb-10">
+              <DocsTOC />
+            </ScrollArea>
           </div>
-        </main>
-      </div>
+        </div>
+      </main>
+
     </div>
   );
 }
