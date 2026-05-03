@@ -11,7 +11,7 @@ export function DocsSidebar() {
 
   return (
     <aside className="fixed top-14 z-30 hidden h-[calc(100vh-3.5rem)] w-full shrink-0 border-r md:sticky md:block md:w-64">
-      <ScrollArea className="h-full py-6 pr-6 lg:py-8">
+      <ScrollArea className="h-full py-6 pr-6 lg:py-2 px-6">
         <nav className="w-full">
           {docsConfig.map((section, i) => (
             <div key={i} className="pb-8">

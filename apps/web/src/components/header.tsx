@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { MobileNav } from "./mobile-nav";
 import { Github } from "lucide-react";
+import { SearchTrigger } from "./search-trigger";
+
 
 export default function Header() {
   const pathname = usePathname();
@@ -20,8 +22,8 @@ export default function Header() {
   ] as const;
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/5 bg-black/60 backdrop-blur-xl supports-[backdrop-filter]:bg-black/40 px-2">
-      <div className="container flex h-14 items-center justify-between mx-auto max-w-7xl">
+    <header className="fixed top-0 z-50 w-full border-b border-white/5 bg-black/60 backdrop-blur-xl supports-[backdrop-filter]:bg-black/40 px-2">
+      <div className="container flex h-14 items-center justify-between mx-auto max-w-8xl">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center space-x-2">
             <span className="font-bold tracking-tighter text-white text-lg">FormsCN</span>
@@ -48,6 +50,7 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-4">
+          <SearchTrigger />
           <div className="flex items-center gap-4 border-l border-white/10 pl-4">
             <Link
               href="https://github.com/AbdullahMukadam/formscn"
