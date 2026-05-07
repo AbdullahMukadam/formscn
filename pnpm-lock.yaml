@@ -257,11 +257,11 @@ importers:
         specifier: ^0.471.0
         version: 0.471.2(react@19.2.3)
       react-hook-form:
-        specifier: ^7
+        specifier: ^7.0.0
         version: 7.71.1(react@19.2.3)
       zod:
-        specifier: ^4
-        version: 4.3.5
+        specifier: ^3.23.0
+        version: 3.25.76
     devDependencies:
       '@storybook/react':
         specifier: ^10.2.13
@@ -318,13 +318,13 @@ importers:
         specifier: ^0.471.0
         version: 0.471.2(react@19.2.3)
       react:
-        specifier: ^18.0.0 || ^19.0.0
+        specifier: ^18.2.0 || ^19.0.0
         version: 19.2.3
       react-day-picker:
         specifier: ^9.0.0
         version: 9.13.0(react@19.2.3)
       react-dom:
-        specifier: ^18.0.0 || ^19.0.0
+        specifier: ^18.2.0 || ^19.0.0
         version: 19.2.3(react@19.2.3)
       tailwind-merge:
         specifier: ^2.6.0
