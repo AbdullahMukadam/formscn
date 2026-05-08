@@ -175,7 +175,13 @@ export default function FormRegistryDemo() {
                         : "text-muted-foreground hover:bg-zinc-100/80 dark:hover:bg-zinc-800/50 hover:text-foreground"
                     )}
                   >
-                    <Icon className={cn("w-4 h-4 shrink-0", isSelected ? example.accent : "opacity-70")} strokeWidth={1.5} />
+                    <Icon
+                      className={cn(
+                        "w-4 h-4 shrink-0",
+                        isSelected ? example.accent : "opacity-70"
+                      )}
+                      strokeWidth={1.5}
+                    />
                     <span className="truncate">{example.name}</span>
                   </button>
                 );
@@ -192,7 +198,10 @@ export default function FormRegistryDemo() {
                 href="/docs"
                 className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-muted-foreground hover:bg-zinc-100/80 dark:hover:bg-zinc-800/50 hover:text-foreground transition-all duration-200"
               >
-                <Library className="w-4 h-4 shrink-0 opacity-70" strokeWidth={1.5} />
+                <Library
+                  className="w-4 h-4 shrink-0 opacity-70"
+                  strokeWidth={1.5}
+                />
                 Documentation
                 <ExternalLink className="w-3 h-3 ml-auto opacity-40" />
               </Link>
@@ -200,7 +209,10 @@ export default function FormRegistryDemo() {
                 href="/editor"
                 className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-muted-foreground hover:bg-zinc-100/80 dark:hover:bg-zinc-800/50 hover:text-foreground transition-all duration-200"
               >
-                <Layers2 className="w-4 h-4 shrink-0 opacity-70" strokeWidth={1.5} />
+                <Layers2
+                  className="w-4 h-4 shrink-0 opacity-70"
+                  strokeWidth={1.5}
+                />
                 Visual Editor
               </Link>
             </nav>
@@ -216,12 +228,20 @@ export default function FormRegistryDemo() {
               variant="ghost"
               size="icon"
               className="h-6 w-6 shrink-0 bg-transparent hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-              onClick={() => copyToClipboard("npm install form-registry", "install")}
+              onClick={() =>
+                copyToClipboard("npm install form-registry", "install")
+              }
             >
               {copiedStates["install"] ? (
-                <Check className="w-3.5 h-3.5 text-emerald-500" strokeWidth={2} />
+                <Check
+                  className="w-3.5 h-3.5 text-emerald-500"
+                  strokeWidth={2}
+                />
               ) : (
-                <Copy className="w-3.5 h-3.5 text-muted-foreground" strokeWidth={1.5} />
+                <Copy
+                  className="w-3.5 h-3.5 text-muted-foreground"
+                  strokeWidth={1.5}
+                />
               )}
             </Button>
           </div>
@@ -230,12 +250,22 @@ export default function FormRegistryDemo() {
 
       <main className="flex-1 flex flex-col min-w-0 relative">
         <header className="h-14 border-b border-border/40 flex items-center justify-between px-4 sm:px-6 shrink-0 bg-background/80 backdrop-blur-md z-10 absolute top-0 left-0 w-full">
-          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)} className="w-[200px]">
+          <Tabs
+            value={activeTab}
+            onValueChange={(v) => setActiveTab(v as any)}
+            className="w-[200px]"
+          >
             <TabsList className="grid w-full grid-cols-2 h-8 bg-zinc-100/80 dark:bg-zinc-900/80 p-0.5 rounded-md">
-              <TabsTrigger value="preview" className="text-[12px] rounded-sm transition-all data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-800 data-[state=active]:shadow-sm">
+              <TabsTrigger
+                value="preview"
+                className="text-[12px] rounded-sm transition-all data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-800 data-[state=active]:shadow-sm"
+              >
                 Preview
               </TabsTrigger>
-              <TabsTrigger value="code" className="text-[12px] rounded-sm transition-all data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-800 data-[state=active]:shadow-sm">
+              <TabsTrigger
+                value="code"
+                className="text-[12px] rounded-sm transition-all data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-800 data-[state=active]:shadow-sm"
+              >
                 Code
               </TabsTrigger>
             </TabsList>
@@ -275,7 +305,10 @@ export default function FormRegistryDemo() {
                       className="space-y-5"
                     >
                       <div className="pt-4">
-                        <Button type="submit" className="w-full font-medium h-10 shadow-sm">
+                        <Button
+                          type="submit"
+                          className="w-full font-medium h-10 shadow-sm"
+                        >
                           Submit Application
                         </Button>
                       </div>
@@ -296,75 +329,91 @@ export default function FormRegistryDemo() {
                   <div className="rounded-xl overflow-hidden ring-1 ring-white/10 dark:ring-white/10 shadow-2xl bg-[#0C0C0C]">
                     <div className="flex items-center justify-between px-4 py-3 bg-[#161616] border-b border-white/5">
                       <div className="flex items-center gap-2">
-                        <FileCode2 className="w-4 h-4 text-zinc-400" strokeWidth={1.5} />
-                        <span className="text-[13px] font-medium text-zinc-300 font-mono tracking-tight">schema.ts</span>
+                        <FileCode2
+                          className="w-4 h-4 text-zinc-400"
+                          strokeWidth={1.5}
+                        />
+                        <span className="text-[13px] font-medium text-zinc-300 font-mono tracking-tight">
+                          schema.ts
+                        </span>
                       </div>
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => copyToClipboard(getSchemaCode(), "schema")}
+                        onClick={() =>
+                          copyToClipboard(getSchemaCode(), "schema")
+                        }
                         className="h-7 w-7 text-zinc-400 hover:text-white hover:bg-white/10"
                       >
-                        {copiedStates["schema"] ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                        {copiedStates["schema"] ? (
+                          <Check className="w-3.5 h-3.5 text-emerald-400" />
+                        ) : (
+                          <Copy className="w-3.5 h-3.5" />
+                        )}
                       </Button>
                     </div>
                     <div className="p-5 overflow-x-auto">
-                      <pre className="text-[13px] leading-relaxed font-mono">
-                        <code className="text-zinc-400">
-                          <span className="text-pink-400">export const</span>{" "}
-                          <span className="text-blue-400">formSchema</span>{" "}
-                          <span className="text-zinc-400">=</span>{" "}
-                          <span className="text-zinc-200">{getSchemaCode()}</span>
-                          <span className="text-zinc-400">;</span>
-                        </code>
-                      </pre>
+                      <pre
+                        className="text-[13px] leading-relaxed font-mono text-zinc-400"
+                        dangerouslySetInnerHTML={{
+                          __html: `<span class="text-pink-400">export const</span> <span class="text-blue-400">formSchema</span> = <span class="text-blue-400">z</span>.<span class="text-yellow-300">object</span>({
+${
+  selectedExample.id === "contact"
+    ? `
+  <span class="text-zinc-200">name</span>: <span class="text-blue-400">z</span>.<span class="text-yellow-300">string</span>().<span class="text-yellow-300">min</span>(<span class="text-orange-300">2</span>, <span class="text-green-300">"Name must be at least 2 characters"</span>),
+  <span class="text-zinc-200">email</span>: <span class="text-blue-400">z</span>.<span class="text-yellow-300">string</span>().<span class="text-yellow-300">email</span>(<span class="text-green-300">"Please enter a valid email"</span>),
+  <span class="text-zinc-200">subject</span>: <span class="text-blue-400">z</span>.<span class="text-yellow-300">enum</span>([<span class="text-green-300">"general"</span>, <span class="text-green-300">"support"</span>, <span class="text-green-300">"sales"</span>, <span class="text-green-300">"feedback"</span>]),
+  <span class="text-zinc-200">message</span>: <span class="text-blue-400">z</span>.<span class="text-yellow-300">string</span>().<span class="text-yellow-300">min</span>(<span class="text-orange-300">10</span>, <span class="text-green-300">"Message must be at least 10 characters"</span>),
+  <span class="text-zinc-200">newsletter</span>: <span class="text-blue-400">z</span>.<span class="text-yellow-300">boolean</span>().<span class="text-yellow-300">optional</span>(),`.trim()
+    : selectedExample.id === "profile"
+      ? `
+  <span class="text-zinc-200">username</span>: <span class="text-blue-400">z</span>.<span class="text-yellow-300">string</span>().<span class="text-yellow-300">min</span>(<span class="text-orange-300">3</span>).<span class="text-yellow-300">max</span>(<span class="text-orange-300">20</span>),
+  <span class="text-zinc-200">bio</span>: <span class="text-blue-400">z</span>.<span class="text-yellow-300">string</span>().<span class="text-yellow-300">max</span>(<span class="text-orange-300">500</span>).<span class="text-yellow-300">optional</span>(),
+  <span class="text-zinc-200">website</span>: <span class="text-blue-400">z</span>.<span class="text-yellow-300">string</span>().<span class="text-yellow-300">url</span>().<span class="text-yellow-300">optional</span>(),
+  <span class="text-zinc-200">birthDate</span>: <span class="text-blue-400">z</span>.<span class="text-yellow-300">date</span>().<span class="text-yellow-300">optional</span>(),`.trim()
+      : `
+  <span class="text-zinc-200">eventName</span>: <span class="text-blue-400">z</span>.<span class="text-yellow-300">string</span>().<span class="text-yellow-300">min</span>(<span class="text-orange-300">5</span>),
+  <span class="text-zinc-200">eventType</span>: <span class="text-blue-400">z</span>.<span class="text-yellow-300">enum</span>([<span class="text-green-300">"conference"</span>, <span class="text-green-300">"workshop"</span>, <span class="text-green-300">"meetup"</span>, <span class="text-green-300">"webinar"</span>]),
+  <span class="text-zinc-200">maxAttendees</span>: <span class="text-blue-400">z</span>.<span class="text-yellow-300">number</span>().<span class="text-yellow-300">min</span>(<span class="text-orange-300">1</span>).<span class="text-yellow-300">max</span>(<span class="text-orange-300">1000</span>),
+  <span class="text-zinc-200">isPublic</span>: <span class="text-blue-400">z</span>.<span class="text-yellow-300">boolean</span>(),
+  <span class="text-zinc-200">description</span>: <span class="text-blue-400">z</span>.<span class="text-yellow-300">string</span>().<span class="text-yellow-300">min</span>(<span class="text-orange-300">20</span>),`.trim()
+}
+});`,
+                        }}
+                      />
                     </div>
                   </div>
 
                   <div className="rounded-xl overflow-hidden ring-1 ring-white/10 dark:ring-white/10 shadow-2xl bg-[#0C0C0C]">
                     <div className="flex items-center px-4 py-3 bg-[#161616] border-b border-white/5">
                       <div className="flex items-center gap-2">
-                        <Component className="w-4 h-4 text-zinc-400" strokeWidth={1.5} />
-                        <span className="text-[13px] font-medium text-zinc-300 font-mono tracking-tight">page.tsx</span>
+                        <Component
+                          className="w-4 h-4 text-zinc-400"
+                          strokeWidth={1.5}
+                        />
+                        <span className="text-[13px] font-medium text-zinc-300 font-mono tracking-tight">
+                          page.tsx
+                        </span>
                       </div>
                     </div>
                     <div className="p-5 overflow-x-auto">
-                      <pre className="text-[13px] leading-relaxed font-mono">
-                        <code className="text-zinc-400">
-                          <span className="text-pink-400">import</span>{" "}
-                          <span className="text-zinc-200">{"{ Form }"}</span>{" "}
-                          <span className="text-pink-400">from</span>{" "}
-                          <span className="text-green-300">"form-registry"</span>
-                          <span className="text-zinc-400">;</span>
-                          {"\n\n"}
-                          <span className="text-pink-400">export default function</span>{" "}
-                          <span className="text-blue-400">Page</span>
-                          <span className="text-zinc-200">() {"{"}</span>
-                          {"\n  "}
-                          <span className="text-pink-400">return</span>{" "}
-                          <span className="text-zinc-200">(</span>
-                          {"\n    "}
-                          <span className="text-emerald-400">{"<Form "}</span>
-                          <span className="text-blue-300">schema</span>
-                          <span className="text-zinc-400">=</span>
-                          <span className="text-zinc-200">{"{"}formSchema{"}"}</span>
-                          <span className="text-emerald-400">{">"}</span>
-                          {"\n      "}
-                          <span className="text-emerald-400">{"<Button "}</span>
-                          <span className="text-blue-300">type</span>
-                          <span className="text-zinc-400">=</span>
-                          <span className="text-green-300">"submit"</span>
-                          <span className="text-emerald-400">{">"}</span>
-                          <span className="text-zinc-200">Submit</span>
-                          <span className="text-emerald-400">{"</Button>"}</span>
-                          {"\n    "}
-                          <span className="text-emerald-400">{"</Form>"}</span>
-                          {"\n  "}
-                          <span className="text-zinc-200">);</span>
-                          {"\n"}
-                          <span className="text-zinc-200">{"}"}</span>
-                        </code>
-                      </pre>
+                      <pre
+                        className="text-[13px] leading-relaxed font-mono text-zinc-400"
+                        dangerouslySetInnerHTML={{
+                          __html: `<span class="text-pink-400">import</span> <span class="text-zinc-200">{ Form }</span> <span class="text-pink-400">from</span> <span class="text-green-300">"form-registry"</span>;
+
+<span class="text-pink-400">export default function</span> <span class="text-blue-400">Page</span><span class="text-zinc-200">() {</span>
+  <span class="text-pink-400">return</span> (
+    <span class="text-emerald-400">&lt;Form</span>
+      <span class="text-blue-300">schema</span>=<span class="text-zinc-200">{formSchema}</span>
+      <span class="text-blue-300">onSubmit</span>=<span class="text-zinc-200">{handleSubmit}</span>
+    <span class="text-emerald-400">&gt;</span>
+      <span class="text-emerald-400">&lt;Button</span> <span class="text-blue-300">type</span>=<span class="text-green-300">"submit"</span><span class="text-emerald-400">&gt;</span><span class="text-zinc-200">Submit</span><span class="text-emerald-400">&lt;/Button&gt;</span>
+    <span class="text-emerald-400">&lt;/Form&gt;</span>
+  );
+<span class="text-zinc-200">}</span>`,
+                        }}
+                      />
                     </div>
                   </div>
                 </motion.div>
@@ -385,7 +434,10 @@ export default function FormRegistryDemo() {
           >
             <div className="h-14 flex items-center px-5 border-b border-border/40 shrink-0">
               <span className="text-[13px] font-medium flex items-center gap-2">
-                <Settings2 className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+                <Settings2
+                  className="w-4 h-4 text-muted-foreground"
+                  strokeWidth={1.5}
+                />
                 Properties
               </span>
             </div>
@@ -394,8 +446,12 @@ export default function FormRegistryDemo() {
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
                   <div className="overflow-hidden">
-                    <h2 className="text-[14px] font-semibold text-foreground truncate">{selectedExample.name}</h2>
-                    <p className="text-[12px] text-muted-foreground truncate">Live Interactive Demo</p>
+                    <h2 className="text-[14px] font-semibold text-foreground truncate">
+                      {selectedExample.name}
+                    </h2>
+                    <p className="text-[12px] text-muted-foreground truncate">
+                      Live Interactive Demo
+                    </p>
                   </div>
                 </div>
                 <p className="text-[13px] text-muted-foreground leading-relaxed whitespace-normal">
@@ -436,12 +492,21 @@ export default function FormRegistryDemo() {
                 </h3>
                 <ul className="space-y-2">
                   <li className="flex items-center gap-2.5 text-[13px] text-foreground">
-                    <Zap className="w-3.5 h-3.5 text-amber-500" strokeWidth={2} />
+                    <Zap
+                      className="w-3.5 h-3.5 text-amber-500"
+                      strokeWidth={2}
+                    />
                     <span>Real-time Validation</span>
                   </li>
-                  {selectedExample.features.map(f => (
-                    <li key={f} className="flex items-center gap-2.5 text-[13px] text-foreground">
-                      <Check className="w-3.5 h-3.5 text-emerald-500" strokeWidth={2} />
+                  {selectedExample.features.map((f) => (
+                    <li
+                      key={f}
+                      className="flex items-center gap-2.5 text-[13px] text-foreground"
+                    >
+                      <Check
+                        className="w-3.5 h-3.5 text-emerald-500"
+                        strokeWidth={2}
+                      />
                       <span>{f}</span>
                     </li>
                   ))}
@@ -449,12 +514,15 @@ export default function FormRegistryDemo() {
               </div>
 
               <div className="mt-8 rounded-lg bg-primary/5 border border-primary/10 p-3.5 flex items-start gap-3 whitespace-normal">
-                <Sparkles className="w-4 h-4 text-primary shrink-0 mt-0.5" strokeWidth={1.5} />
+                <Sparkles
+                  className="w-4 h-4 text-primary shrink-0 mt-0.5"
+                  strokeWidth={1.5}
+                />
                 <p className="text-[12px] leading-relaxed text-foreground/80">
-                  Zero boilerplate. Define your schema and FormCN handles the state, validation, and accessibility.
+                  Zero boilerplate. Define your schema and FormCN handles the
+                  state, validation, and accessibility.
                 </p>
               </div>
-
             </div>
           </motion.aside>
         )}

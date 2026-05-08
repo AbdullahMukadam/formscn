@@ -102,4 +102,33 @@ const fields = zodSchemaToFields(schema);
 
 ## License
 
+### Working with local/testing
+
+1. Commit all your changes (otherwise NPM will give this error: "Git working directory not clean.")
+2. Build the version
+
+```bash
+pnpm build
+```
+
+3. Create a prerelease:
+
+```bash
+npm version prerelease --preid=feature-name
+```
+
+4. Publish the version
+
+```bash
+npm publish --tag feature-name
+```
+
+This will create a version like: "1.0.0-feature-name.0" (you can keep running the above two commands and every time it will increase the digit at the end)
+
+5. Update the uikit dependency in your project's `package.json` as this:
+
+```bash
+"form-registry": ".0.1.9-fix-form-registry.0"
+```
+
 MIT
