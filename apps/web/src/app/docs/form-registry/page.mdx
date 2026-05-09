@@ -1,0 +1,170 @@
+export const metadata = {
+  title: "@formscn/form Package - FormSCN Documentation",
+  description: "Use @formscn/form npm package for runtime form rendering in your React apps.",
+};
+
+# @formscn/form Package
+
+The `@formscn/form` npm package provides runtime form rendering from Zod schemas - perfect for when you want to render forms dynamically without generating static code.
+
+## Installation
+
+```bash
+npm install @formscn/form
+```
+
+This installs:
+- `@formscn/form` - The main package
+- All dependencies (peer deps auto-installed): react, react-dom, react-hook-form, zod
+- `@formscn/ui` - Required UI components
+
+## Requirements
+
+- React 18+
+- Tailwind CSS
+- Zod 3+ or 4+
+- react-hook-form 7+
+
+## Quick Start
+
+```tsx
+import { Form } from "@formscn/form";
+import { z } from "zod";
+import "@formscn/form/styles";
+
+const schema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Invalid email"),
+  message: z.string().min(10, "Message too short"),
+});
+
+export default function ContactForm() {
+  return (
+    <Form
+      schema={schema}
+      title="Contact Form"
+      description="Fill out the form below"
+      onSubmit={(values) => console.log(values)}
+    >
+      <button type="submit" className="btn-primary">
+        Submit
+      </button>
+    </Form>
+  );
+}
+```
+
+## API
+
+### Form Component
+
+```tsx
+import { Form } from "@formscn/form";
+
+<Form
+  schema={zodSchema}
+  title="Form Title"
+  description="Optional description"
+  defaultValues={{ field: "default" }}
+  onSubmit={(values) => {}}
+  className="custom-class"
+>
+  {/* Custom submit button */}
+</Form>
+```
+
+**Props:**
+- `schema` - Zod schema for form validation
+- `title` - Form title displayed in the card
+- `description` - Optional form description
+- `defaultValues` - Initial form values
+- `onSubmit` - Submit handler function
+- `className` - Optional CSS classes
+
+### zodSchemaToFields
+
+Convert Zod schema to field configuration:
+
+```tsx
+import { zodSchemaToFields } from "@formscn/form";
+
+const fields = zodSchemaToFields(schema);
+// Returns: FormField[] - field configuration array
+```
+
+## Field Types
+
+The Form component automatically renders these field types:
+
+- `input` - Text, email, password, tel, url, number
+- `textarea` - Multi-line text input
+- `select` - Dropdown with options
+- `checkbox` - Boolean checkbox
+- `switch` - Toggle switch
+- `radio` - Radio group
+- `date` - Date picker with calendar
+
+## Example: Login Form
+
+```tsx
+import { Form } from "@formscn/form";
+import { z } from "zod";
+import "@formscn/form/styles";
+
+const loginSchema = z.object({
+  email: z.string().email("Invalid email"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+  remember: z.boolean().optional(),
+});
+
+export function LoginForm() {
+  return (
+    <Form
+      schema={loginSchema}
+      title="Login"
+      description="Enter your credentials"
+      defaultValues={{ email: "", password: "", remember: false }}
+      onSubmit={(data) => {
+        // Handle login
+        console.log(data);
+      }}
+    >
+      {({ errors }) => (
+        <>
+          <button type="submit" className="w-full">
+            Sign In
+          </button>
+        </>
+      )}
+    </Form>
+  );
+}
+```
+
+## TypeScript
+
+Full TypeScript support with automatic type inference:
+
+```tsx
+import { Form, type FormField } from "@formscn/form";
+
+// Types are automatically inferred from your Zod schema
+```
+
+## When to Use This Package
+
+**Use @formscn/form when:**
+- You need dynamic form rendering
+- You want to render forms from database-stored schemas
+- You prefer runtime form generation over static code
+
+**Use CLI/Code Generation when:**
+- You want full control over the generated code
+- You need to customize the form implementation
+- You prefer static, copy-pasteable components
+
+## Next Steps
+
+- Check the [Installation](/docs/installation) guide for full setup
+- Browse [Templates](/templates) for form examples
+- Explore the [Form Builder](/editor) for visual form creation

@@ -18,6 +18,7 @@ export default function Header() {
     { to: "/", label: "FormsCN" },
     { to: "/templates", label: "Templates" },
     { to: "/docs", label: "Documentation" },
+    { to: "/demo/form-registry", label: "Form Registry" },
     { to: "/editor", label: "Visual Editor" },
   ] as const;
 

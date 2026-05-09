@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useForm, Controller, type DefaultValues, type Resolver } from "react-hook-form";
+import { useForm, Controller, type DefaultValues } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { zodSchemaToFields } from "../resolvers/zod";
@@ -25,7 +25,7 @@ const fieldRegistry: Record<FormField["type"], FieldComponent> = {
   file: InputField,
 };
 
-interface FormProps<TSchema extends z.ZodType<any, any, any>> {
+interface FormProps<TSchema extends z.ZodSchema<any>> {
   schema: TSchema;
   onSubmit: (values: z.infer<TSchema>) => void | Promise<void>;
   defaultValues?: DefaultValues<z.infer<TSchema>>;
@@ -35,7 +35,7 @@ interface FormProps<TSchema extends z.ZodType<any, any, any>> {
   description?: string;
 }
 
-export function Form<TSchema extends z.ZodType<any, any, any>>({
+export function Form<TSchema extends z.ZodSchema<any>>({
   schema,
   onSubmit,
   defaultValues,
@@ -46,13 +46,16 @@ export function Form<TSchema extends z.ZodType<any, any, any>>({
 }: FormProps<TSchema>) {
   const fields = useMemo(() => zodSchemaToFields(schema as any), [schema]);
 
+  type FormValues = z.infer<TSchema>;
+
   const {
     control,
     handleSubmit,
     formState: { errors },
     setError,
-  } = useForm<z.output<TSchema>, any, z.output<TSchema>>({
-    resolver: zodResolver(schema) as Resolver<z.output<TSchema>>,
+  } = useForm<FormValues>({
+    // @ts-expect-error - Type compatibility issue between Zod versions
+    resolver: zodResolver(schema),
     defaultValues,
     mode: "onBlur",
     reValidateMode: "onChange",
