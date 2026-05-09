@@ -2,3 +2,4 @@
 src/components/**/*.stories.tsx
 src/components/**/*.test.tsx
 dist/**/node_modules
+/storybook-static
