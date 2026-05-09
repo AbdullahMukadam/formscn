@@ -1,4 +1,5 @@
-import { Input, Label } from "formscn-ui";
+import { Input, Label } from "@formscn/ui";
+import type { ChangeEvent } from "react";
 import type { FieldComponentProps } from "../../types";
 
 export function InputField({
@@ -20,7 +21,7 @@ export function InputField({
         name={field.name}
         type={field.inputType || "text"}
         value={(value as string) || ""}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e: ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}
         onBlur={onBlur}
         placeholder={field.placeholder}
         className={error ? "border-destructive focus-visible:ring-destructive" : ""}

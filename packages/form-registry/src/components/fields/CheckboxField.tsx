@@ -1,4 +1,4 @@
-import { Checkbox, Label } from "formscn-ui";
+import { Checkbox, Label } from "@formscn/ui";
 import type { FieldComponentProps } from "../../types";
 
 export function CheckboxField({

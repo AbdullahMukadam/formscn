@@ -5,7 +5,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "formscn-ui";
+} from "@formscn/ui";
 import type { FieldComponentProps } from "../../types";
 
 export function SelectField({
@@ -25,7 +25,7 @@ export function SelectField({
       <Select
         value={(value as string) || ""}
         onValueChange={onChange}
-        onOpenChange={(open) => {
+        onOpenChange={(open: boolean) => {
           if (!open) onBlur();
         }}
       >

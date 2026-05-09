@@ -1,4 +1,5 @@
-import { Label, Textarea } from "formscn-ui";
+import { Label, Textarea } from "@formscn/ui";
+import type { ChangeEvent } from "react";
 import type { FieldComponentProps } from "../../types";
 
 export function TextareaField({
@@ -19,7 +20,7 @@ export function TextareaField({
         id={field.name}
         name={field.name}
         value={(value as string) || ""}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e: ChangeEvent<HTMLTextAreaElement>) => onChange(e.target.value)}
         onBlur={onBlur}
         placeholder={field.placeholder}
         rows={field.uiConfig?.rows || 4}

@@ -43,11 +43,11 @@ export const docsConfig: DocSection[] = [
       },
     ],
   },
-  {
+{
     title: "Packages",
     items: [
       {
-        title: "form-registry",
+        title: "@formscn/form",
         href: "/docs/form-registry",
       },
     ],

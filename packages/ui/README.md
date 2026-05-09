@@ -1,14 +1,14 @@
-# formscn-ui
+# @formscn/ui
 
 UI components for FormSCN forms.
 
 ## Installation
 
-This package is automatically installed with `form-registry`. You typically don't need to install it directly.
+This package is automatically installed with `@formscn/form`. You typically don't need to install it directly.
 
 ```bash
-# If using form-registry, this is auto-installed
-npm install formscn-ui
+# If using @formscn/form, this is auto-installed
+npm install @formscn/ui
 ```
 
 ## Requirements
@@ -29,7 +29,7 @@ npm install formscn-ui
 ## Usage
 
 ```tsx
-import { Input, Label, Button } from "formscn-ui";
+import { Input, Label, Button } from "@formscn/ui";
 
 <Input placeholder="Enter text" />
 <Label>Label Text</Label>

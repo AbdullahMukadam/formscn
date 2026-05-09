@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { Form } from "form-registry";
+import {Form} from "@formscn/form"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
@@ -222,14 +222,14 @@ export default function FormRegistryDemo() {
         <div className="p-4 mt-auto">
           <div className="group relative flex items-center justify-between bg-white dark:bg-zinc-900 rounded-lg p-2 ring-1 ring-black/5 dark:ring-white/10 shadow-sm transition-all hover:ring-black/10 dark:hover:ring-white/20">
             <code className="text-[11px] font-mono text-muted-foreground px-1 truncate flex-1">
-              npm i form-registry
+              npm i @formscn/form
             </code>
             <Button
               variant="ghost"
               size="icon"
               className="h-6 w-6 shrink-0 bg-transparent hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
               onClick={() =>
-                copyToClipboard("npm install form-registry", "install")
+                copyToClipboard("npm install @formscn/form", "install")
               }
             >
               {copiedStates["install"] ? (
@@ -400,7 +400,7 @@ ${
                       <pre
                         className="text-[13px] leading-relaxed font-mono text-zinc-400"
                         dangerouslySetInnerHTML={{
-                          __html: `<span class="text-pink-400">import</span> <span class="text-zinc-200">{ Form }</span> <span class="text-pink-400">from</span> <span class="text-green-300">"form-registry"</span>;
+                          __html: `<span class="text-pink-400">import</span> <span class="text-zinc-200">{ Form }</span> <span class="text-pink-400">from</span> <span class="text-green-300">"@formscn/form"</span>;
 
 <span class="text-pink-400">export default function</span> <span class="text-blue-400">Page</span><span class="text-zinc-200">() {</span>
   <span class="text-pink-400">return</span> (
@@ -460,31 +460,7 @@ ${
               </div>
 
               <hr className="border-border/40" />
-              <div className="space-y-3">
-                <h3 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70">
-                  Data Specification
-                </h3>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-[13px]">
-                    <span className="text-muted-foreground">Engine</span>
-                    <span className="font-mono text-[12px] font-medium bg-muted px-1.5 py-0.5 rounded-md">
-                      {selectedExample.engine}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between text-[13px]">
-                    <span className="text-muted-foreground">Fields mapped</span>
-                    <span className="font-mono text-[12px] font-medium bg-muted px-1.5 py-0.5 rounded-md text-foreground">
-                      {Object.keys(selectedExample.defaultValues).length} keys
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between text-[13px]">
-                    <span className="text-muted-foreground">Output Type</span>
-                    <span className="font-mono text-[12px] font-medium text-emerald-600 dark:text-emerald-400">
-                      Strict typed
-                    </span>
-                  </div>
-                </div>
-              </div>
+            
 
               <div className="space-y-3">
                 <h3 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70">
@@ -492,10 +468,10 @@ ${
                 </h3>
                 <ul className="space-y-2">
                   <li className="flex items-center gap-2.5 text-[13px] text-foreground">
-                    <Zap
-                      className="w-3.5 h-3.5 text-amber-500"
-                      strokeWidth={2}
-                    />
+                  <Check
+                        className="w-3.5 h-3.5 text-emerald-500"
+                        strokeWidth={2}
+                      />
                     <span>Real-time Validation</span>
                   </li>
                   {selectedExample.features.map((f) => (

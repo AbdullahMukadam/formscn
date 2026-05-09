@@ -1,50 +1,36 @@
 export const metadata = {
-  title: "Form Registry Package - FormSCN Documentation",
-  description: "Use form-registry npm package for runtime form rendering in your React apps.",
+  title: "@formscn/form Package - FormSCN Documentation",
+  description: "Use @formscn/form npm package for runtime form rendering in your React apps.",
 };
 
-# Form Registry Package
+# @formscn/form Package
 
-The `form-registry` npm package provides runtime form rendering from Zod schemas - perfect for when you want to render forms dynamically without generating static code.
+The `@formscn/form` npm package provides runtime form rendering from Zod schemas - perfect for when you want to render forms dynamically without generating static code.
 
 ## Installation
 
 ```bash
-npm install form-registry
+npm install @formscn/form
 ```
 
 This installs:
-- `form-registry` - The main package
+- `@formscn/form` - The main package
 - All dependencies (peer deps auto-installed): react, react-dom, react-hook-form, zod
-- `formscn-ui` - Required UI components
+- `@formscn/ui` - Required UI components
 
 ## Requirements
 
 - React 18+
 - Tailwind CSS
-- Zod 3+
+- Zod 3+ or 4+
 - react-hook-form 7+
-
-## Tailwind Setup
-
-Add formscn-ui to your content paths:
-
-```javascript
-// tailwind.config.js
-module.exports = {
-  content: [
-    "./src/**/*.{js,ts,jsx,tsx}",
-    "./node_modules/formscn-ui/dist/**/*.mjs",
-  ],
-}
-```
 
 ## Quick Start
 
 ```tsx
-import { Form } from "form-registry";
+import { Form } from "@formscn/form";
 import { z } from "zod";
-import "form-registry/styles";
+import "@formscn/form/styles";
 
 const schema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -73,7 +59,7 @@ export default function ContactForm() {
 ### Form Component
 
 ```tsx
-import { Form } from "form-registry";
+import { Form } from "@formscn/form";
 
 <Form
   schema={zodSchema}
@@ -100,7 +86,7 @@ import { Form } from "form-registry";
 Convert Zod schema to field configuration:
 
 ```tsx
-import { zodSchemaToFields } from "form-registry";
+import { zodSchemaToFields } from "@formscn/form";
 
 const fields = zodSchemaToFields(schema);
 // Returns: FormField[] - field configuration array
@@ -121,9 +107,9 @@ The Form component automatically renders these field types:
 ## Example: Login Form
 
 ```tsx
-import { Form } from "form-registry";
+import { Form } from "@formscn/form";
 import { z } from "zod";
-import "form-registry/styles";
+import "@formscn/form/styles";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email"),
@@ -160,14 +146,14 @@ export function LoginForm() {
 Full TypeScript support with automatic type inference:
 
 ```tsx
-import { Form, type FormField } from "form-registry";
+import { Form, type FormField } from "@formscn/form";
 
 // Types are automatically inferred from your Zod schema
 ```
 
 ## When to Use This Package
 
-**Use form-registry when:**
+**Use @formscn/form when:**
 - You need dynamic form rendering
 - You want to render forms from database-stored schemas
 - You prefer runtime form generation over static code
@@ -176,18 +162,6 @@ import { Form, type FormField } from "form-registry";
 - You want full control over the generated code
 - You need to customize the form implementation
 - You prefer static, copy-pasteable components
-
-## Import Styles
-
-Don't forget to import the CSS:
-
-```tsx
-// In your main App file
-import "form-registry/styles";
-
-// Or in CSS
-// @import "form-registry/styles";
-```
 
 ## Next Steps
 

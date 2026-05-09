@@ -1,19 +1,19 @@
-# Form Registry
+# @formscn/form
 
 Runtime form rendering from Zod schemas for React.
 
 ## Installation
 
 ```bash
-npm install form-registry
+npm install @formscn/form
 ```
 
 ## Quick Start
 
 ```tsx
-import { Form } from "form-registry";
+import { Form } from "@formscn/form";
 import { z } from "zod";
-import "form-registry/styles";
+import "@formscn/form/styles";
 
 const schema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -40,7 +40,7 @@ export default function ContactForm() {
 ## Requirements
 
 - React 18+
-- Zod 3+
+- Zod 3+ or 4+
 - react-hook-form 7+
 - Tailwind CSS (for styling)
 
@@ -48,14 +48,14 @@ export default function ContactForm() {
 
 ### Tailwind Setup
 
-Add formscn-ui to your content paths:
+Add @formscn/ui to your content paths:
 
 ```javascript
 // tailwind.config.js
 module.exports = {
   content: [
     "./src/**/*.{js,ts,jsx,tsx}",
-    "./node_modules/formscn-ui/dist/**/*.mjs",
+    "./node_modules/@formscn/ui/dist/**/*.mjs",
   ],
 }
 ```
@@ -65,7 +65,7 @@ module.exports = {
 ### Form Component
 
 ```tsx
-import { Form } from "form-registry";
+import { Form } from "@formscn/form";
 
 <Form
   schema={zodSchema}
@@ -84,7 +84,7 @@ import { Form } from "form-registry";
 Convert Zod schema to field configuration:
 
 ```tsx
-import { zodSchemaToFields } from "form-registry";
+import { zodSchemaToFields } from "@formscn/form";
 
 const fields = zodSchemaToFields(schema);
 // Returns: FormField[]
@@ -101,34 +101,5 @@ const fields = zodSchemaToFields(schema);
 - `date` - Date picker
 
 ## License
-
-### Working with local/testing
-
-1. Commit all your changes (otherwise NPM will give this error: "Git working directory not clean.")
-2. Build the version
-
-```bash
-pnpm build
-```
-
-3. Create a prerelease:
-
-```bash
-npm version prerelease --preid=feature-name
-```
-
-4. Publish the version
-
-```bash
-npm publish --tag feature-name
-```
-
-This will create a version like: "1.0.0-feature-name.0" (you can keep running the above two commands and every time it will increase the digit at the end)
-
-5. Update the uikit dependency in your project's `package.json` as this:
-
-```bash
-"form-registry": ".0.1.9-fix-form-registry.0"
-```
 
 MIT

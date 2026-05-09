@@ -1,6 +1,6 @@
 {
-  "name": "form-registry",
-  "version": "0.1.9-fix-form-registry.1",
+  "name": "@formscn/form",
+  "version": "0.2.0",
   "description": "Runtime form registry for rendering forms from Zod schemas",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -43,13 +43,13 @@
     "react": "^18.2.0 || ^19.0.0",
     "react-dom": "^18.2.0 || ^19.0.0",
     "react-hook-form": "^7.0.0",
-    "zod": "^3.23.0"
+    "zod": "^3.23.0 || ^4.0.0",
+    "@hookform/resolvers": "^3.0.0 || ^4.0.0 || ^5.0.0"
   },
   "dependencies": {
-    "formscn-ui": "^0.1.1",
-    "@hookform/resolvers": "^3.0.0",
-    "date-fns": "^4.0.0",
-    "lucide-react": "^0.471.0"
+    "@formscn/ui": "^0.1.2",
+    "date-fns": "^3.0.0 || ^4.0.0",
+    "lucide-react": "^0.300.0 || ^0.400.0 || ^0.500.0"
   },
   "devDependencies": {
     "@storybook/react": "^10.2.13",
@@ -69,9 +69,18 @@
   "keywords": [
     "react",
     "forms",
+    "form-builder",
     "zod",
+    "react-hook-form",
     "shadcn",
-    "typescript"
+    "ui",
+    "validation",
+    "typescript",
+    "dynamic-forms"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AbdullahMukadam/formscn.git"
+  }
 }

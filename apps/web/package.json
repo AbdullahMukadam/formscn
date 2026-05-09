@@ -12,6 +12,7 @@
   "dependencies": {
     "@base-ui/react": "^1.0.0",
     "@formscn/env": "workspace:*",
+    "@formscn/form": "^0.2.0",
     "@hookform/resolvers": "^5.2.2",
     "@mdx-js/loader": "^3.1.1",
     "@mdx-js/react": "^3.1.1",
@@ -32,7 +33,6 @@
     "date-fns": "^4.1.0",
     "dotenv": "catalog:",
     "drizzle-orm": "^0.45.1",
-    "form-registry": "0.1.8",
     "framer-motion": "^12.29.0",
     "fuse.js": "^7.3.0",
     "gray-matter": "^4.0.3",

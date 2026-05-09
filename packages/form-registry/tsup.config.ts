@@ -22,6 +22,6 @@ external: [
     "@hookform/resolvers",
     "lucide-react",
     "date-fns",
-    "formscn-ui"
+    "@formscn/ui"
   ]
 });
