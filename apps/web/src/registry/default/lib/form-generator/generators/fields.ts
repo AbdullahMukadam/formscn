@@ -20,8 +20,9 @@ export function generateFormFields(fields: FormField[], isSignup? : boolean): st
       ? `\n            <p className="text-sm text-muted-foreground">${field.description}</p>` 
       : "";
 
-    if (field.type === "input") {
-      if (field.uiType === "phone") {
+if (field.type === "input") {
+      // Phone input with international support
+      if (field.uiType === "phone" || field.inputType === "tel") {
         const defaultCountry = field.uiConfig?.country || "US";
         return `          <div className="space-y-2">
             <Label htmlFor="${field.name}">${field.label}</Label>
@@ -137,7 +138,6 @@ export function generateFormFields(fields: FormField[], isSignup? : boolean): st
       // Enhanced email field with autocomplete
       const isEmailField = field.inputType === "email" || field.name === "email";
       const autoComplete = isEmailField ? 'autoComplete="email"' : 
-                          field.inputType === "tel" ? 'autoComplete="tel"' :
                           field.inputType === "url" ? 'autoComplete="url"' : '';
 
       return `          <div className="space-y-2">

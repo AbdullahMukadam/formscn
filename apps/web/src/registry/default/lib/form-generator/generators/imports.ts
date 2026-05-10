@@ -28,7 +28,7 @@ const hasSelect = fields.some(f => f.type === "select");
   const hasRadio = fields.some(f => f.type === "radio");
   const hasDate = fields.some(f => f.type === "date");
   const hasFile = fields.some(f => f.type === "file");
-  const hasPhone = fields.some(f => f.uiType === "phone");
+  const hasPhone = fields.some(f => f.uiType === "phone" || f.inputType === "tel");
   const hasSwitch = fields.some(f => f.type === "switch");
   const hasNumber = fields.some(f => f.type === "number");
   const needsController = hasSelect || hasCheckbox || hasRadio || hasDate || hasPhone || hasSwitch;
