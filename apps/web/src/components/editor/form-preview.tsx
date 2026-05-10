@@ -328,7 +328,7 @@ export function FormPreview({
                       </TooltipProvider>
                     </div>
                   </motion.div>
-                  {field.uiType === "phone" && (
+                  {(field.uiType === "phone" || field.uiType === "tel") && (
                     <div className="space-y-2">
                       <Controller
                         control={form.control}

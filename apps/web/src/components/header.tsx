@@ -23,7 +23,7 @@ export default function Header() {
   ] as const;
 
   return (
-    <header className="fixed top-0 z-50 w-full border-b border-white/5 bg-black/60 backdrop-blur-xl supports-[backdrop-filter]:bg-black/40 px-2">
+    <header className="fixed top-0 z-50 w-full border-b border-white/5 bg-black/60 backdrop-blur-xl supports-[backdrop-filter]:bg-black/40 px-4 md:px-2">
       <div className="container flex h-14 items-center justify-between mx-auto max-w-8xl">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center space-x-2">

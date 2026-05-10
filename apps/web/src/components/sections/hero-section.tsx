@@ -60,7 +60,7 @@ export function HeroSection() {
         </div>
 
         {/* Content Layer */}
-        <div className="container relative z-10 mx-auto px-4 md:px-6 flex flex-col items-center justify-center text-center">
+        <div className="container relative z-10 mx-auto px-6 md:px-8 flex flex-col items-center justify-center text-center">
           {/* Badge */}
           <motion.div
             variants={fadeInUp}

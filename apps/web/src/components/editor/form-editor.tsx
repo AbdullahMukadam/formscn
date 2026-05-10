@@ -99,7 +99,7 @@ export function FormEditor({ initialTemplate }: FormEditorProps) {
         className="hidden lg:block"
       />
 
-      <main className="flex-1 flex flex-col h-full min-w-0 bg-muted/20">
+      <main className="flex-1 flex flex-col h-full min-w-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] dark:bg-[radial-gradient(#262626_1px,transparent_1px)] [background-size:16px_16px]">
         <FormHeader
           showSchemaImport={showSchemaImport}
           onToggleSchemaImport={() => setShowSchemaImport(!showSchemaImport)}

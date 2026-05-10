@@ -17,7 +17,7 @@ export function TemplatesHeader({ templateCount }: TemplatesHeaderProps) {
     )}>
       {/* Title Section */}
       <div className="space-y-3 md:space-y-4">
-        <h1 className="text-3xl md:text-6xl font-bold text-white tracking-tighter italic">
+        <h1 className="text-2xl sm:text-3xl md:text-6xl font-bold text-white tracking-tighter italic">
           shadcn/ui Form Templates
         </h1>
         <p className="text-base md:text-lg text-white/40 max-w-xl leading-relaxed font-medium">
