@@ -74,6 +74,7 @@ export function generateTanstackFormComponent(config: GenerateFormComponentConfi
   );
   const isLogin = shouldEnableAuth && hasEmail && hasPassword && !isSignup;
   const isAuth = shouldEnableAuth && (isLogin || isSignup || hasOAuth);
+  const isAnyPasswordField = hasPassword || hasConfirmPassword;
 
   // Generate parts
   const imports = generateTanstackImports({
@@ -149,10 +150,10 @@ ${defaultValues}
     validatorAdapter: zodValidator,
   });
 
-
-  ${isSignup ? `const [showPassword, setShowPassword] = useState(false);
+   ${isAnyPasswordField ?  `const [showPassword, setShowPassword] = useState(false);` : ''}
+  ${isSignup ? `
   const [passwordStrength, setPasswordStrength] = useState<PasswordStrength>("weak");
-  const [showStrengthIndicator, setShowStrengthIndicator] = useState(false);` : ''}
+  const [showStrengthIndicator, setShowStrengthIndicator] = useState(false); ${generatePasswordStrengthEffect()}` : ''}
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

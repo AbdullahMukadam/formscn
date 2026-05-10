@@ -82,6 +82,7 @@ export function generateFormComponent(config: GenerateFormComponentConfig): stri
   );
   const isLogin = shouldEnableAuth && hasEmail && hasPassword && !isSignup;
   const isAuth = shouldEnableAuth && (isLogin || isSignup || hasOAuth);
+  const isAnyPasswordField = hasPassword || hasConfirmPassword;
 
   // Add Username hint for plugins
   if (isAuth && !fields.some(f => f.name === 'username') && fields.some(f => f.name === 'fullName')) {
@@ -164,10 +165,10 @@ export function ${componentName}({ defaultValues, onValuesChange, onSubmit, clas
   const { isSubmitting } = form.formState;
 const values = form.watch();
 
-  // Local state for password field enhancements
-  ${isSignup ? `const [showPassword, setShowPassword] = useState(false);
+  ${isAnyPasswordField ?  `const [showPassword, setShowPassword] = useState(false);` : ''}
+  ${isSignup ? `
   const [passwordStrength, setPasswordStrength] = useState<PasswordStrength>("weak");
-  const [showStrengthIndicator, setShowStrengthIndicator] = useState(false);${generatePasswordStrengthEffect()}` : isAuth ? `const [showPassword, setShowPassword] = useState(false);` : ''}
+  const [showStrengthIndicator, setShowStrengthIndicator] = useState(false);${generatePasswordStrengthEffect()}` : ''}
 
   useEffect(() => {
     onValuesChange?.(values);
