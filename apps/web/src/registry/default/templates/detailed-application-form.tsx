@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PhoneInputField } from "@/components/ui/phone-input";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
@@ -158,11 +159,18 @@ export function DetailedApplicationForm() {
 
           <div className="space-y-2">
             <Label htmlFor="phone">Phone Number</Label>
-            <Input
-              id="phone"
-              type="tel"
-              placeholder=""
-              {...form.register("phone")}
+            <Controller
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <PhoneInputField
+                  defaultCountry="US"
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="+1 (555) 000-0000"
+                  className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                />
+              )}
             />
             {form.formState.errors.phone && (
             <p className="text-sm text-destructive">{form.formState.errors.phone.message}</p>

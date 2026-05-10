@@ -6,7 +6,9 @@
     "react-hook-form",
     "@hookform/resolvers",
     "zod",
-    "sonner"
+    "sonner",
+    "react-phone-number-input",
+    "libphonenumber-js"
   ],
   "registryDependencies": [
     "https://formscn.space/r/button.json",
@@ -14,7 +16,8 @@
     "https://formscn.space/r/input.json",
     "https://formscn.space/r/textarea.json",
     "https://formscn.space/r/label.json",
-    "https://formscn.space/r/checkbox.json"
+    "https://formscn.space/r/select.json",
+    "https://formscn.space/r/phone-input.json"
   ],
   "files": [
     {

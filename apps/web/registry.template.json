@@ -337,19 +337,22 @@
           "target": "components/forms/job-application-form.tsx"
         }
       ],
-      "registryDependencies": [
+"registryDependencies": [
         "{{BASE_URL}}/r/button.json",
         "{{BASE_URL}}/r/card.json",
         "{{BASE_URL}}/r/input.json",
         "{{BASE_URL}}/r/textarea.json",
         "{{BASE_URL}}/r/label.json",
-        "{{BASE_URL}}/r/checkbox.json"
+        "{{BASE_URL}}/r/select.json",
+"{{BASE_URL}}/r/phone-input.json"
       ],
       "dependencies": [
         "react-hook-form",
         "@hookform/resolvers",
         "zod",
-        "sonner"
+        "sonner",
+        "react-phone-number-input",
+        "libphonenumber-js"
       ]
     },
     {
