@@ -557,11 +557,13 @@
         "{{BASE_URL}}/r/label.json",
         "{{BASE_URL}}/r/select.json"
       ],
-      "dependencies": [
+"dependencies": [
         "react-hook-form",
         "@hookform/resolvers",
         "zod",
-        "sonner"
+        "sonner",
+        "react-phone-number-input",
+        "libphonenumber-js"
       ]
     },
     {

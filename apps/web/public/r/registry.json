@@ -557,11 +557,13 @@
         "https://formscn.space/r/label.json",
         "https://formscn.space/r/select.json"
       ],
-      "dependencies": [
+"dependencies": [
         "react-hook-form",
         "@hookform/resolvers",
         "zod",
-        "sonner"
+        "sonner",
+        "react-phone-number-input",
+        "libphonenumber-js"
       ]
     },
     {

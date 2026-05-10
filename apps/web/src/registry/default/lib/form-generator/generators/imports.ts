@@ -117,7 +117,7 @@ import { cn } from "@/lib/utils";`;
     }
   }
   
-  // Phone input
+// Phone input
   if (hasPhone) {
     imports += `
 import PhoneInput from "react-phone-number-input";

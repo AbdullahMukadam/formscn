@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { PhoneInputField } from "@/components/ui/phone-input";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
@@ -21,6 +20,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 
 const formSchema = z.object({
   fullName: z.string().min(2, "Name required"),
@@ -163,7 +164,9 @@ export function DetailedApplicationForm() {
               control={form.control}
               name="phone"
               render={({ field }) => (
-                <PhoneInputField
+                <PhoneInput
+                  international
+                  countryCallingCodeEditable={false}
                   defaultCountry="US"
                   value={field.value}
                   onChange={field.onChange}

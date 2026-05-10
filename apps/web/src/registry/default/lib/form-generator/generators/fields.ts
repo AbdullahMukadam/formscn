@@ -21,7 +21,6 @@ export function generateFormFields(fields: FormField[], isSignup? : boolean): st
       : "";
 
     if (field.type === "input") {
-      // Phone input with international support
       if (field.uiType === "phone") {
         const defaultCountry = field.uiConfig?.country || "US";
         return `          <div className="space-y-2">
