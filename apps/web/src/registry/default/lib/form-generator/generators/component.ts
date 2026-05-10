@@ -108,10 +108,12 @@ export function generateFormComponent(config: GenerateFormComponentConfig): stri
 
   // Generate component
   const componentName = formName.replace(/\s+/g, '') + 'Form';
-  const defaultValues = fields.map(f => {
+const defaultValues = fields.map(f => {
     if (f.type === "checkbox") return `      ${f.name}: false,`;
+    if (f.type === "switch") return `      ${f.name}: false,`;
     if (f.type === "date") return `      ${f.name}: undefined,`;
     if (f.type === "file") return `      ${f.name}: undefined,`;
+    if (f.type === "number") return `      ${f.name}: undefined,`;
     return `      ${f.name}: "",`;
   }).join('\n');
 
@@ -160,10 +162,12 @@ export function ${componentName}({ defaultValues, onValuesChange, onSubmit, clas
   });
 
   const { isSubmitting } = form.formState;
-  const values = form.watch();
+const values = form.watch();
 
   // Local state for password field enhancements
- ${`const [showPassword, setShowPassword] = useState(false);`}
+  ${isSignup ? `const [showPassword, setShowPassword] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState<PasswordStrength>("weak");
+  const [showStrengthIndicator, setShowStrengthIndicator] = useState(false);${generatePasswordStrengthEffect()}` : isAuth ? `const [showPassword, setShowPassword] = useState(false);` : ''}
 
   useEffect(() => {
     onValuesChange?.(values);
@@ -229,11 +233,26 @@ ${submitLogic}
               </Button>
             ) : (
               <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Submitting..." : "Submit"}
+                {isSubmitting ? "${isLogin ? "Signing in..." : isSignup ? "Creating account..." : "Submitting..."}" : "${isLogin ? "Sign In" : isSignup ? "Create Account" : "Submit"}"}
               </Button>
             )}
           </div>
-        </form>
+        </form>${hasOAuth ? `
+
+        <div className="relative my-4">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-background px-2 text-muted-foreground">
+              Or continue with
+            </span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-${oauthProviders.length} gap-4">
+${oauthButtons}
+        </div>` : ''}
       </CardContent>
     </Card>
   );
@@ -265,8 +284,8 @@ export function ${componentName}({ defaultValues, onValuesChange, onSubmit, clas
   const { isSubmitting } = form.formState;
   const values = form.watch();
 
-  // Local state for password field enhancements
-  const [showPassword, setShowPassword] = useState(false);${isSignup ? `
+${isSignup ? `
+  const [showPassword, setShowPassword] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState<PasswordStrength>("weak");
   const [showStrengthIndicator, setShowStrengthIndicator] = useState(false);${generatePasswordStrengthEffect()}` : ''}
 

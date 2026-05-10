@@ -22,14 +22,16 @@ export function generateImports(config: GenerateImportsConfig): string {
   
   const directive = getClientDirective(framework);
 
-  const hasSelect = fields.some(f => f.type === "select");
+const hasSelect = fields.some(f => f.type === "select");
   const hasCheckbox = fields.some(f => f.type === "checkbox");
   const hasTextarea = fields.some(f => f.type === "textarea");
   const hasRadio = fields.some(f => f.type === "radio");
   const hasDate = fields.some(f => f.type === "date");
   const hasFile = fields.some(f => f.type === "file");
   const hasPhone = fields.some(f => f.uiType === "phone");
-  const needsController = hasSelect || hasCheckbox || hasRadio || hasDate || hasPhone;
+  const hasSwitch = fields.some(f => f.type === "switch");
+  const hasNumber = fields.some(f => f.type === "number");
+  const needsController = hasSelect || hasCheckbox || hasRadio || hasDate || hasPhone || hasSwitch;
 
   const hasPassword = fields.some(f => f.name === "password" || f.inputType === "password");
 
@@ -49,7 +51,7 @@ export function generateImports(config: GenerateImportsConfig): string {
   // React Hook Form
   imports += `import { useForm${needsController ? ", Controller" : ""}, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";`;
+import { z } from "zod";`;
 
   // UI Components
   imports += `
@@ -83,9 +85,14 @@ import {
 } from "@/components/ui/select";`;
   }
 
-  // Checkbox
+// Checkbox
   if (hasCheckbox) {
     imports += `\nimport { Checkbox } from "@/components/ui/checkbox";`;
+  }
+
+  // Switch
+  if (hasSwitch) {
+    imports += `\nimport { Switch } from "@/components/ui/switch";`;
   }
 
   // Radio

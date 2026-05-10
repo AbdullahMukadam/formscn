@@ -16,6 +16,7 @@ export interface PublishedFormConfig {
   oauthProviders: OAuthProvider[];
   databaseAdapter: DatabaseAdapter;
   framework: Framework;
+  formLibrary?: "rhf" | "tanstack";
 }
 
 export interface PublishedForm {

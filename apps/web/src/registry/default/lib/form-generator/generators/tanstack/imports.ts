@@ -16,35 +16,40 @@ function getClientDirective(framework: Framework): string {
  */
 export function generateTanstackImports(config: GenerateImportsConfig): string {
   const { framework, fields, isAuth, isLogin, isSignup, hasOAuth, hasSteps } = config;
-  
+
   const directive = getClientDirective(framework);
 
-  const hasSelect = fields.some(f => f.type === "select");
-  const hasCheckbox = fields.some(f => f.type === "checkbox");
-  const hasTextarea = fields.some(f => f.type === "textarea");
-  const hasRadio = fields.some(f => f.type === "radio");
-  const hasDate = fields.some(f => f.type === "date");
-  const hasFile = fields.some(f => f.type === "file");
+  const hasSelect = fields.some((f) => f.type === "select");
+  const hasCheckbox = fields.some((f) => f.type === "checkbox");
+  const hasTextarea = fields.some((f) => f.type === "textarea");
+  const hasRadio = fields.some((f) => f.type === "radio");
+  const hasDate = fields.some((f) => f.type === "date");
+  const hasFile = fields.some((f) => f.type === "file");
+  const hasSwitch = fields.some((f) => f.type === "switch");
+  const hasNumber = fields.some((f) => f.type === "number");
 
-  const hasPassword = fields.some(f => f.name === "password" || f.inputType === "password");
+  const hasPassword = fields.some(
+    (f) => f.name === "password" || f.inputType === "password"
+  );
 
   // Build React imports
   const reactImports: string[] = [];
   if (hasSteps || hasPassword || isSignup) reactImports.push("useState");
   reactImports.push("useEffect");
-  
+
   // Build imports string
   let imports = directive;
-  
+
   // React imports (if any)
   if (reactImports.length > 0) {
     imports += `import { ${Array.from(new Set(reactImports)).join(", ")} } from "react";\n`;
   }
-  
-  // TanStack Form
+
+  // TanStack Form — zodValidator lives in its own adapter package,
+  // NOT in "@tanstack/react-form"
   imports += `import { useForm } from "@tanstack/react-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
-import * as z from "zod";`;
+import { z } from "zod";`;
 
   // UI Components - using custom Field components for TanStack Form
   imports += `
@@ -65,7 +70,7 @@ import { Progress } from "@/components/ui/progress";`;
   if (hasTextarea) {
     imports += `\nimport { Textarea } from "@/components/ui/textarea";`;
   }
-  
+
   // Select
   if (hasSelect) {
     imports += `
@@ -81,6 +86,11 @@ import {
   // Checkbox
   if (hasCheckbox) {
     imports += `\nimport { Checkbox } from "@/components/ui/checkbox";`;
+  }
+
+  // Switch
+  if (hasSwitch) {
+    imports += `\nimport { Switch } from "@/components/ui/switch";`;
   }
 
   // Radio
@@ -100,12 +110,19 @@ import {
 } from "@/components/ui/popover";`;
   }
 
+  // File input (currently only adds native <input type="file"> support — no extra import needed,
+  // but reserved here for a custom FileInput component if added later)
+  if (hasFile) {
+    // Placeholder: add a custom file-input component import here when available
+    // e.g. imports += `\nimport { FileInput } from "@/components/ui/file-input";`;
+  }
+
   // Auth Imports
   if (isAuth || hasOAuth) {
     const authImports: string[] = [];
     if (isLogin || hasOAuth) authImports.push("signIn");
     if (isSignup) authImports.push("signUp");
-    
+
     imports += `\nimport { ${authImports.join(", ")} } from "@/lib/auth-client";`;
   }
 

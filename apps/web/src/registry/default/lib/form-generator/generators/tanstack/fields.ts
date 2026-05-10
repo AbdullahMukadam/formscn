@@ -282,6 +282,69 @@ export function generateTanstackFormFields(fields: FormField[], isSignup?: boole
             )}
           />`;
     }
+
+    if (field.type === "number") {
+      return `          <form.Field
+            name="${field.name}"
+            children={(field) => (
+              <Field>
+                <FieldLabel htmlFor="${field.name}">${field.label}</FieldLabel>
+                <Input
+                  id="${field.name}"
+                  type="number"
+                  placeholder="${field.placeholder || ""}"
+                  value={field.state.value || ""}
+                  onChange={(e) => field.handleChange(e.target.value ? Number(e.target.value) : undefined)}
+                  onBlur={field.handleBlur}
+                />
+                {field.state.meta.errors.length > 0 && (
+                  <p className="text-sm text-destructive">{field.state.meta.errors[0]}</p>
+                )}${descriptionDisplay}
+              </Field>
+            )}
+          />`;
+    }
+
+    if (field.type === "file") {
+      return `          <form.Field
+            name="${field.name}"
+            children={(field) => (
+              <Field className="flex flex-col">
+                <FieldLabel>${field.label}</FieldLabel>
+                <Input
+                  type="file"
+                  accept="${field.uiConfig?.accept || "*"}"
+                  onChange={(e) => field.handleChange(e.target.files)}
+                />
+                {field.state.meta.errors.length > 0 && (
+                  <p className="text-sm text-destructive">{field.state.meta.errors[0]}</p>
+                )}${descriptionDisplay}
+              </Field>
+            )}
+          />`;
+    }
+
+    if (field.type === "switch") {
+      return `          <form.Field
+            name="${field.name}"
+            children={(field) => (
+              <Field>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    checked={field.state.value || false}
+                    onCheckedChange={(checked) => field.handleChange(checked)}
+                  />
+                  <FieldLabel className="font-normal cursor-pointer">
+                    ${field.label}
+                  </FieldLabel>
+                </div>
+                {field.state.meta.errors.length > 0 && (
+                  <p className="text-sm text-destructive">{field.state.meta.errors[0]}</p>
+                )}${descriptionDisplay}
+              </Field>
+            )}
+          />`;
+    }
     
     return `          {/* ${field.type} field for ${field.name} */}`;
   }).join('\n\n');

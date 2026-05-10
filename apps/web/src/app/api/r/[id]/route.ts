@@ -34,12 +34,27 @@ export async function GET(
 // Determine dependencies based on the form's complexity
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3001";
   const registryDependencies = [`${baseUrl}/r/base-form.json`];
-  const dependencies = [
-    "react-hook-form", 
-    "@hookform/resolvers", 
-    "zod", 
-    "sonner"
-  ];
+  
+  // Detect form library (rhf or tanstack) - check config first, then detect from code
+  let formLibrary = form.config?.formLibrary;
+  if (!formLibrary) {
+    formLibrary = form.code.includes("@tanstack/react-form") ? "tanstack" : "rhf";
+  }
+  
+  let dependencies: string[];
+  if (formLibrary === "tanstack") {
+    dependencies = [
+      "@tanstack/react-form",
+      "@tanstack/zod-form-adapter",
+      "sonner"
+    ];
+  } else {
+    dependencies = [
+      "react-hook-form",
+      "@hookform/resolvers",
+      "sonner"
+    ];
+  }
 
   // Detect field types and add appropriate dependencies
   const fields = form.config?.fields || [];
@@ -51,10 +66,23 @@ export async function GET(
     dependencies.push("react-phone-number-input", "libphonenumber-js");
   }
 
-  // Date field - add date-fns for date formatting
+// Date field - add date-fns for date formatting
   const hasDate = fields.some((f: any) => f.type === "date");
   if (hasDate) {
     dependencies.push("date-fns");
+    registryDependencies.push(`${baseUrl}/r/popover.json`);
+    registryDependencies.push(`${baseUrl}/r/calendar.json`);
+  }
+
+  // Multi-step forms - add progress component
+  const hasSteps = (form.config as any)?.steps?.length > 0;
+  if (hasSteps) {
+    registryDependencies.push(`${baseUrl}/r/progress.json`);
+  }
+
+  // TanStack form needs additional UI components
+  if (formLibrary === "tanstack") {
+    registryDependencies.push(`${baseUrl}/r/field.json`);
   }
 
   // Add framework-specific router dependencies for auth forms
@@ -153,8 +181,8 @@ export async function GET(
     }
   }
 
-  // Construct the Registry JSON response
-  const registryItem = {
+// Construct the Registry JSON response
+  const registryItem: any = {
     $schema: "https://ui.shadcn.com/schema/registry-item.json",
     name: form.name.toLowerCase().replace(/\s+/g, "-"),
     type: "registry:block",
@@ -164,6 +192,16 @@ export async function GET(
     registryDependencies,
     dependencies,
   };
+
+  // Add peerDependencies warning for TanStack Form (requires zod v3)
+  if (formLibrary === "tanstack") {
+    registryItem.peerDependencies = {
+      zod: "^3.24.0",
+    };
+    registryItem.meta = {
+      notice: "TanStack Form requires zod@^3.x. Install: npm install zod@^3.24.0 or use --legacy-peer-deps flag.",
+    };
+  }
 
   return NextResponse.json(registryItem);
 }

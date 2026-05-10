@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "field",
+  "description": "Field components for TanStack Form (Field, FieldLabel, FieldError, FieldDescription)",
+  "registryDependencies": [
+    "https://formscn.space/r/label.json"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/field.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\n\nimport { cn } from \"@/lib/utils\";\nimport { Label } from \"@/components/ui/label\";\n\nconst Field = React.forwardRef<\n  HTMLDivElement,\n  React.HTMLAttributes<HTMLDivElement>\n>(({ className, ...props }, ref) => (\n  <div\n    ref={ref}\n    className={cn(\"space-y-2\", className)}\n    {...props}\n  />\n));\nField.displayName = \"Field\";\n\nconst FieldLabel = React.forwardRef<\n  HTMLLabelElement,\n  React.ComponentProps<typeof Label>\n>(({ className, ...props }, ref) => (\n  <Label\n    ref={ref}\n    className={cn(\"\", className)}\n    {...props}\n  />\n));\nFieldLabel.displayName = \"FieldLabel\";\n\nconst FieldError = React.forwardRef<\n  HTMLParagraphElement,\n  React.HTMLAttributes<HTMLParagraphElement>\n>(({ className, ...props }, ref) => (\n  <p\n    ref={ref}\n    className={cn(\"text-sm text-destructive\", className)}\n    {...props}\n  />\n));\nFieldError.displayName = \"FieldError\";\n\nconst FieldDescription = React.forwardRef<\n  HTMLParagraphElement,\n  React.HTMLAttributes<HTMLParagraphElement>\n>(({ className, ...props }, ref) => (\n  <p\n    ref={ref}\n    className={cn(\"text-sm text-muted-foreground\", className)}\n    {...props}\n  />\n));\nFieldDescription.displayName = \"FieldDescription\";\n\nexport { Field, FieldLabel, FieldError, FieldDescription };",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

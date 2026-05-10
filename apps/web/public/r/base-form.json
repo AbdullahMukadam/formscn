@@ -14,7 +14,12 @@
     "https://formscn.space/r/label.json",
     "https://formscn.space/r/select.json",
     "https://formscn.space/r/checkbox.json",
-    "https://formscn.space/r/radio-group.json"
+    "https://formscn.space/r/radio-group.json",
+    "https://formscn.space/r/field.json",
+    "https://formscn.space/r/popover.json",
+    "https://formscn.space/r/calendar.json",
+    "https://formscn.space/r/progress.json",
+    "https://formscn.space/r/switch.json"
   ],
   "files": [
     {

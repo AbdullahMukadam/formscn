@@ -1634,5 +1634,421 @@
       "createdAt": 1777642229129,
       "expiresAt": 1777728629129
     }
+  ],
+  [
+    "BvrB62JZ3F",
+    {
+      "id": "BvrB62JZ3F",
+      "name": "Passkey Management",
+      "description": "Register and manage secure passkeys (Better Auth plugin optional)",
+      "code": "\"use client\";\n\nimport { useEffect } from \"react\";\nimport { useForm } from \"@tanstack/react-form\";\nimport { zodValidator } from \"@tanstack/zod-form-adapter\";\nimport * as z from \"zod\";\nimport { Button } from \"@/components/ui/button\";\nimport { Card, CardContent, CardDescription, CardHeader, CardTitle } from \"@/components/ui/card\";\nimport { Input } from \"@/components/ui/input\";\nimport { Field, FieldLabel, FieldError, FieldDescription } from \"@/components/ui/field\";\nimport { toast } from \"sonner\";\nimport { cn } from \"@/lib/utils\";\nconst formSchema = z.object({\n  name: z.string().min(1, \"Device Name is required\"),\n});\n\nexport type FormValues = z.infer<typeof formSchema>;\nexport { formSchema };\nexport interface PasskeyManagementFormProps {\n  defaultValues?: Partial<FormValues>;\n  onValuesChange?: (values: FormValues) => void;\n  onSubmit?: (values: FormValues) => Promise<void>;\n  className?: string;\n}\n\nexport function PasskeyManagementForm({ defaultValues, onValuesChange, onSubmit, className }: PasskeyManagementFormProps = {}) {\n  // Form state management\n  const form = useForm<FormValues>({\n    defaultValues: {\n      name: \"\",\n      ...defaultValues,\n    },\n    validators: {\n      onSubmit: formSchema,\n    },\n    validatorAdapter: zodValidator,\n  });\n\n  // Local state for password field enhancements\n  const [showPassword, setShowPassword] = useState(false);\n\n  useEffect(() => {\n    const subscription = form.subscribe((state) => {\n      onValuesChange?.(state.values);\n    });\n    return () => subscription();\n  }, [onValuesChange]);\n\n  const handleSubmit = async (data: FormValues) => {\n    if (onSubmit) {\n      await onSubmit(data);\n    } else {\n      try {   \n       //submit logic here\n        toast.success(\"Form submitted successfully!\");\n      } catch (error) {\n        toast.error(error instanceof Error ? error.message : \"Something went wrong\");\n      }\n    }\n  };\n\n  return (\n    <Card className={cn(\"w-full max-w-md mx-auto\", className)}>\n      <CardHeader>\n        <CardTitle>Passkey Management</CardTitle>\n        <CardDescription>Register and manage secure passkeys (Better Auth plugin optional)</CardDescription>\n      </CardHeader>\n      <CardContent>\n        <form \n          onSubmit={(e) => {\n            e.preventDefault();\n            form.handleSubmit(handleSubmit)();\n          }} \n          className=\"space-y-4\"\n        >\n          <form.Field\n            name=\"name\"\n            children={(field) => (\n              <Field>\n                <FieldLabel htmlFor=\"name\">Device Name</FieldLabel>\n                <Input\n                  id=\"name\"\n                  type=\"text\"\n                  placeholder=\"e.g. MacBook Pro, iPhone\"\n                  \n                  value={field.state.value || \"\"}\n                  onChange={(e) => field.handleChange(e.target.value)}\n                  onBlur={field.handleBlur}\n                />\n                {field.state.meta.errors.length > 0 && (\n                  <p className=\"text-sm text-destructive\">{field.state.meta.errors[0]}</p>\n                )}\n              <FieldDescription>Give this passkey a recognizable name</FieldDescription>\n              </Field>\n            )}\n          />\n\n          <Button type=\"submit\" className=\"w-full\" disabled={form.state.isSubmitting}>\n            {form.state.isSubmitting ? \"Submitting...\" : \"Submit\"}\n          </Button>\n        </form>\n      </CardContent>\n    </Card>\n  );\n}",
+      "config": {
+        "fields": [
+          {
+            "type": "input",
+            "name": "name",
+            "label": "Device Name",
+            "placeholder": "e.g. MacBook Pro, iPhone",
+            "description": "Give this passkey a recognizable name",
+            "required": true,
+            "inputType": "text"
+          }
+        ],
+        "steps": [],
+        "oauthProviders": [],
+        "databaseAdapter": "drizzle",
+        "framework": "next",
+        "plugins": {}
+      },
+      "dependencies": [
+        "http://localhost:3001/r/base-form.json"
+      ],
+      "createdAt": 1778348311132,
+      "expiresAt": 1778434711132
+    }
+  ],
+  [
+    "-LFwBB95i3",
+    {
+      "id": "-LFwBB95i3",
+      "name": "Org Invitation",
+      "description": "Invite members to your organization (Better Auth plugin optional)",
+      "code": "\"use client\";\n\nimport { useEffect } from \"react\";\nimport { useForm } from \"@tanstack/react-form\";\nimport { zodValidator } from \"@tanstack/zod-form-adapter\";\nimport * as z from \"zod\";\nimport { Button } from \"@/components/ui/button\";\nimport { Card, CardContent, CardDescription, CardHeader, CardTitle } from \"@/components/ui/card\";\nimport { Input } from \"@/components/ui/input\";\nimport { Field, FieldLabel, FieldError, FieldDescription } from \"@/components/ui/field\";\nimport { toast } from \"sonner\";\nimport { cn } from \"@/lib/utils\";\nimport {\n  Select,\n  SelectContent,\n  SelectItem,\n  SelectTrigger,\n  SelectValue,\n} from \"@/components/ui/select\";\nconst formSchema = z.object({\n  email: z.string().min(1, \"Email address is required\").email(\"Please enter a valid email address\"),\n  role: z.enum([\"admin\", \"member\"]),\n});\n\nexport type FormValues = z.infer<typeof formSchema>;\nexport { formSchema };\nexport interface OrgInvitationFormProps {\n  defaultValues?: Partial<FormValues>;\n  onValuesChange?: (values: FormValues) => void;\n  onSubmit?: (values: FormValues) => Promise<void>;\n  className?: string;\n}\n\nexport function OrgInvitationForm({ defaultValues, onValuesChange, onSubmit, className }: OrgInvitationFormProps = {}) {\n  // Form state management\n  const form = useForm<FormValues>({\n    defaultValues: {\n      email: \"\",\n      role: \"\",\n      ...defaultValues,\n    },\n    validators: {\n      onSubmit: formSchema,\n    },\n    validatorAdapter: zodValidator,\n  });\n\n  // Local state for password field enhancements\n  const [showPassword, setShowPassword] = useState(false);\n\n  useEffect(() => {\n    const subscription = form.subscribe((state) => {\n      onValuesChange?.(state.values);\n    });\n    return () => subscription();\n  }, [onValuesChange]);\n\n  const handleSubmit = async (data: FormValues) => {\n    if (onSubmit) {\n      await onSubmit(data);\n    } else {\n      try {   \n       //submit logic here\n        toast.success(\"Form submitted successfully!\");\n      } catch (error) {\n        toast.error(error instanceof Error ? error.message : \"Something went wrong\");\n      }\n    }\n  };\n\n  return (\n    <Card className={cn(\"w-full max-w-md mx-auto\", className)}>\n      <CardHeader>\n        <CardTitle>Org Invitation</CardTitle>\n        <CardDescription>Invite members to your organization (Better Auth plugin optional)</CardDescription>\n      </CardHeader>\n      <CardContent>\n        <form \n          onSubmit={(e) => {\n            e.preventDefault();\n            form.handleSubmit(handleSubmit)();\n          }} \n          className=\"space-y-4\"\n        >\n          <form.Field\n            name=\"email\"\n            children={(field) => (\n              <Field>\n                <FieldLabel htmlFor=\"email\">Email Address</FieldLabel>\n                <Input\n                  id=\"email\"\n                  type=\"email\"\n                  placeholder=\"colleague@company.com\"\n                  autoComplete=\"email\"\n                  value={field.state.value || \"\"}\n                  onChange={(e) => field.handleChange(e.target.value)}\n                  onBlur={field.handleBlur}\n                />\n                {field.state.meta.errors.length > 0 && (\n                  <p className=\"text-sm text-destructive\">{field.state.meta.errors[0]}</p>\n                )}\n              </Field>\n            )}\n          />\n\n          <form.Field\n            name=\"role\"\n            children={(field) => (\n              <Field>\n                <FieldLabel htmlFor=\"role\">Assign Role</FieldLabel>\n                <Select \n                  value={field.state.value || \"\"} \n                  onValueChange={(value) => field.handleChange(value)}\n                >\n                  <SelectTrigger id=\"role\">\n                    <SelectValue placeholder=\"Select an option\" />\n                  </SelectTrigger>\n                  <SelectContent>\n                    <SelectItem value=\"admin\">Admin</SelectItem>\n                    <SelectItem value=\"member\">Member</SelectItem>\n                  </SelectContent>\n                </Select>\n                {field.state.meta.errors.length > 0 && (\n                  <p className=\"text-sm text-destructive\">{field.state.meta.errors[0]}</p>\n                )}\n              </Field>\n            )}\n          />\n\n          <Button type=\"submit\" className=\"w-full\" disabled={form.state.isSubmitting}>\n            {form.state.isSubmitting ? \"Submitting...\" : \"Submit\"}\n          </Button>\n        </form>\n      </CardContent>\n    </Card>\n  );\n}",
+      "config": {
+        "fields": [
+          {
+            "type": "input",
+            "name": "email",
+            "label": "Email Address",
+            "placeholder": "colleague@company.com",
+            "required": true,
+            "inputType": "email"
+          },
+          {
+            "type": "select",
+            "name": "role",
+            "label": "Assign Role",
+            "required": true,
+            "options": [
+              {
+                "label": "Admin",
+                "value": "admin"
+              },
+              {
+                "label": "Member",
+                "value": "member"
+              }
+            ]
+          }
+        ],
+        "steps": [],
+        "oauthProviders": [],
+        "databaseAdapter": "drizzle",
+        "framework": "next",
+        "plugins": {}
+      },
+      "dependencies": [
+        "http://localhost:3001/r/base-form.json"
+      ],
+      "createdAt": 1778348457067,
+      "expiresAt": 1778434857067
+    }
+  ],
+  [
+    "YegxoJAFim",
+    {
+      "id": "YegxoJAFim",
+      "name": "Passkey Management",
+      "description": "Register and manage secure passkeys (Better Auth plugin optional)",
+      "code": "\"use client\";\n\nimport { useEffect } from \"react\";\nimport { useForm } from \"@tanstack/react-form\";\nimport { zodValidator } from \"@tanstack/zod-form-adapter\";\nimport * as z from \"zod\";\nimport { Button } from \"@/components/ui/button\";\nimport { Card, CardContent, CardDescription, CardHeader, CardTitle } from \"@/components/ui/card\";\nimport { Input } from \"@/components/ui/input\";\nimport { Field, FieldLabel, FieldError, FieldDescription } from \"@/components/ui/field\";\nimport { toast } from \"sonner\";\nimport { cn } from \"@/lib/utils\";\nconst formSchema = z.object({\n  name: z.string().min(1, \"Device Name is required\"),\n});\n\nexport type FormValues = z.infer<typeof formSchema>;\nexport { formSchema };\nexport interface PasskeyManagementFormProps {\n  defaultValues?: Partial<FormValues>;\n  onValuesChange?: (values: FormValues) => void;\n  onSubmit?: (values: FormValues) => Promise<void>;\n  className?: string;\n}\n\nexport function PasskeyManagementForm({ defaultValues, onValuesChange, onSubmit, className }: PasskeyManagementFormProps = {}) {\n  // Form state management\n  const form = useForm<FormValues>({\n    defaultValues: {\n      name: \"\",\n      ...defaultValues,\n    },\n    validators: {\n      onSubmit: formSchema,\n    },\n    validatorAdapter: zodValidator,\n  });\n\n  // Local state for password field enhancements\n  const [showPassword, setShowPassword] = useState(false);\n\n  useEffect(() => {\n    const subscription = form.subscribe((state) => {\n      onValuesChange?.(state.values);\n    });\n    return () => subscription();\n  }, [onValuesChange]);\n\n  const handleSubmit = async (data: FormValues) => {\n    if (onSubmit) {\n      await onSubmit(data);\n    } else {\n      try {   \n       //submit logic here\n        toast.success(\"Form submitted successfully!\");\n      } catch (error) {\n        toast.error(error instanceof Error ? error.message : \"Something went wrong\");\n      }\n    }\n  };\n\n  return (\n    <Card className={cn(\"w-full max-w-md mx-auto\", className)}>\n      <CardHeader>\n        <CardTitle>Passkey Management</CardTitle>\n        <CardDescription>Register and manage secure passkeys (Better Auth plugin optional)</CardDescription>\n      </CardHeader>\n      <CardContent>\n        <form \n          onSubmit={(e) => {\n            e.preventDefault();\n            form.handleSubmit(handleSubmit)();\n          }} \n          className=\"space-y-4\"\n        >\n          <form.Field\n            name=\"name\"\n            children={(field) => (\n              <Field>\n                <FieldLabel htmlFor=\"name\">Device Name</FieldLabel>\n                <Input\n                  id=\"name\"\n                  type=\"text\"\n                  placeholder=\"e.g. MacBook Pro, iPhone\"\n                  \n                  value={field.state.value || \"\"}\n                  onChange={(e) => field.handleChange(e.target.value)}\n                  onBlur={field.handleBlur}\n                />\n                {field.state.meta.errors.length > 0 && (\n                  <p className=\"text-sm text-destructive\">{field.state.meta.errors[0]}</p>\n                )}\n              <FieldDescription>Give this passkey a recognizable name</FieldDescription>\n              </Field>\n            )}\n          />\n\n          <Button type=\"submit\" className=\"w-full\" disabled={form.state.isSubmitting}>\n            {form.state.isSubmitting ? \"Submitting...\" : \"Submit\"}\n          </Button>\n        </form>\n      </CardContent>\n    </Card>\n  );\n}",
+      "config": {
+        "fields": [
+          {
+            "type": "input",
+            "name": "name",
+            "label": "Device Name",
+            "placeholder": "e.g. MacBook Pro, iPhone",
+            "description": "Give this passkey a recognizable name",
+            "required": true,
+            "inputType": "text"
+          }
+        ],
+        "steps": [],
+        "oauthProviders": [],
+        "databaseAdapter": "drizzle",
+        "framework": "next",
+        "plugins": {}
+      },
+      "dependencies": [
+        "http://localhost:3001/r/base-form.json"
+      ],
+      "createdAt": 1778348726191,
+      "expiresAt": 1778435126191
+    }
+  ],
+  [
+    "Pd0se9wKDB",
+    {
+      "id": "Pd0se9wKDB",
+      "name": "Contact Form",
+      "description": "Basic contact form with name, email, and message",
+      "code": "\"use client\";\n\nimport { useEffect } from \"react\";\nimport { useForm } from \"@tanstack/react-form\";\nimport { zodValidator } from \"@tanstack/zod-form-adapter\";\nimport * as z from \"zod\";\nimport { Button } from \"@/components/ui/button\";\nimport { Card, CardContent, CardDescription, CardHeader, CardTitle } from \"@/components/ui/card\";\nimport { Input } from \"@/components/ui/input\";\nimport { Field, FieldLabel, FieldError, FieldDescription } from \"@/components/ui/field\";\nimport { toast } from \"sonner\";\nimport { cn } from \"@/lib/utils\";\nimport { Textarea } from \"@/components/ui/textarea\";\nconst formSchema = z.object({\n  name: z.string().min(1, \"Your Name is required\"),\n  email: z.string().min(1, \"Email address is required\").email(\"Please enter a valid email address\"),\n  subject: z.string().min(1, \"Subject is required\"),\n  message: z.string().min(1, \"Message is required\"),\n});\n\nexport type FormValues = z.infer<typeof formSchema>;\nexport { formSchema };\nexport interface ContactFormFormProps {\n  defaultValues?: Partial<FormValues>;\n  onValuesChange?: (values: FormValues) => void;\n  onSubmit?: (values: FormValues) => Promise<void>;\n  className?: string;\n}\n\nexport function ContactFormForm({ defaultValues, onValuesChange, onSubmit, className }: ContactFormFormProps = {}) {\n  // Form state management\n  const form = useForm<FormValues>({\n    defaultValues: {\n      name: \"\",\n      email: \"\",\n      subject: \"\",\n      message: \"\",\n      ...defaultValues,\n    },\n    validators: {\n      onSubmit: formSchema,\n    },\n    validatorAdapter: zodValidator,\n  });\n\n  // Local state for password field enhancements\n  const [showPassword, setShowPassword] = useState(false);\n\n  useEffect(() => {\n    const subscription = form.subscribe((state) => {\n      onValuesChange?.(state.values);\n    });\n    return () => subscription();\n  }, [onValuesChange]);\n\n  const handleSubmit = async (data: FormValues) => {\n    if (onSubmit) {\n      await onSubmit(data);\n    } else {\n      try {   \n       //submit logic here\n        toast.success(\"Form submitted successfully!\");\n      } catch (error) {\n        toast.error(error instanceof Error ? error.message : \"Something went wrong\");\n      }\n    }\n  };\n\n  return (\n    <Card className={cn(\"w-full max-w-md mx-auto\", className)}>\n      <CardHeader>\n        <CardTitle>Contact Form</CardTitle>\n        <CardDescription>Basic contact form with name, email, and message</CardDescription>\n      </CardHeader>\n      <CardContent>\n        <form \n          onSubmit={(e) => {\n            e.preventDefault();\n            form.handleSubmit(handleSubmit)();\n          }} \n          className=\"space-y-4\"\n        >\n          <form.Field\n            name=\"name\"\n            children={(field) => (\n              <Field>\n                <FieldLabel htmlFor=\"name\">Your Name</FieldLabel>\n                <Input\n                  id=\"name\"\n                  type=\"text\"\n                  placeholder=\"John Doe\"\n                  \n                  value={field.state.value || \"\"}\n                  onChange={(e) => field.handleChange(e.target.value)}\n                  onBlur={field.handleBlur}\n                />\n                {field.state.meta.errors.length > 0 && (\n                  <p className=\"text-sm text-destructive\">{field.state.meta.errors[0]}</p>\n                )}\n              </Field>\n            )}\n          />\n\n          <form.Field\n            name=\"email\"\n            children={(field) => (\n              <Field>\n                <FieldLabel htmlFor=\"email\">Email Address</FieldLabel>\n                <Input\n                  id=\"email\"\n                  type=\"email\"\n                  placeholder=\"john@example.com\"\n                  autoComplete=\"email\"\n                  value={field.state.value || \"\"}\n                  onChange={(e) => field.handleChange(e.target.value)}\n                  onBlur={field.handleBlur}\n                />\n                {field.state.meta.errors.length > 0 && (\n                  <p className=\"text-sm text-destructive\">{field.state.meta.errors[0]}</p>\n                )}\n              </Field>\n            )}\n          />\n\n          <form.Field\n            name=\"subject\"\n            children={(field) => (\n              <Field>\n                <FieldLabel htmlFor=\"subject\">Subject</FieldLabel>\n                <Input\n                  id=\"subject\"\n                  type=\"text\"\n                  placeholder=\"What is this about?\"\n                  \n                  value={field.state.value || \"\"}\n                  onChange={(e) => field.handleChange(e.target.value)}\n                  onBlur={field.handleBlur}\n                />\n                {field.state.meta.errors.length > 0 && (\n                  <p className=\"text-sm text-destructive\">{field.state.meta.errors[0]}</p>\n                )}\n              </Field>\n            )}\n          />\n\n          <form.Field\n            name=\"message\"\n            children={(field) => (\n              <Field>\n                <FieldLabel htmlFor=\"message\">Message</FieldLabel>\n                <Textarea\n                  id=\"message\"\n                  placeholder=\"Tell us more...\"\n                  rows={4}\n                  value={field.state.value || \"\"}\n                  onChange={(e) => field.handleChange(e.target.value)}\n                  onBlur={field.handleBlur}\n                />\n                {field.state.meta.errors.length > 0 && (\n                  <p className=\"text-sm text-destructive\">{field.state.meta.errors[0]}</p>\n                )}\n              <FieldDescription>Minimum 10 characters</FieldDescription>\n              </Field>\n            )}\n          />\n\n          <Button type=\"submit\" className=\"w-full\" disabled={form.state.isSubmitting}>\n            {form.state.isSubmitting ? \"Submitting...\" : \"Submit\"}\n          </Button>\n        </form>\n      </CardContent>\n    </Card>\n  );\n}",
+      "config": {
+        "fields": [
+          {
+            "type": "input",
+            "name": "name",
+            "label": "Your Name",
+            "placeholder": "John Doe",
+            "required": true,
+            "inputType": "text"
+          },
+          {
+            "type": "input",
+            "name": "email",
+            "label": "Email Address",
+            "placeholder": "john@example.com",
+            "required": true,
+            "inputType": "email"
+          },
+          {
+            "type": "input",
+            "name": "subject",
+            "label": "Subject",
+            "placeholder": "What is this about?",
+            "required": true,
+            "inputType": "text"
+          },
+          {
+            "type": "textarea",
+            "name": "message",
+            "label": "Message",
+            "placeholder": "Tell us more...",
+            "description": "Minimum 10 characters",
+            "required": true
+          }
+        ],
+        "steps": [],
+        "oauthProviders": [],
+        "databaseAdapter": "drizzle",
+        "framework": "next",
+        "plugins": {}
+      },
+      "dependencies": [
+        "http://localhost:3001/r/base-form.json"
+      ],
+      "createdAt": 1778349151281,
+      "expiresAt": 1778435551281
+    }
+  ],
+  [
+    "f3K13fuUCm",
+    {
+      "id": "f3K13fuUCm",
+      "name": "Address Form",
+      "description": "Shipping or billing address collection",
+      "code": "\"use client\";\n\nimport { useEffect } from \"react\";\nimport { useForm, zodValidator } from \"@tanstack/react-form\";\nimport * as z from \"zod\";\nimport { Button } from \"@/components/ui/button\";\nimport { Card, CardContent, CardDescription, CardHeader, CardTitle } from \"@/components/ui/card\";\nimport { Input } from \"@/components/ui/input\";\nimport { Field, FieldLabel, FieldError, FieldDescription } from \"@/components/ui/field\";\nimport { toast } from \"sonner\";\nimport { cn } from \"@/lib/utils\";\nconst formSchema = z.object({\n  fullName: z.string().min(1, \"Full Name is required\"),\n  addressLine1: z.string().min(1, \"Address Line 1 is required\"),\n  addressLine2: z.string().optional().or(z.literal(\"\")),\n  city: z.string().min(1, \"City is required\"),\n  state: z.string().min(1, \"State / Province is required\"),\n  zipCode: z.string().min(1, \"ZIP / Postal Code is required\"),\n  country: z.string().min(1, \"Country is required\"),\n  phone: z.string().refine((val) => !val || isValidPhoneNumber(val), \"Please enter a valid phone number\").optional().or(z.literal(\"\")),\n});\n\nexport type FormValues = z.infer<typeof formSchema>;\nexport { formSchema };\nexport interface AddressFormFormProps {\n  defaultValues?: Partial<FormValues>;\n  onValuesChange?: (values: FormValues) => void;\n  onSubmit?: (values: FormValues) => Promise<void>;\n  className?: string;\n}\n\nexport function AddressFormForm({ defaultValues, onValuesChange, onSubmit, className }: AddressFormFormProps = {}) {\n  // Form state management\n  const form = useForm<FormValues>({\n    defaultValues: {\n      fullName: \"\",\n      addressLine1: \"\",\n      addressLine2: \"\",\n      city: \"\",\n      state: \"\",\n      zipCode: \"\",\n      country: \"\",\n      phone: \"\",\n      ...defaultValues,\n    },\n    validators: {\n      onSubmit: formSchema,\n    },\n    validatorAdapter: zodValidator,\n  });\n\n  // Local state for password field enhancements\n  const [showPassword, setShowPassword] = useState(false);\n\n  useEffect(() => {\n    const subscription = form.subscribe((state) => {\n      onValuesChange?.(state.values);\n    });\n    return () => subscription();\n  }, [onValuesChange]);\n\n  const handleSubmit = async (data: FormValues) => {\n    if (onSubmit) {\n      await onSubmit(data);\n    } else {\n      try {   \n       //submit logic here\n        toast.success(\"Form submitted successfully!\");\n      } catch (error) {\n        toast.error(error instanceof Error ? error.message : \"Something went wrong\");\n      }\n    }\n  };\n\n  return (\n    <Card className={cn(\"w-full max-w-md mx-auto\", className)}>\n      <CardHeader>\n        <CardTitle>Address Form</CardTitle>\n        <CardDescription>Shipping or billing address collection</CardDescription>\n      </CardHeader>\n      <CardContent>\n        <form \n          onSubmit={(e) => {\n            e.preventDefault();\n            form.handleSubmit(handleSubmit)();\n          }} \n          className=\"space-y-4\"\n        >\n          <form.Field\n            name=\"fullName\"\n            children={(field) => (\n              <Field>\n                <FieldLabel htmlFor=\"fullName\">Full Name</FieldLabel>\n                <Input\n                  id=\"fullName\"\n                  type=\"text\"\n                  placeholder=\"John Doe\"\n                  \n                  value={field.state.value || \"\"}\n                  onChange={(e) => field.handleChange(e.target.value)}\n                  onBlur={field.handleBlur}\n                />\n                {field.state.meta.errors.length > 0 && (\n                  <p className=\"text-sm text-destructive\">{field.state.meta.errors[0]}</p>\n                )}\n              </Field>\n            )}\n          />\n\n          <form.Field\n            name=\"addressLine1\"\n            children={(field) => (\n              <Field>\n                <FieldLabel htmlFor=\"addressLine1\">Address Line 1</FieldLabel>\n                <Input\n                  id=\"addressLine1\"\n                  type=\"text\"\n                  placeholder=\"123 Main Street\"\n                  \n                  value={field.state.value || \"\"}\n                  onChange={(e) => field.handleChange(e.target.value)}\n                  onBlur={field.handleBlur}\n                />\n                {field.state.meta.errors.length > 0 && (\n                  <p className=\"text-sm text-destructive\">{field.state.meta.errors[0]}</p>\n                )}\n              </Field>\n            )}\n          />\n\n          <form.Field\n            name=\"addressLine2\"\n            children={(field) => (\n              <Field>\n                <FieldLabel htmlFor=\"addressLine2\">Address Line 2</FieldLabel>\n                <Input\n                  id=\"addressLine2\"\n                  type=\"text\"\n                  placeholder=\"Apt 4B (optional)\"\n                  \n                  value={field.state.value || \"\"}\n                  onChange={(e) => field.handleChange(e.target.value)}\n                  onBlur={field.handleBlur}\n                />\n                {field.state.meta.errors.length > 0 && (\n                  <p className=\"text-sm text-destructive\">{field.state.meta.errors[0]}</p>\n                )}\n              </Field>\n            )}\n          />\n\n          <form.Field\n            name=\"city\"\n            children={(field) => (\n              <Field>\n                <FieldLabel htmlFor=\"city\">City</FieldLabel>\n                <Input\n                  id=\"city\"\n                  type=\"text\"\n                  placeholder=\"San Francisco\"\n                  \n                  value={field.state.value || \"\"}\n                  onChange={(e) => field.handleChange(e.target.value)}\n                  onBlur={field.handleBlur}\n                />\n                {field.state.meta.errors.length > 0 && (\n                  <p className=\"text-sm text-destructive\">{field.state.meta.errors[0]}</p>\n                )}\n              </Field>\n            )}\n          />\n\n          <form.Field\n            name=\"state\"\n            children={(field) => (\n              <Field>\n                <FieldLabel htmlFor=\"state\">State / Province</FieldLabel>\n                <Input\n                  id=\"state\"\n                  type=\"text\"\n                  placeholder=\"CA\"\n                  \n                  value={field.state.value || \"\"}\n                  onChange={(e) => field.handleChange(e.target.value)}\n                  onBlur={field.handleBlur}\n                />\n                {field.state.meta.errors.length > 0 && (\n                  <p className=\"text-sm text-destructive\">{field.state.meta.errors[0]}</p>\n                )}\n              </Field>\n            )}\n          />\n\n          <form.Field\n            name=\"zipCode\"\n            children={(field) => (\n              <Field>\n                <FieldLabel htmlFor=\"zipCode\">ZIP / Postal Code</FieldLabel>\n                <Input\n                  id=\"zipCode\"\n                  type=\"text\"\n                  placeholder=\"94102\"\n                  \n                  value={field.state.value || \"\"}\n                  onChange={(e) => field.handleChange(e.target.value)}\n                  onBlur={field.handleBlur}\n                />\n                {field.state.meta.errors.length > 0 && (\n                  <p className=\"text-sm text-destructive\">{field.state.meta.errors[0]}</p>\n                )}\n              </Field>\n            )}\n          />\n\n          <form.Field\n            name=\"country\"\n            children={(field) => (\n              <Field>\n                <FieldLabel htmlFor=\"country\">Country</FieldLabel>\n                <Input\n                  id=\"country\"\n                  type=\"text\"\n                  placeholder=\"United States\"\n                  \n                  value={field.state.value || \"\"}\n                  onChange={(e) => field.handleChange(e.target.value)}\n                  onBlur={field.handleBlur}\n                />\n                {field.state.meta.errors.length > 0 && (\n                  <p className=\"text-sm text-destructive\">{field.state.meta.errors[0]}</p>\n                )}\n              </Field>\n            )}\n          />\n\n          <form.Field\n            name=\"phone\"\n            children={(field) => (\n              <Field>\n                <FieldLabel htmlFor=\"phone\">Phone Number</FieldLabel>\n                <Input\n                  id=\"phone\"\n                  type=\"tel\"\n                  placeholder=\"+1 (555) 123-4567\"\n                  autoComplete=\"tel\"\n                  value={field.state.value || \"\"}\n                  onChange={(e) => field.handleChange(e.target.value)}\n                  onBlur={field.handleBlur}\n                />\n                {field.state.meta.errors.length > 0 && (\n                  <p className=\"text-sm text-destructive\">{field.state.meta.errors[0]}</p>\n                )}\n              </Field>\n            )}\n          />\n\n          <Button type=\"submit\" className=\"w-full\" disabled={form.state.isSubmitting}>\n            {form.state.isSubmitting ? \"Submitting...\" : \"Submit\"}\n          </Button>\n        </form>\n      </CardContent>\n    </Card>\n  );\n}",
+      "config": {
+        "fields": [
+          {
+            "type": "input",
+            "name": "fullName",
+            "label": "Full Name",
+            "placeholder": "John Doe",
+            "required": true,
+            "inputType": "text"
+          },
+          {
+            "type": "input",
+            "name": "addressLine1",
+            "label": "Address Line 1",
+            "placeholder": "123 Main Street",
+            "required": true,
+            "inputType": "text"
+          },
+          {
+            "type": "input",
+            "name": "addressLine2",
+            "label": "Address Line 2",
+            "placeholder": "Apt 4B (optional)",
+            "required": false,
+            "inputType": "text"
+          },
+          {
+            "type": "input",
+            "name": "city",
+            "label": "City",
+            "placeholder": "San Francisco",
+            "required": true,
+            "inputType": "text"
+          },
+          {
+            "type": "input",
+            "name": "state",
+            "label": "State / Province",
+            "placeholder": "CA",
+            "required": true,
+            "inputType": "text"
+          },
+          {
+            "type": "input",
+            "name": "zipCode",
+            "label": "ZIP / Postal Code",
+            "placeholder": "94102",
+            "required": true,
+            "inputType": "text"
+          },
+          {
+            "type": "input",
+            "name": "country",
+            "label": "Country",
+            "placeholder": "United States",
+            "required": true,
+            "inputType": "text"
+          },
+          {
+            "type": "input",
+            "name": "phone",
+            "label": "Phone Number",
+            "placeholder": "+1 (555) 123-4567",
+            "required": false,
+            "inputType": "tel"
+          }
+        ],
+        "steps": [],
+        "oauthProviders": [],
+        "databaseAdapter": "drizzle",
+        "framework": "next",
+        "plugins": {}
+      },
+      "dependencies": [
+        "http://localhost:3001/r/base-form.json"
+      ],
+      "createdAt": 1778349333907,
+      "expiresAt": 1778435733907
+    }
+  ],
+  [
+    "9g4MegBd3O",
+    {
+      "id": "9g4MegBd3O",
+      "name": "Newsletter Signup",
+      "description": "Simple newsletter subscription form",
+      "code": "\"use client\";\n\nimport { useEffect } from \"react\";\nimport { useForm } from \"@tanstack/react-form\";\nimport * as z from \"zod\";\nimport { Button } from \"@/components/ui/button\";\nimport { Card, CardContent, CardDescription, CardHeader, CardTitle } from \"@/components/ui/card\";\nimport { Input } from \"@/components/ui/input\";\nimport { Field, FieldLabel, FieldError, FieldDescription } from \"@/components/ui/field\";\nimport { toast } from \"sonner\";\nimport { cn } from \"@/lib/utils\";\nimport {\n  Select,\n  SelectContent,\n  SelectItem,\n  SelectTrigger,\n  SelectValue,\n} from \"@/components/ui/select\";\nconst formSchema = z.object({\n  email: z.string().min(1, \"Email address is required\").email(\"Please enter a valid email address\"),\n  frequency: z.enum([\"daily\", \"weekly\", \"monthly\"]),\n});\n\nexport type FormValues = z.infer<typeof formSchema>;\nexport { formSchema };\nexport interface NewsletterSignupFormProps {\n  defaultValues?: Partial<FormValues>;\n  onValuesChange?: (values: FormValues) => void;\n  onSubmit?: (values: FormValues) => Promise<void>;\n  className?: string;\n}\n\nexport function NewsletterSignupForm({ defaultValues, onValuesChange, onSubmit, className }: NewsletterSignupFormProps = {}) {\n  // Form state management\n  const form = useForm<FormValues>({\n    defaultValues: {\n      email: \"\",\n      frequency: \"\",\n      ...defaultValues,\n    },\n    validators: {\n      onChange: formSchema,\n    },\n    \n  });\n\n  // Local state for password field enhancements\n  const [showPassword, setShowPassword] = useState(false);\n\n  useEffect(() => {\n    const subscription = form.subscribe((state) => {\n      onValuesChange?.(state.values);\n    });\n    return () => subscription();\n  }, [onValuesChange]);\n\n  const handleSubmit = async (data: FormValues) => {\n    if (onSubmit) {\n      await onSubmit(data);\n    } else {\n      try {   \n       //submit logic here\n        toast.success(\"Form submitted successfully!\");\n      } catch (error) {\n        toast.error(error instanceof Error ? error.message : \"Something went wrong\");\n      }\n    }\n  };\n\n  return (\n    <Card className={cn(\"w-full max-w-md mx-auto\", className)}>\n      <CardHeader>\n        <CardTitle>Newsletter Signup</CardTitle>\n        <CardDescription>Simple newsletter subscription form</CardDescription>\n      </CardHeader>\n      <CardContent>\n        <form \n          onSubmit={(e) => {\n            e.preventDefault();\n            form.handleSubmit(handleSubmit)();\n          }} \n          className=\"space-y-4\"\n        >\n          <form.Field\n            name=\"email\"\n            children={(field) => (\n              <Field>\n                <FieldLabel htmlFor=\"email\">Email Address</FieldLabel>\n                <Input\n                  id=\"email\"\n                  type=\"email\"\n                  placeholder=\"john@example.com\"\n                  autoComplete=\"email\"\n                  value={field.state.value || \"\"}\n                  onChange={(e) => field.handleChange(e.target.value)}\n                  onBlur={field.handleBlur}\n                />\n                {field.state.meta.errors.length > 0 && (\n                  <p className=\"text-sm text-destructive\">{field.state.meta.errors[0]}</p>\n                )}\n              <FieldDescription>We'll never share your email</FieldDescription>\n              </Field>\n            )}\n          />\n\n          <form.Field\n            name=\"frequency\"\n            children={(field) => (\n              <Field>\n                <FieldLabel htmlFor=\"frequency\">Email Frequency</FieldLabel>\n                <Select \n                  value={field.state.value || \"\"} \n                  onValueChange={(value) => field.handleChange(value)}\n                >\n                  <SelectTrigger id=\"frequency\">\n                    <SelectValue placeholder=\"Select an option\" />\n                  </SelectTrigger>\n                  <SelectContent>\n                    <SelectItem value=\"daily\">Daily</SelectItem>\n                    <SelectItem value=\"weekly\">Weekly</SelectItem>\n                    <SelectItem value=\"monthly\">Monthly</SelectItem>\n                  </SelectContent>\n                </Select>\n                {field.state.meta.errors.length > 0 && (\n                  <p className=\"text-sm text-destructive\">{field.state.meta.errors[0]}</p>\n                )}\n              </Field>\n            )}\n          />\n\n          <Button type=\"submit\" className=\"w-full\" disabled={form.state.isSubmitting}>\n            {form.state.isSubmitting ? \"Submitting...\" : \"Submit\"}\n          </Button>\n        </form>\n      </CardContent>\n    </Card>\n  );\n}",
+      "config": {
+        "fields": [
+          {
+            "type": "input",
+            "name": "email",
+            "label": "Email Address",
+            "placeholder": "john@example.com",
+            "description": "We'll never share your email",
+            "required": true,
+            "inputType": "email"
+          },
+          {
+            "type": "select",
+            "name": "frequency",
+            "label": "Email Frequency",
+            "required": true,
+            "options": [
+              {
+                "label": "Daily",
+                "value": "daily"
+              },
+              {
+                "label": "Weekly",
+                "value": "weekly"
+              },
+              {
+                "label": "Monthly",
+                "value": "monthly"
+              }
+            ]
+          }
+        ],
+        "steps": [],
+        "oauthProviders": [],
+        "databaseAdapter": "drizzle",
+        "framework": "next",
+        "plugins": {}
+      },
+      "dependencies": [
+        "http://localhost:3001/r/base-form.json"
+      ],
+      "createdAt": 1778393717665,
+      "expiresAt": 1778480117665
+    }
+  ],
+  [
+    "-qIoX5XFQR",
+    {
+      "id": "-qIoX5XFQR",
+      "name": "Newsletter Signup",
+      "description": "Simple newsletter subscription form",
+      "code": "\"use client\";\n\nimport { useEffect } from \"react\";\nimport { useForm, zodValidator } from \"@tanstack/react-form\";\nimport * as z from \"zod\";\nimport { Button } from \"@/components/ui/button\";\nimport { Card, CardContent, CardDescription, CardHeader, CardTitle } from \"@/components/ui/card\";\nimport { Input } from \"@/components/ui/input\";\nimport { Field, FieldLabel, FieldError, FieldDescription } from \"@/components/ui/field\";\nimport { toast } from \"sonner\";\nimport { cn } from \"@/lib/utils\";\nimport {\n  Select,\n  SelectContent,\n  SelectItem,\n  SelectTrigger,\n  SelectValue,\n} from \"@/components/ui/select\";\nconst formSchema = z.object({\n  email: z.string().min(1, \"Email address is required\").email(\"Please enter a valid email address\"),\n  frequency: z.enum([\"daily\", \"weekly\", \"monthly\"]),\n});\n\nexport type FormValues = z.infer<typeof formSchema>;\nexport { formSchema };\nexport interface NewsletterSignupFormProps {\n  defaultValues?: Partial<FormValues>;\n  onValuesChange?: (values: FormValues) => void;\n  onSubmit?: (values: FormValues) => Promise<void>;\n  className?: string;\n}\n\nexport function NewsletterSignupForm({ defaultValues, onValuesChange, onSubmit, className }: NewsletterSignupFormProps = {}) {\n  // Form state management\n  const form = useForm<FormValues>({\n    defaultValues: {\n      email: \"\",\n      frequency: \"\",\n      ...defaultValues,\n    },\n    validators: {\n      onChange: formSchema,\n    },\n    \n  });\n\n  // Local state for password field enhancements\n  const [showPassword, setShowPassword] = useState(false);\n\n  useEffect(() => {\n    const subscription = form.subscribe((state) => {\n      onValuesChange?.(state.values);\n    });\n    return () => subscription();\n  }, [onValuesChange]);\n\n  const handleSubmit = async (data: FormValues) => {\n    if (onSubmit) {\n      await onSubmit(data);\n    } else {\n      try {   \n       //submit logic here\n        toast.success(\"Form submitted successfully!\");\n      } catch (error) {\n        toast.error(error instanceof Error ? error.message : \"Something went wrong\");\n      }\n    }\n  };\n\n  return (\n    <Card className={cn(\"w-full max-w-md mx-auto\", className)}>\n      <CardHeader>\n        <CardTitle>Newsletter Signup</CardTitle>\n        <CardDescription>Simple newsletter subscription form</CardDescription>\n      </CardHeader>\n      <CardContent>\n        <form \n          onSubmit={handleSubmit}\n          className=\"space-y-4\"\n        >\n          <form.Field\n            name=\"email\"\n            children={(field) => (\n              <Field>\n                <FieldLabel htmlFor=\"email\">Email Address</FieldLabel>\n                <Input\n                  id=\"email\"\n                  type=\"email\"\n                  placeholder=\"john@example.com\"\n                  autoComplete=\"email\"\n                  value={field.state.value || \"\"}\n                  onChange={(e) => field.handleChange(e.target.value)}\n                  onBlur={field.handleBlur}\n                />\n                {field.state.meta.errors.length > 0 && (\n                  <p className=\"text-sm text-destructive\">{field.state.meta.errors[0]}</p>\n                )}\n              <FieldDescription>We'll never share your email</FieldDescription>\n              </Field>\n            )}\n          />\n\n          <form.Field\n            name=\"frequency\"\n            children={(field) => (\n              <Field>\n                <FieldLabel htmlFor=\"frequency\">Email Frequency</FieldLabel>\n                <Select \n                  value={field.state.value || \"\"} \n                  onValueChange={(value) => field.handleChange(value)}\n                >\n                  <SelectTrigger id=\"frequency\">\n                    <SelectValue placeholder=\"Select an option\" />\n                  </SelectTrigger>\n                  <SelectContent>\n                    <SelectItem value=\"daily\">Daily</SelectItem>\n                    <SelectItem value=\"weekly\">Weekly</SelectItem>\n                    <SelectItem value=\"monthly\">Monthly</SelectItem>\n                  </SelectContent>\n                </Select>\n                {field.state.meta.errors.length > 0 && (\n                  <p className=\"text-sm text-destructive\">{field.state.meta.errors[0]}</p>\n                )}\n              </Field>\n            )}\n          />\n\n          <Button type=\"submit\" className=\"w-full\" disabled={form.options?.isSubmitting}>\n            {form.options?.isSubmitting ? \"Submitting...\" : \"Submit\"}\n          </Button>\n        </form>\n      </CardContent>\n    </Card>\n  );\n}",
+      "config": {
+        "fields": [
+          {
+            "type": "input",
+            "name": "email",
+            "label": "Email Address",
+            "placeholder": "john@example.com",
+            "description": "We'll never share your email",
+            "required": true,
+            "inputType": "email"
+          },
+          {
+            "type": "select",
+            "name": "frequency",
+            "label": "Email Frequency",
+            "required": true,
+            "options": [
+              {
+                "label": "Daily",
+                "value": "daily"
+              },
+              {
+                "label": "Weekly",
+                "value": "weekly"
+              },
+              {
+                "label": "Monthly",
+                "value": "monthly"
+              }
+            ]
+          }
+        ],
+        "steps": [],
+        "oauthProviders": [],
+        "databaseAdapter": "drizzle",
+        "framework": "next",
+        "plugins": {}
+      },
+      "dependencies": [
+        "http://localhost:3001/r/base-form.json"
+      ],
+      "createdAt": 1778394730942,
+      "expiresAt": 1778481130942
+    }
+  ],
+  [
+    "WNNKkbQaIA",
+    {
+      "id": "WNNKkbQaIA",
+      "name": "Newsletter Signup",
+      "description": "Simple newsletter subscription form",
+      "code": "\"use client\";\n\nimport { useEffect } from \"react\";\nimport { useForm } from \"@tanstack/react-form\";\nimport { zodValidator } from \"@tanstack/zod-form-adapter\";\nimport { z } from \"zod\";\nimport { Button } from \"@/components/ui/button\";\nimport { Card, CardContent, CardDescription, CardHeader, CardTitle } from \"@/components/ui/card\";\nimport { Input } from \"@/components/ui/input\";\nimport { Field, FieldLabel, FieldError, FieldDescription } from \"@/components/ui/field\";\nimport { toast } from \"sonner\";\nimport { cn } from \"@/lib/utils\";\nimport {\n  Select,\n  SelectContent,\n  SelectItem,\n  SelectTrigger,\n  SelectValue,\n} from \"@/components/ui/select\";\nconst formSchema = z.object({\n  email: z.string().min(1, \"Email address is required\").email(\"Please enter a valid email address\"),\n  frequency: z.enum([\"daily\", \"weekly\", \"monthly\"]),\n  field_1778395157713: z.instanceof(FileList).optional()\n    .refine((files) => {\n      return !files || files.length === 0 || files[0].size <= 5242880;\n    }, \"Max file size is 5MB\")\n    .refine((files) => {\n      return !files || files.length === 0 || [\"image/png\", \"image/jpeg\", \"image/gif\", \"image/webp\"].includes(files[0].type);\n    }, \"Only .jpg, .png, .gif and .webp formats are supported\"),\n});\n\nexport type FormValues = z.infer<typeof formSchema>;\nexport { formSchema };\nexport interface NewsletterSignupFormProps {\n  defaultValues?: Partial<FormValues>;\n  onValuesChange?: (values: FormValues) => void;\n  onSubmit?: (values: FormValues) => Promise<void>;\n  className?: string;\n}\n\nexport function NewsletterSignupForm({ defaultValues, onValuesChange, onSubmit, className }: NewsletterSignupFormProps = {}) {\n  // Form state management\n  const form = useForm<FormValues>({\n    defaultValues: {\n      email: \"\",\n      frequency: \"\",\n      field_1778395157713: undefined,\n      ...defaultValues,\n    },\n    validators: {\n      onChange: formSchema,\n    },\n    \n  });\n\n\n\n   const handleSubmit = async (e: React.FormEvent) => {\n    e.preventDefault();\n    const result = await form.submit();\n    if (!result.failed && result.data) {\n      if (onSubmit) {\n        await onSubmit(result.data);\n      } else {\n      try {   \n       //submit logic here\n        toast.success(\"Form submitted successfully!\");\n      } catch (error) {\n        toast.error(error instanceof Error ? error.message : \"Something went wrong\");\n      }\n      }\n    }\n  };\n\n  return (\n    <Card className={cn(\"w-full max-w-md mx-auto\", className)}>\n      <CardHeader>\n        <CardTitle>Newsletter Signup</CardTitle>\n        <CardDescription>Simple newsletter subscription form</CardDescription>\n      </CardHeader>\n      <CardContent>\n        <form \n          onSubmit={handleSubmit}\n          className=\"space-y-4\"\n        >\n          <form.Field\n            name=\"email\"\n            children={(field) => (\n              <Field>\n                <FieldLabel htmlFor=\"email\">Email Address</FieldLabel>\n                <Input\n                  id=\"email\"\n                  type=\"email\"\n                  placeholder=\"john@example.com\"\n                  autoComplete=\"email\"\n                  value={field.state.value || \"\"}\n                  onChange={(e) => field.handleChange(e.target.value)}\n                  onBlur={field.handleBlur}\n                />\n                {field.state.meta.errors.length > 0 && (\n                  <p className=\"text-sm text-destructive\">{field.state.meta.errors[0]}</p>\n                )}\n              <FieldDescription>We'll never share your email</FieldDescription>\n              </Field>\n            )}\n          />\n\n          <form.Field\n            name=\"frequency\"\n            children={(field) => (\n              <Field>\n                <FieldLabel htmlFor=\"frequency\">Email Frequency</FieldLabel>\n                <Select \n                  value={field.state.value || \"\"} \n                  onValueChange={(value) => field.handleChange(value)}\n                >\n                  <SelectTrigger id=\"frequency\">\n                    <SelectValue placeholder=\"Select an option\" />\n                  </SelectTrigger>\n                  <SelectContent>\n                    <SelectItem value=\"daily\">Daily</SelectItem>\n                    <SelectItem value=\"weekly\">Weekly</SelectItem>\n                    <SelectItem value=\"monthly\">Monthly</SelectItem>\n                  </SelectContent>\n                </Select>\n                {field.state.meta.errors.length > 0 && (\n                  <p className=\"text-sm text-destructive\">{field.state.meta.errors[0]}</p>\n                )}\n              </Field>\n            )}\n          />\n\n          <form.Field\n            name=\"field_1778395157713\"\n            children={(field) => (\n              <Field className=\"flex flex-col\">\n                <FieldLabel>New File</FieldLabel>\n                <Input\n                  type=\"file\"\n                  accept=\"*\"\n                  onChange={(e) => field.handleChange(e.target.files)}\n                />\n                {field.state.meta.errors.length > 0 && (\n                  <p className=\"text-sm text-destructive\">{field.state.meta.errors[0]}</p>\n                )}\n              </Field>\n            )}\n          />\n\n          <Button type=\"submit\" className=\"w-full\" disabled={form.options?.isSubmitting}>\n            {form.options?.isSubmitting ? \"Submitting...\" : \"Submit\"}\n          </Button>\n        </form>\n      </CardContent>\n    </Card>\n  );\n}",
+      "config": {
+        "fields": [
+          {
+            "type": "input",
+            "name": "email",
+            "label": "Email Address",
+            "placeholder": "john@example.com",
+            "description": "We'll never share your email",
+            "required": true,
+            "inputType": "email"
+          },
+          {
+            "type": "select",
+            "name": "frequency",
+            "label": "Email Frequency",
+            "required": true,
+            "options": [
+              {
+                "label": "Daily",
+                "value": "daily"
+              },
+              {
+                "label": "Weekly",
+                "value": "weekly"
+              },
+              {
+                "label": "Monthly",
+                "value": "monthly"
+              }
+            ]
+          },
+          {
+            "type": "file",
+            "name": "field_1778395157713",
+            "label": "New File",
+            "placeholder": "Enter value...",
+            "required": false
+          }
+        ],
+        "steps": [],
+        "oauthProviders": [],
+        "databaseAdapter": "drizzle",
+        "framework": "next",
+        "plugins": {}
+      },
+      "dependencies": [
+        "http://localhost:3001/r/base-form.json"
+      ],
+      "createdAt": 1778397136247,
+      "expiresAt": 1778483536247
+    }
   ]
 ]

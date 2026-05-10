@@ -4,7 +4,7 @@ import { type AuthPluginsConfig } from "./lib/form-generator/types";
 import type { CountryCode } from "libphonenumber-js";
 
 export interface FormField {
-  type: "input" | "textarea" | "select" | "checkbox" | "radio" | "date" | "file";
+  type: "input" | "textarea" | "select" | "checkbox" | "radio" | "date" | "file" | "switch" | "number";
   name: string;
   label: string;
   placeholder?: string;

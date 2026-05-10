@@ -247,7 +247,28 @@ export function CodeViewer({
             )}
          </div>
 
-         {/* Main Code View */}
+          {formLibrary === "tanstack" && (
+            <div className="mx-3 my-3 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
+              <div className="flex items-start gap-2">
+                <span className="text-amber-600 mt-0.5">⚠️</span>
+                <div>
+                  <p className="font-medium">TanStack Form requires Zod v3</p>
+                  <p className="text-xs mt-1 text-amber-700">
+                    TanStack Form depends on <code className="bg-amber-100 px-1 rounded">@tanstack/zod-form-adapter</code> which requires <code className="bg-amber-100 px-1 rounded">zod@^3.x</code>.
+                  </p>
+                  <p className="text-xs mt-2">
+                    If your project uses Zod v4, either:
+                  </p>
+                  <ul className="text-xs mt-1 ml-4 list-disc text-amber-700">
+                    <li>Downgrade: <code className="bg-amber-100 px-1 rounded">npm install zod@^3.24.0</code></li>
+                    <li>Or use: <code className="bg-amber-100 px-1 rounded">--legacy-peer-deps</code> flag</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Main Code View */}
          <Tabs defaultValue="component" className="flex-1 flex flex-col min-h-0">
             <div className="flex items-center justify-between border-b px-2 bg-background shrink-0">
                <TabsList className="bg-transparent h-10 w-full justify-start gap-2 p-0">

@@ -97,8 +97,10 @@ export function generateTanstackFormComponent(config: GenerateFormComponentConfi
   const componentName = formName.replace(/\s+/g, '') + 'Form';
   const defaultValues = fields.map(f => {
     if (f.type === "checkbox") return `      ${f.name}: false,`;
+    if (f.type === "switch") return `      ${f.name}: false,`;
     if (f.type === "date") return `      ${f.name}: undefined,`;
     if (f.type === "file") return `      ${f.name}: undefined,`;
+    if (f.type === "number") return `      ${f.name}: undefined,`;
     return `      ${f.name}: "",`;
   }).join('\n');
 
@@ -142,26 +144,25 @@ ${defaultValues}
       ...defaultValues,
     },
     validators: {
-      onSubmit: formSchema,
+      onChange: formSchema,
     },
     validatorAdapter: zodValidator,
   });
 
-  // Local state for password field enhancements
-  const [showPassword, setShowPassword] = useState(false);
 
-  useEffect(() => {
-    const subscription = form.subscribe((state) => {
-      onValuesChange?.(state.values);
-    });
-    return () => subscription();
-  }, [onValuesChange]);
+  ${isSignup ? `const [showPassword, setShowPassword] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState<PasswordStrength>("weak");
+  const [showStrengthIndicator, setShowStrengthIndicator] = useState(false);` : ''}
 
-  const handleSubmit = async (data: FormValues) => {
-    if (onSubmit) {
-      await onSubmit(data);
-    } else {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const result = await form.submit();
+    if (!result.failed && result.data) {
+      if (onSubmit) {
+        await onSubmit(result.data);
+      } else {
 ${submitLogic}
+      }
     }
   };
 
@@ -198,10 +199,7 @@ ${submitLogic}
       </CardHeader>
       <CardContent>
         <form 
-          onSubmit={(e) => {
-            e.preventDefault();
-            form.handleSubmit(handleSubmit)();
-          }} 
+          onSubmit={handleSubmit}
           className="space-y-4"
         >
           ${stepsRender}
@@ -211,23 +209,38 @@ ${submitLogic}
               type="button" 
               variant="outline" 
               onClick={prevStep} 
-              disabled={currentStep === 0 || form.state.isSubmitting}
+              disabled={currentStep === 0 || form.options?.isSubmitting}
               className={cn(currentStep === 0 && "invisible")}
             >
               Back
             </Button>
             
             {currentStep < steps.length - 1 ? (
-              <Button type="button" onClick={nextStep} disabled={form.state.isSubmitting}>
+              <Button type="button" onClick={nextStep} disabled={form.options?.isSubmitting}>
                 Next
               </Button>
             ) : (
-              <Button type="submit" disabled={form.state.isSubmitting}>
-                {form.state.isSubmitting ? "Submitting..." : "Submit"}
+              <Button type="submit" disabled={form.options?.isSubmitting}>
+                {form.options?.isSubmitting ? "${isLogin ? "Signing in..." : isSignup ? "Creating account..." : "Submitting..."}" : "${isLogin ? "Sign In" : isSignup ? "Create Account" : "Submit"}"}
               </Button>
             )}
           </div>
-        </form>
+        </form>${hasOAuth ? `
+
+        <div className="relative my-4">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-background px-2 text-muted-foreground">
+              Or continue with
+            </span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-${oauthProviders.length} gap-4">
+${oauthButtons}
+        </div>` : ''}
       </CardContent>
     </Card>
   );
@@ -254,28 +267,25 @@ ${defaultValues}
       ...defaultValues,
     },
     validators: {
-      onSubmit: formSchema,
+      onChange: formSchema,
     },
-    validatorAdapter: zodValidator,
+    
   });
 
-  // Local state for password field enhancements
-  const [showPassword, setShowPassword] = useState(false);${isSignup ? `
+${isSignup ? `
+  const [showPassword, setShowPassword] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState<PasswordStrength>("weak");
   const [showStrengthIndicator, setShowStrengthIndicator] = useState(false);${generatePasswordStrengthEffect()}` : ''}
 
-  useEffect(() => {
-    const subscription = form.subscribe((state) => {
-      onValuesChange?.(state.values);
-    });
-    return () => subscription();
-  }, [onValuesChange]);
-
-  const handleSubmit = async (data: FormValues) => {
-    if (onSubmit) {
-      await onSubmit(data);
-    } else {
+   const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const result = await form.submit();
+    if (!result.failed && result.data) {
+      if (onSubmit) {
+        await onSubmit(result.data);
+      } else {
 ${submitLogic}
+      }
     }
   };${themeConstant}
 
@@ -287,16 +297,13 @@ ${submitLogic}
       </CardHeader>
       <CardContent>
         <form 
-          onSubmit={(e) => {
-            e.preventDefault();
-            form.handleSubmit(handleSubmit)();
-          }} 
+          onSubmit={handleSubmit}
           className="space-y-4"
         >
 ${formFields}
 
-          <Button type="submit" className="w-full" disabled={form.state.isSubmitting}>
-            {form.state.isSubmitting ? "${loadingText}" : "${submitButtonText}"}
+          <Button type="submit" className="w-full" disabled={form.options?.isSubmitting}>
+            {form.options?.isSubmitting ? "${loadingText}" : "${submitButtonText}"}
           </Button>
         </form>${hasOAuth ? `
 

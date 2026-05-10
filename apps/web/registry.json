@@ -3,7 +3,7 @@
   "name": "formscn",
   "homepage": "https://formscn.space",
   "items": [
-    {
+{
       "name": "base-form",
       "type": "registry:block",
       "description": "Base form dependencies",
@@ -26,7 +26,12 @@
         "https://formscn.space/r/label.json",
         "https://formscn.space/r/select.json",
         "https://formscn.space/r/checkbox.json",
-        "https://formscn.space/r/radio-group.json"
+        "https://formscn.space/r/radio-group.json",
+        "https://formscn.space/r/field.json",
+        "https://formscn.space/r/popover.json",
+        "https://formscn.space/r/calendar.json",
+        "https://formscn.space/r/progress.json",
+        "https://formscn.space/r/switch.json"
       ]
     },
     {
@@ -59,6 +64,18 @@
       "files": [
         {
           "path": "src/components/ui/input.tsx",
+          "type": "registry:ui"
+        }
+      ],
+"dependencies": ["@base-ui/react"]
+    },
+    {
+      "name": "switch",
+      "type": "registry:ui",
+      "description": "Switch component",
+      "files": [
+        {
+          "path": "src/components/ui/switch.tsx",
           "type": "registry:ui"
         }
       ],
@@ -123,7 +140,7 @@
       ],
       "dependencies": ["@radix-ui/react-radio-group"]
     },
-    {
+{
       "name": "phone-input",
       "type": "registry:ui",
       "description": "Phone input component with country selection",
@@ -140,6 +157,59 @@
       "registryDependencies": [
         "https://formscn.space/r/label.json"
       ]
+    },
+    {
+      "name": "field",
+      "type": "registry:ui",
+      "description": "Field components for TanStack Form (Field, FieldLabel, FieldError, FieldDescription)",
+      "files": [
+        {
+          "path": "src/components/ui/field.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "registryDependencies": [
+        "https://formscn.space/r/label.json"
+      ]
+    },
+    {
+      "name": "popover",
+      "type": "registry:ui",
+      "description": "Popover component",
+      "files": [
+        {
+          "path": "src/components/ui/popover.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "dependencies": ["@base-ui/react"]
+    },
+    {
+      "name": "calendar",
+      "type": "registry:ui",
+      "description": "Calendar component",
+      "files": [
+        {
+          "path": "src/components/ui/calendar.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "dependencies": ["react-day-picker", "lucide-react"],
+      "registryDependencies": [
+        "https://formscn.space/r/button.json"
+      ]
+    },
+    {
+      "name": "progress",
+      "type": "registry:ui",
+      "description": "Progress component",
+      "files": [
+        {
+          "path": "src/components/ui/progress.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "dependencies": ["@base-ui/react"]
     },
     {
       "name": "auth-client",

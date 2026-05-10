@@ -55,10 +55,24 @@ export function generateZodSchema(fields: FormField[]): string {
         if (!field.required) validation += `.optional()`;
         break;
 
-      case "date":
+case "date":
         validation = `z.date()`;
         if (field.required) {
           validation += `.min(new Date("1900-01-01"), { message: "${field.label} is required" })`;
+        } else {
+          validation += `.optional()`;
+        }
+        break;
+
+      case "switch":
+        validation = `z.boolean()`;
+        if (!field.required) validation += `.optional()`;
+        break;
+
+      case "number":
+        validation = `z.coerce.number()`;
+        if (field.required) {
+          validation += `.min(1, "${field.label} is required")`;
         } else {
           validation += `.optional()`;
         }

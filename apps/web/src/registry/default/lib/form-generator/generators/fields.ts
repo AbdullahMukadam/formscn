@@ -270,6 +270,59 @@ export function generateFormFields(fields: FormField[], isSignup? : boolean): st
                   </PopoverContent>
                 </Popover>
               )}
+/>
+            ${errorDisplay}${descriptionDisplay}
+          </div>`;
+    }
+
+    if (field.type === "number") {
+      return `          <div className="space-y-2">
+            <Label htmlFor="${field.name}">${field.label}</Label>
+            <Input
+              id="${field.name}"
+              type="number"
+              placeholder="${field.placeholder || ""}"
+              {...form.register("${field.name}", { valueAsNumber: true })}
+            />
+            ${errorDisplay}${descriptionDisplay}
+          </div>`;
+    }
+
+    if (field.type === "switch") {
+      return `          <div className="space-y-2">
+            <div className="flex items-center space-x-2">
+              <Controller
+                control={form.control}
+                name="${field.name}"
+                render={({ field }) => (
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                )}
+              />
+              <Label className="font-normal cursor-pointer">
+                ${field.label}
+              </Label>
+            </div>
+${errorDisplay}
+          </div>`;
+    }
+
+    if (field.type === "file") {
+      return `          <div className="space-y-2">
+            <Label>${field.label}</Label>
+            <Controller
+              control={form.control}
+              name="${field.name}"
+              render={({ field }) => (
+                <Input
+                  type="file"
+                  accept="${field.uiConfig?.accept || "*"}"
+                  onChange={(e) => field.onChange(e.target.files)}
+                  onBlur={field.onBlur}
+                />
+              )}
             />
             ${errorDisplay}${descriptionDisplay}
           </div>`;
