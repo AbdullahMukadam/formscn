@@ -215,7 +215,7 @@
   --sidebar-accent-foreground: #000000;
   --sidebar-border: #ebebeb;
   --sidebar-ring: #000000;
-  --font-sans: Geist, sans-serif;
+  --font-sans: Inter, sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: Geist Mono, monospace;
   --radius: 0.5rem;
@@ -272,7 +272,7 @@
   --sidebar-accent-foreground: #ffffff;
   --sidebar-border: #333333;
   --sidebar-ring: #a4a4a4;
-  --font-sans: Geist, sans-serif;
+  --font-sans: Inter, sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: Geist Mono, monospace;
   --radius: 0.5rem;
