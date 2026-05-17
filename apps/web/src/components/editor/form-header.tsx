@@ -40,7 +40,7 @@ export function FormHeader({
           onClick={onToggleSchemaImport}
           className="h-10 bg-background shadow-sm px-4 gap-2"
         >
-          {showSchemaImport ? <X size={16} /> : "Import Schema"}
+          {showSchemaImport ? <X size={16} /> : "Import/Create Schema"}
         </Button>
         <Button 
           variant="outline" 
