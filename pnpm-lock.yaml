@@ -51,9 +51,6 @@ importers:
       '@formscn/form':
         specifier: ^0.2.0
         version: 0.2.0(@date-fns/tz@1.4.1)(@hookform/resolvers@5.2.2(react-hook-form@7.75.0(react@19.2.6)))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))(react-hook-form@7.75.0(react@19.2.6))(react@19.2.6)(zod@4.4.3)
-      '@gpt4free/g4f.dev':
-        specifier: ^1.1.2
-        version: 1.1.2
       '@hookform/resolvers':
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.75.0(react@19.2.6))
@@ -1104,9 +1101,6 @@ packages:
     peerDependencies:
       react: ^18.2.0 || ^19.0.0
       react-dom: ^18.2.0 || ^19.0.0
-
-  '@gpt4free/g4f.dev@1.1.2':
-    resolution: {integrity: sha512-ncCXCBixJZySDgznA3VeoHL22wwE412EAj4yeWX+A66cXu4vqgvdpMQjxhQfpqRIgRsWa+4cX2Y7iivdY6NqwQ==}
 
   '@hono/node-server@1.19.14':
     resolution: {integrity: sha512-GwtvgtXxnWsucXvbQXkRgqksiH2Qed37H9xHZocE5sA3N8O8O8/8FA3uclQXxXVzc9XBZuEOMK7+r02FmSpHtw==}
@@ -5501,8 +5495,6 @@ snapshots:
       - '@date-fns/tz'
       - '@types/react'
       - date-fns
-
-  '@gpt4free/g4f.dev@1.1.2': {}
 
   '@hono/node-server@1.19.14(hono@4.12.18)':
     dependencies:
