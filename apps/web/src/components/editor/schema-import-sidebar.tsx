@@ -207,7 +207,7 @@ z.object({
             )}
           </Button>
 
-          {!parsedPreview && (
+          {/* {!parsedPreview && (
             <>
               <Separator className="bg-white" />
 
@@ -218,7 +218,7 @@ z.object({
                 Create Schema Using Ai
               </Button>
             </>
-          )}
+          )} */}
 
           {/* Error Display */}
           {parseError && (
