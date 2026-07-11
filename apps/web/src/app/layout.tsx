@@ -4,6 +4,7 @@ import { Geist, Geist_Mono, Inter } from "next/font/google";
 
 import "../index.css";
 import Header from "@/components/header";
+import AnnouncementBanner from "@/components/announcement-banner";
 import Providers from "@/components/providers";
 
 const geistSans = Geist({
@@ -110,7 +111,8 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} font-sans antialiased`}>
         <Providers>
-          <div className="grid grid-rows-[auto_1fr] h-svh has-[header]:grid-rows-[auto_1fr]">
+          <div className="grid grid-rows-[auto_auto_1fr] h-svh has-[header]:grid-rows-[auto_auto_1fr]">
+            <AnnouncementBanner />
             <Header />
             {children}
           </div>
